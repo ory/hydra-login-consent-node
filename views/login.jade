@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h1 Please log in
+    if error
+        p.
+            #{error}
+    form(action="/login",method="POST")
+        input(type="hidden",name="_csrf",value=csrfToken)
+        input(type="hidden",name="challenge",value=challenge)
+        table(style="")
+            tr
+                td
+                    input(type="email",name="email",placeholder="email@foobar.com")
+                td.
+                    (it's "foo@bar.com")
+            tr
+                td
+                    input(type="password",name="password")
+                td.
+                    (it's "foobar")
+        input(type="submit",value="Log in")
