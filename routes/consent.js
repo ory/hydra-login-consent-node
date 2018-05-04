@@ -105,7 +105,7 @@ router.post('/', csrfProtection, function (req, res, next) {
 
     // This tells hydra to remember this consent request and allow the same client to request the same
     // scopes from the same user, without showing the UI, in the future.
-    remember: true,
+    remember: Boolean(req.body.remember),
 
     // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
     remember_for: 3600,

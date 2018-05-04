@@ -8,6 +8,7 @@ function get(flow, challenge) {
   return fetch(uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + challenge))
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
+        // This will handle any errors that aren't network related (network related errors are handled automatically)
         return res.json().then(function (body) {
           console.error('An error occurred while making a HTTP request: ', body)
           return Promise.reject(new Error(body.error.message))
@@ -21,6 +22,7 @@ function get(flow, challenge) {
 // A little helper that takes type (can be "login" or "consent"), the action (can be "accept" or "reject") and a challenge and returns the response from ORY Hydra.
 function put(flow, action, challenge, body) {
   return fetch(
+    // Joins process.env.HYDRA_URL with the request path
     uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + challenge + '/' + action),
     {
       method: 'PUT',
@@ -30,6 +32,7 @@ function put(flow, action, challenge, body) {
   )
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
+        // This will handle any errors that aren't network related (network related errors are handled automatically)
         return res.json().then(function (body) {
           console.error('An error occurred while making a HTTP request: ', body)
           return Promise.reject(new Error(body.error.message))

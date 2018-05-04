@@ -14,6 +14,12 @@ block content
             label(for=scope) #{scope}
             br
 
+        p.
+            Do you want to be asked next time when this application wants to access your data? The application will
+            not be able to ask for more permissions without your consent.
+        p
+            input(type="checkbox",id="remember",name="remember",value="1")
+            label(for="remember") Do not ask me again
         p
             input(type="submit",name="submit",value="Allow access")
             input(type="submit",name="submit",value="Deny access")

@@ -72,7 +72,7 @@ router.post('/', csrfProtection, function (req, res, next) {
 
     // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
     // set the "skip" parameter in the other route to true on subsequent requests!
-    remember: true,
+    remember: Boolean(req.body.remember),
 
     // When the session expires, in seconds. Set this to 0 so it will never expire.
     remember_for: 3600,
@@ -82,7 +82,6 @@ router.post('/', csrfProtection, function (req, res, next) {
     // acr: '0',
   })
     .then(function (response) {
-      console.log(response)
       // All we need to do now is to redirect the user back to hydra!
       res.redirect(response.redirect_to);
     })
