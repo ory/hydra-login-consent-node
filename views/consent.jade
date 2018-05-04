@@ -7,7 +7,7 @@ block content
         input(type="hidden",name="_csrf",value=csrfToken)
 
         p.
-            Hi #{user}, application #{client.client_name} wants access resources on your behalf and to:
+            Hi #{user}, application <strong>#{client.client_name || client.id}</strong> wants access resources on your behalf and to:
 
         each scope in requested_scope
             input(type="checkbox",id=scope,value=scope,name="grant_scope")
