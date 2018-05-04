@@ -28,7 +28,7 @@ function put(flow, action, challenge, body) {
       method: 'PUT',
       body: JSON.stringify(body),
       headers: { 'Content-Type': 'application/json' }
-    },
+    }
   )
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
