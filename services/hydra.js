@@ -45,27 +45,27 @@ function put(flow, action, challenge, body) {
 
 var hydra = {
   // Fetches information on a login request.
-  getLoginRequest(challenge) {
+  getLoginRequest: function (challenge) {
     return get('login', challenge);
   },
   // Accepts a login request.
-  acceptLoginRequest(challenge, body) {
+  acceptLoginRequest: function (challenge, body) {
     return put('login', 'accept', challenge, body);
   },
   // Rejects a login request.
-  rejectLoginRequest(challenge) {
+  rejectLoginRequest: function (challenge) {
     return put('login', 'reject', challenge, body);
   },
   // Fetches information on a consent request.
-  getConsentRequest(challenge) {
+  getConsentRequest: function (challenge) {
     return get('consent', challenge);
   },
   // Accepts a consent request.
-  acceptConsentRequest(challenge, body) {
+  acceptConsentRequest: function (challenge, body) {
     return put('consent', 'accept', challenge, body);
   },
   // Rejects a consent request.
-  rejectConsentRequest(challenge, body) {
+  rejectConsentRequest: function (challenge, body) {
     return put('consent', 'reject', challenge, body);
   }
 };
