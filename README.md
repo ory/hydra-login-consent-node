@@ -22,13 +22,14 @@ $ OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     OAUTH2_LOGIN_URL=http://localhost:3000/login \
     OAUTH2_ISSUER_URL=http://localhost:4444 \
     DATABASE_URL=memory \
-    hydra host --dangerous-force-http
+    hydra serve --dangerous-force-http
 ```
 
 Next, you will need to create a new client that we can use to perform the OAuth 2.0 Authorization Code Flow:
 
 ```
-hydra clients create \
+$ hydra clients create \
+    --endpoint http://localhost:4444 \
     --id test-client \
     --secret test-secret \
     --response-types code,id_token \
@@ -47,10 +48,9 @@ $ HYDRA_URL=http://localhost:4444 npm start
 And finally, initiate the OAuth 2.0 Authorization Code Flow:
 
 ```
-hydra token user \
-    --auth-url http://localhost:4444/oauth2/auth \
-    --token-url http://localhost:4444/oauth2/token \
+$ hydra token user \
+    --endpoint http://localhost:4444/ \
     --scope openid,offline \
-    --id test-client \
-    --secret test-secret
+    --client-id test-client \
+    --client-secret test-secret
 ```
