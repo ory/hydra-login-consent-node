@@ -3,10 +3,13 @@
 This is a reference implementation for the User Login and Consent flow of ORY Hydra version 1.0.x in NodeJS. The
 application is bootstrapped using the `express` cli.
 
+---
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+- [Running locally](#running-locally)
 
+- [Overview](#overview)
 - [Running locally](#running-locally)
   - [Using a locally available binary](#using-a-locally-available-binary)
   - [Using Docker](#using-docker)
@@ -14,6 +17,8 @@ application is bootstrapped using the `express` cli.
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 ---
+
+## Overview
 
 Apart from additions (`./routes/login.js`, `./routes/consent.js`) and their respective templates, only a [CSRF Middleware]
 has been added. Everything else is the standard express template.
