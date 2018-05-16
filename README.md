@@ -78,7 +78,14 @@ $ hydra token user \
 
 ### Using Docker
 
-If you have ORY Hydra 1.0.0 not installed locally, you can use Docker to run the following commands. First, start the server:
+If you have ORY Hydra 1.0.0 not installed locally, you can use Docker to run the following commands. First, ensure
+that you have the latest version available from Docker Hub:
+
+```
+$ docker pull oryd/hydra-preview:latest
+```
+
+Then, start the server:
 
 ```
 $ docker run -it --rm --name login-consent-hydra -p 4444:4444 \
