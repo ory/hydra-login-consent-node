@@ -42,6 +42,8 @@ If you have ORY Hydra 1.0.0 installed locally, run the following commands. First
 $ OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     OAUTH2_LOGIN_URL=http://localhost:3000/login \
     OAUTH2_ISSUER_URL=http://localhost:4444 \
+    OAUTH2_SHARE_ERROR_DEBUG=1 \
+    LOG_LEVEL=debug \
     DATABASE_URL=memory \
     hydra serve --dangerous-force-http
 ```
@@ -56,7 +58,7 @@ $ hydra clients create \
     --response-types code,id_token \
     --grant-types refresh_token,authorization_code \
     --scope openid,offline \
-    --callbacks http://localhost:4445/callback
+    --callbacks http://127.0.0.1:4445/callback
 ```
 
 Now, run this project
@@ -89,6 +91,9 @@ Then, start the server:
 
 ```
 $ docker run -it --rm --name login-consent-hydra -p 4444:4444 \
+    -e OAUTH2_SHARE_ERROR_DEBUG=1 \
+    -e LOG_LEVEL=debug \
+    -e OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     -e OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     -e OAUTH2_LOGIN_URL=http://localhost:3000/login \
     -e OAUTH2_ISSUER_URL=http://localhost:4444 \
@@ -106,7 +111,7 @@ $ docker run --link login-consent-hydra:hydra oryd/hydra-preview:latest clients 
     --response-types code,id_token \
     --grant-types refresh_token,authorization_code \
     --scope openid,offline \
-    --callbacks http://localhost:4445/callback
+    --callbacks http://127.0.0.1:4445/callback
 ```
 
 Now, run this project
