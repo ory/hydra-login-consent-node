@@ -39,7 +39,7 @@ router.get('/', csrfProtection, function (req, res, next) {
           }
         }).then(function (response) {
           // All we need to do now is to redirect the user back to hydra!
-          res.redirect(307, response.redirect_to);
+          res.redirect(response.redirect_to);
         });
       }
 
@@ -73,7 +73,7 @@ router.post('/', csrfProtection, function (req, res, next) {
     })
       .then(function (response) {
         // All we need to do now is to redirect the browser back to hydra!
-        res.redirect(307, response.redirect_to);
+        res.redirect(response.redirect_to);
       })
       // This will handle any error that happens when making HTTP calls to hydra
       .catch(function (error) {
@@ -111,7 +111,7 @@ router.post('/', csrfProtection, function (req, res, next) {
   })
     .then(function (response) {
       // All we need to do now is to redirect the user back to hydra!
-      res.redirect(307, response.redirect_to);
+      res.redirect(response.redirect_to);
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(function (error) {
