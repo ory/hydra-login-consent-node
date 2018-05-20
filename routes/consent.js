@@ -96,10 +96,10 @@ router.post('/', csrfProtection, function (req, res, next) {
     session: {
       // This data will be available when introspecting the token. Try to avoid sensitive information here,
       // unless you limit who can introspect tokens.
-      access_token: { foo: 'bar' },
+      // access_token: { foo: 'bar' },
 
       // This data will be available in the ID token.
-      id_token: { baz: 'bar' },
+      // id_token: { baz: 'bar' },
     },
 
     // This tells hydra to remember this consent request and allow the same client to request the same
