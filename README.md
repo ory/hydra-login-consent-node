@@ -7,7 +7,6 @@ application is bootstrapped using the `express` cli.
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-- [Running locally](#running-locally)
 
 - [Overview](#overview)
 - [Running locally](#running-locally)
