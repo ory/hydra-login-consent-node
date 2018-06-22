@@ -6,6 +6,9 @@ block content
         input(type="hidden",name="challenge",value=challenge)
         input(type="hidden",name="_csrf",value=csrfToken)
 
+        if client.logo_uri
+            img(src=client.logo_uri)
+
         p.
             Hi #{user}, application <strong>#{client.client_name || client.id}</strong> wants access resources on your behalf and to:
 
@@ -17,6 +20,13 @@ block content
         p.
             Do you want to be asked next time when this application wants to access your data? The application will
             not be able to ask for more permissions without your consent.
+        ul
+            if client.policy_uri
+                li
+                    a(href=client.policy_uri) Policy
+            if client.tos_uri
+                li
+                    a(href=client.tos_uri) Terms of Service
         p
             input(type="checkbox",id="remember",name="remember",value="1")
             label(for="remember") Do not ask me again
