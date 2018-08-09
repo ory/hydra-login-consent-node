@@ -45,41 +45,40 @@ $ docker pull oryd/hydra:unstable
 Then, start the server:
 
 ```
-$ docker run -it --rm --name login-consent-hydra -p 4444:4444 \
+$ docker run -it --rm --name login-consent-hydra -p 4444:4444 -p 4445:4445 \
     -e OAUTH2_SHARE_ERROR_DEBUG=1 \
     -e LOG_LEVEL=debug \
-    -e OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     -e OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     -e OAUTH2_LOGIN_URL=http://localhost:3000/login \
     -e OAUTH2_ISSUER_URL=http://localhost:4444 \
     -e DATABASE_URL=memory \
-    oryd/hydra:unstable serve --dangerous-force-http
+    oryd/hydra:unstable serve all --dangerous-force-http
 ```
 
 Next, you will need to create a new client that we can use to perform the OAuth 2.0 Authorization Code Flow:
 
 ```
 $ docker run --link login-consent-hydra:hydra oryd/hydra:unstable clients create \
-    --endpoint http://hydra:4444 \
+    --endpoint http://hydra:4445 \
     --id test-client \
     --secret test-secret \
     --response-types code,id_token \
     --grant-types refresh_token,authorization_code \
     --scope openid,offline \
-    --callbacks http://127.0.0.1:4445/callback
+    --callbacks http://127.0.0.1:4446/callback
 ```
 
 Now, run this project
 
 ```
 $ npm i
-$ HYDRA_URL=http://localhost:4444 npm start
+$ HYDRA_URL=http://localhost:4445 npm start
 ```
 
 And finally, initiate the OAuth 2.0 Authorization Code Flow (you need to manually open the presented URL):
 
 ```
-$ docker run -p 4445:4445 --link login-consent-hydra:hydra oryd/hydra:unstable token user \
+$ docker run -p 4446:4446 --link login-consent-hydra:hydra oryd/hydra:unstable token user \
     --token-url http://hydra:4444/oauth2/token \
     --auth-url http://localhost:4444/oauth2/auth \
     --scope openid,offline \
