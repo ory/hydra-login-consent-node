@@ -1,7 +1,14 @@
 var fetch = require('node-fetch')
 var uj = require('url-join')
 
-var hydraUrl = process.env.HYDRA_URL
+var hydraUrl = process.env.HYDRA_ADMIN_URL
+var mockTlsTermination = {}
+
+if (process.env.MOCK_TLS_TERMINATION) {
+  mockTlsTermination = {
+    'X-Forwarded-Proto': 'https'
+  }
+}
 
 // A little helper that takes type (can be "login" or "consent") and a challenge and returns the response from ORY Hydra.
 function get(flow, challenge) {
@@ -22,12 +29,15 @@ function get(flow, challenge) {
 // A little helper that takes type (can be "login" or "consent"), the action (can be "accept" or "reject") and a challenge and returns the response from ORY Hydra.
 function put(flow, action, challenge, body) {
   return fetch(
-    // Joins process.env.HYDRA_URL with the request path
+    // Joins process.env.HYDRA_ADMIN_URL with the request path
     uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + challenge + '/' + action),
     {
       method: 'PUT',
       body: JSON.stringify(body),
-      headers: { 'Content-Type': 'application/json' }
+      headers: {
+        'Content-Type': 'application/json',
+        ...mockTlsTermination
+      }
     }
   )
     .then(function (res) {
