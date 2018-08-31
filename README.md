@@ -39,7 +39,7 @@ If you have ORY Hydra 1.0.0 not installed locally, you can use Docker to run the
 that you have the latest version available from Docker Hub:
 
 ```
-$ docker pull oryd/hydra:unstable
+$ docker pull oryd/hydra:v1.0.0-beta.9
 ```
 
 Then, start the server:
@@ -52,13 +52,13 @@ $ docker run -it --rm --name login-consent-hydra -p 4444:4444 -p 4445:4445 \
     -e OAUTH2_LOGIN_URL=http://localhost:3000/login \
     -e OAUTH2_ISSUER_URL=http://localhost:4444 \
     -e DATABASE_URL=memory \
-    oryd/hydra:unstable serve all --dangerous-force-http
+    oryd/hydra:v1.0.0-beta.9 serve all --dangerous-force-http
 ```
 
 Next, you will need to create a new client that we can use to perform the OAuth 2.0 Authorization Code Flow:
 
 ```
-$ docker run --link login-consent-hydra:hydra oryd/hydra:unstable clients create \
+$ docker run --link login-consent-hydra:hydra oryd/hydra:v1.0.0-beta.9 clients create \
     --endpoint http://hydra:4445 \
     --id test-client \
     --secret test-secret \
@@ -72,13 +72,13 @@ Now, run this project
 
 ```
 $ npm i
-$ HYDRA_URL=http://localhost:4445 npm start
+$ HYDRA_ADMIN_URL=http://localhost:4445 npm start
 ```
 
 And finally, initiate the OAuth 2.0 Authorization Code Flow (you need to manually open the presented URL):
 
 ```
-$ docker run -p 4446:4446 --link login-consent-hydra:hydra oryd/hydra:unstable token user \
+$ docker run -p 4446:4446 --link login-consent-hydra:hydra oryd/hydra:v1.0.0-beta.9 token user \
     --token-url http://hydra:4444/oauth2/token \
     --auth-url http://localhost:4444/oauth2/auth \
     --scope openid,offline \
@@ -97,7 +97,7 @@ $ OAUTH2_CONSENT_URL=http://localhost:3000/consent \
     OAUTH2_SHARE_ERROR_DEBUG=1 \
     LOG_LEVEL=debug \
     DATABASE_URL=memory \
-    hydra serve --dangerous-force-http
+    hydra serve all --dangerous-force-http
 ```
 
 Next, you will need to create a new client that we can use to perform the OAuth 2.0 Authorization Code Flow:
@@ -117,7 +117,7 @@ Now, run this project
 
 ```
 $ npm i
-$ HYDRA_URL=http://localhost:4444 npm start
+$ HYDRA_ADMIN_URL=http://localhost:4444 npm start
 ```
 
 And finally, initiate the OAuth 2.0 Authorization Code Flow:
@@ -129,3 +129,10 @@ $ hydra token user \
     --client-id test-client \
     --client-secret test-secret
 ```
+
+## FAQ
+
+### TLS Termination
+
+You can mock TLS Termination by setting environment variable `MOCK_TLS_TERMINATION` to any value, for example `MOCK_TLS_TERMINATION=y`.
+This will add `X-Forwarded-Proto: https` to each HTTP Request Header.
