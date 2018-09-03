@@ -1,7 +1,7 @@
 var fetch = require('node-fetch')
 var uj = require('url-join')
 
-var hydraUrl = process.env.HYDRA_URL
+var hydraUrl = process.env.HYDRA_ADMIN_URL
 
 // A little helper that takes type (can be "login" or "consent") and a challenge and returns the response from ORY Hydra.
 function get(flow, challenge) {
