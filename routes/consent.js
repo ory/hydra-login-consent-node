@@ -22,7 +22,11 @@ router.get('/', csrfProtection, function (req, res, next) {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 
-        // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
+        // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong.
+
+        // IMPORTANT: This section will only set the data if the request is skipable. This means that the request has
+        // already been granted before and remembered. If that's not the case, changing things here will not have
+        // an impact on the outcome.
         return hydra.acceptConsentRequest(challenge, {
           // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
           // are requested accidentally.
@@ -87,6 +91,10 @@ router.post('/', csrfProtection, function (req, res, next) {
   }
 
   // Seems like the user authenticated! Let's tell hydra...
+
+  // IMPORTANT: This section will only set the data if the request is not skippable. This means that the request has
+  // not been granted before or has not been remembered. If that's not the case, changing things here will not have
+  // an impact on the outcome.
   hydra.acceptConsentRequest(challenge, {
     // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
     // are requested accidentally.
