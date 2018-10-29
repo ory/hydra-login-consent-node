@@ -28,6 +28,9 @@ router.get('/', csrfProtection, function (req, res, next) {
           // are requested accidentally.
           grant_scope: response.requested_scope,
 
+          // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
+          grant_access_token_audience: response.requested_access_token_audience,
+
           // The session allows us to set session data for id and access tokens
           session: {
             // This data will be available when introspecting the token. Try to avoid sensitive information here,
@@ -87,31 +90,38 @@ router.post('/', csrfProtection, function (req, res, next) {
   }
 
   // Seems like the user authenticated! Let's tell hydra...
-  hydra.acceptConsentRequest(challenge, {
-    // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
-    // are requested accidentally.
-    grant_scope: grant_scope,
-
-    // The session allows us to set session data for id and access tokens
-    session: {
-      // This data will be available when introspecting the token. Try to avoid sensitive information here,
-      // unless you limit who can introspect tokens.
-      // access_token: { foo: 'bar' },
-
-      // This data will be available in the ID token.
-      // id_token: { baz: 'bar' },
-    },
-
-    // This tells hydra to remember this consent request and allow the same client to request the same
-    // scopes from the same user, without showing the UI, in the future.
-    remember: Boolean(req.body.remember),
-
-    // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-    remember_for: 3600,
-  })
+  hydra.getConsentRequest(challenge)
+  // This will be called if the HTTP request was successful
     .then(function (response) {
-      // All we need to do now is to redirect the user back to hydra!
-      res.redirect(response.redirect_to);
+      return hydra.acceptConsentRequest(challenge, {
+        // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
+        // are requested accidentally.
+        grant_scope: grant_scope,
+
+        // The session allows us to set session data for id and access tokens
+        session: {
+          // This data will be available when introspecting the token. Try to avoid sensitive information here,
+          // unless you limit who can introspect tokens.
+          // access_token: { foo: 'bar' },
+
+          // This data will be available in the ID token.
+          // id_token: { baz: 'bar' },
+        },
+
+        // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
+        grant_access_token_audience: response.requested_access_token_audience,
+
+        // This tells hydra to remember this consent request and allow the same client to request the same
+        // scopes from the same user, without showing the UI, in the future.
+        remember: Boolean(req.body.remember),
+
+        // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
+        remember_for: 3600,
+      })
+        .then(function (response) {
+          // All we need to do now is to redirect the user back to hydra!
+          res.redirect(response.redirect_to);
+        })
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(function (error) {
