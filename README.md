@@ -104,7 +104,7 @@ Next, you will need to create a new client that we can use to perform the OAuth 
 
 ```
 $ hydra clients create \
-    --endpoint http://localhost:4444 \
+    --endpoint http://localhost:4445 \
     --id test-client \
     --secret test-secret \
     --response-types code,id_token \
@@ -117,14 +117,14 @@ Now, run this project
 
 ```
 $ npm i
-$ HYDRA_ADMIN_URL=http://localhost:4444 npm start
+$ HYDRA_ADMIN_URL=http://localhost:4445 npm start
 ```
 
 And finally, initiate the OAuth 2.0 Authorization Code Flow:
 
 ```
 $ hydra token user \
-    --endpoint http://localhost:4444/ \
+    --endpoint http://localhost:4445/ \
     --scope openid,offline \
     --client-id test-client \
     --client-secret test-secret
