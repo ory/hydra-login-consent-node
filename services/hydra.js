@@ -63,7 +63,7 @@ var hydra = {
     return put('login', 'accept', challenge, body);
   },
   // Rejects a login request.
-  rejectLoginRequest: function (challenge) {
+  rejectLoginRequest: function (challenge, body) {
     return put('login', 'reject', challenge, body);
   },
   // Fetches information on a consent request.
