@@ -110,7 +110,7 @@ $ hydra clients create \
     --response-types code,id_token \
     --grant-types refresh_token,authorization_code \
     --scope openid,offline \
-    --callbacks http://127.0.0.1:4445/callback
+    --callbacks http://127.0.0.1:4446/callback
 ```
 
 Now, run this project
@@ -124,7 +124,8 @@ And finally, initiate the OAuth 2.0 Authorization Code Flow:
 
 ```
 $ hydra token user \
-    --endpoint http://localhost:4445/ \
+    --token-url http://localhost:4444/oauth2/token \
+    --auth-url localhost:4444/oauth2/auth \
     --scope openid,offline \
     --client-id test-client \
     --client-secret test-secret
