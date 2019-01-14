@@ -12,7 +12,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
 
 // A little helper that takes type (can be "login" or "consent") and a challenge and returns the response from ORY Hydra.
 function get(flow, challenge) {
-  return fetch(uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + challenge))
+  return fetch(uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + encodeURIComponent(challenge)))
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
@@ -30,7 +30,7 @@ function get(flow, challenge) {
 function put(flow, action, challenge, body) {
   return fetch(
     // Joins process.env.HYDRA_ADMIN_URL with the request path
-    uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + challenge + '/' + action),
+    uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + encodeURIComponent(challenge) + '/' + action),
     {
       method: 'PUT',
       body: JSON.stringify(body),
