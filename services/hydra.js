@@ -1,5 +1,5 @@
 var fetch = require('node-fetch')
-var uj = require('url-join')
+var querystring = require('querystring');
 
 var hydraUrl = process.env.HYDRA_ADMIN_URL
 var mockTlsTermination = {}
@@ -12,7 +12,9 @@ if (process.env.MOCK_TLS_TERMINATION) {
 
 // A little helper that takes type (can be "login" or "consent") and a challenge and returns the response from ORY Hydra.
 function get(flow, challenge) {
-  return fetch(uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + encodeURIComponent(challenge)))
+  const url = new URL('/oauth2/auth/requests/' + flow, hydraUrl)
+  url.search = querystring.stringify({challenge: challenge})
+  return fetch(url.string())
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
@@ -28,9 +30,11 @@ function get(flow, challenge) {
 
 // A little helper that takes type (can be "login" or "consent"), the action (can be "accept" or "reject") and a challenge and returns the response from ORY Hydra.
 function put(flow, action, challenge, body) {
+  const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl)
+  url.search = querystring.stringify({challenge: challenge})
   return fetch(
     // Joins process.env.HYDRA_ADMIN_URL with the request path
-    uj(hydraUrl, '/oauth2/auth/requests/' + flow + '/' + encodeURIComponent(challenge) + '/' + action),
+    url.string(),
     {
       method: 'PUT',
       body: JSON.stringify(body),
