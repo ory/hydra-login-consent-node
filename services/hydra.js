@@ -14,7 +14,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
 function get(flow, challenge) {
   const url = new URL('/oauth2/auth/requests/' + flow, hydraUrl)
   url.search = querystring.stringify({challenge: challenge})
-  return fetch(url.string())
+  return fetch(url.toString())
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
@@ -34,7 +34,7 @@ function put(flow, action, challenge, body) {
   url.search = querystring.stringify({challenge: challenge})
   return fetch(
     // Joins process.env.HYDRA_ADMIN_URL with the request path
-    url.string(),
+    url.toString(),
     {
       method: 'PUT',
       body: JSON.stringify(body),
