@@ -76,7 +76,7 @@ var hydra = {
   },
   // Accepts a consent request.
   acceptConsentRequest: function (challenge, body) {
-    return put('consent', 'accept', challenge,, body);
+    return put('consent', 'accept', challenge, body);
   },
   // Rejects a consent request.
   rejectConsentRequest: function (challenge, body) {

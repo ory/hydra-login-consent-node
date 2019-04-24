@@ -5,8 +5,8 @@ block content
     if error
         p.
             #{error}
-    form(action="/login",method="POST")
+    form(action="/logout",method="POST")
         input(type="hidden",name="_csrf",value=csrfToken)
         input(type="hidden",name="challenge",value=challenge)
-        input(type="submit",value="Yes")
-        input(type="submit",value="No")
+        input(type="submit",id="accept",value="Yes")
+        input(type="submit",id="reject",value="No")
