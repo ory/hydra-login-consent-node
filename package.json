@@ -1,7 +1,6 @@
 {
   "name": "hydra-login-consent-logout",
   "version": "0.0.0",
-  "private": true,
   "bin": {
     "hydra-login-consent-logout": "./bin/www"
   },
