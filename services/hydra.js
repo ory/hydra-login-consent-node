@@ -14,7 +14,15 @@ if (process.env.MOCK_TLS_TERMINATION) {
 function get(flow, challenge) {
   const url = new URL('/oauth2/auth/requests/' + flow, hydraUrl)
   url.search = querystring.stringify({[flow + '_challenge']: challenge})
-  return fetch(url.toString())
+  return fetch(
+    url.toString(),
+    {
+      method: 'GET',
+      headers: {
+        ...mockTlsTermination
+      }
+    }
+    )
     .then(function (res) {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
