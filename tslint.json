@@ -1,0 +1,14 @@
+{
+  "extends": ["tslint:latest", "tslint-config-prettier"],
+  "rules": {
+    "no-implicit-dependencies": [true, "dev"]
+  },
+  "linterOptions": {
+    "exclude": [
+      "*.json",
+      "**/*.json",
+      "*.js",
+      "**/*.js"
+    ]
+  }
+}
