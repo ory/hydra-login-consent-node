@@ -1,6 +1,6 @@
-# hydra-user-and-consent-provider-node
+# hydra-user-and-consent-provider-node-typescript
 
-This is a reference implementation for the User Login and Consent flow of ORY Hydra version 1.0.x in NodeJS. The
+This is a reference implementation with typescript for the User Login and Consent flow of ORY Hydra version 1.0.x in NodeJS. The
 application is bootstrapped using the `express` cli.
 
 ---
@@ -17,10 +17,10 @@ application is bootstrapped using the `express` cli.
 
 ## Overview
 
-Apart from additions (`./routes/login.js`, `./routes/consent.js`) and their respective templates, only a [CSRF Middleware]
+Apart from additions (`./routes/login.ts`, `./routes/consent.ts`) and their respective templates, only a [CSRF Middleware]
 has been added. Everything else is the standard express template.
 
-Also, a simple helper that makes HTTP requests has been added to `./services/hydra.js` which uses the `node-fetch`
+Also, a simple helper that makes HTTP requests has been added to `./services/hydra.ts` which uses the `node-fetch`
 library.
 
 To set this example up with ORY Hydra, please refer to the [official documentation](https://www.ory.sh/docs).
