@@ -1,22 +1,24 @@
-var express = require('express');
-var router = express.Router();
-var url = require('url');
-var hydra = require('../services/hydra')
+import * as  express from 'express';
+import { Request, Response, NextFunction} from 'express';
+import * as url from 'url';
+import hydra from '../services/hydra';
+import * as csrf from 'csurf';
+
+const router = express.Router();
 
 // Sets up csrf protection
-var csrf = require('csurf');
-var csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({ cookie: true });
 
-router.get('/', csrfProtection, function (req, res, next) {
+router.get('/', csrfProtection, (req: Request, res: Response, next: NextFunction) => {
   // Parses the URL query
-  var query = url.parse(req.url, true).query;
+  const query = url.parse(req.url, true).query;
 
   // The challenge is used to fetch information about the login request from ORY Hydra.
-  var challenge = query.login_challenge;
+  const challenge = query.login_challenge as string;
 
   hydra.getLoginRequest(challenge)
   // This will be called if the HTTP request was successful
-    .then(function (response) {
+    .then((response) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
       if (response.skip) {
@@ -28,7 +30,7 @@ router.get('/', csrfProtection, function (req, res, next) {
         return hydra.acceptLoginRequest(challenge, {
           // All we need to do is to confirm that we indeed want to log in the user.
           subject: response.subject
-        }).then(function (response) {
+        }).then((response) => {
           // All we need to do now is to redirect the user back to hydra!
           res.redirect(response.redirect_to);
         });
@@ -41,14 +43,14 @@ router.get('/', csrfProtection, function (req, res, next) {
       });
     })
     // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
+    .catch((error) => {
       next(error);
     });
 });
 
-router.post('/', csrfProtection, function (req, res, next) {
+router.post('/', csrfProtection, (req: Request, res: Response, next: NextFunction) => {
   // The challenge is now a hidden input field, so let's take it from the request body instead
-  var challenge = req.body.challenge;
+  const challenge = req.body.challenge;
 
   // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
   // for this!
@@ -81,12 +83,12 @@ router.post('/', csrfProtection, function (req, res, next) {
     // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
     // acr: '0',
   })
-    .then(function (response) {
+    .then((response) => {
       // All we need to do now is to redirect the user back to hydra!
       res.redirect(response.redirect_to);
     })
     // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
+    .catch((error) => {
       next(error);
     });
 
@@ -105,4 +107,4 @@ router.post('/', csrfProtection, function (req, res, next) {
   //   });
 });
 
-module.exports = router;
+export default router;

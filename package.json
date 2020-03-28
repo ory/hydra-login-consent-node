@@ -1,11 +1,24 @@
 {
   "name": "hydra-login-consent-logout-ts",
   "version": "0.0.0",
-  "bin": {
-    "hydra-login-consent-logout": "./bin/www"
-  },
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node --inspect=5858 -r ts-node/register ./bin/server.ts",
+    "dev": "nodemon",
+    "build": "tsc",
+    "prod": "tsc && node ./dist/server.js",
+    "debug": "tsc && node --inspect ./dist/server.js"
+  },
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts"
+    ],
+    "watch": [
+      "**/*.ts"
+    ],
+    "exec": "npm start",
+    "ext": "ts",
+    "delay": "1000"
   },
   "dependencies": {
     "body-parser": "^1.18.3",

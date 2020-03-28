@@ -1,8 +1,9 @@
-var fetch = require('node-fetch')
-var querystring = require('querystring');
+import fetch from 'node-fetch';
+import * as querystring from 'querystring';
 
-var hydraUrl = process.env.HYDRA_ADMIN_URL
-var mockTlsTermination = {}
+
+const hydraUrl = process.env.HYDRA_ADMIN_URL
+let mockTlsTermination = {}
 
 if (process.env.MOCK_TLS_TERMINATION) {
   mockTlsTermination = {
@@ -11,7 +12,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
 }
 
 // A little helper that takes type (can be "login" or "consent") and a challenge and returns the response from ORY Hydra.
-function get(flow, challenge) {
+const get = (flow: string, challenge: string) => {
   const url = new URL('/oauth2/auth/requests/' + flow, hydraUrl)
   url.search = querystring.stringify({[flow + '_challenge']: challenge})
   return fetch(
@@ -23,7 +24,7 @@ function get(flow, challenge) {
       }
     }
     )
-    .then(function (res) {
+    .then((res) => {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
         return res.json().then(function (body) {
@@ -37,7 +38,7 @@ function get(flow, challenge) {
 }
 
 // A little helper that takes type (can be "login" or "consent"), the action (can be "accept" or "reject") and a challenge and returns the response from ORY Hydra.
-function put(flow, action, challenge, body) {
+const put = (flow: string, action: string, challenge: string, body: any) => {
   const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl)
   url.search = querystring.stringify({[flow + '_challenge']: challenge})
   return fetch(
@@ -52,10 +53,10 @@ function put(flow, action, challenge, body) {
       }
     }
   )
-    .then(function (res) {
+    .then((res) => {
       if (res.status < 200 || res.status > 302) {
         // This will handle any errors that aren't network related (network related errors are handled automatically)
-        return res.json().then(function (body) {
+        return res.json().then((body) => {
           console.error('An error occurred while making a HTTP request: ', body)
           return Promise.reject(new Error(body.error.message))
         })
@@ -65,43 +66,43 @@ function put(flow, action, challenge, body) {
     });
 }
 
-var hydra = {
+const hydra = {
   // Fetches information on a login request.
-  getLoginRequest: function (challenge) {
+  getLoginRequest: (challenge: string) => {
     return get('login', challenge);
   },
   // Accepts a login request.
-  acceptLoginRequest: function (challenge, body) {
+  acceptLoginRequest: (challenge: string, body: any) => {
     return put('login', 'accept', challenge, body);
   },
   // Rejects a login request.
-  rejectLoginRequest: function (challenge, body) {
+  rejectLoginRequest: (challenge: string, body: any) => {
     return put('login', 'reject', challenge, body);
   },
   // Fetches information on a consent request.
-  getConsentRequest: function (challenge) {
+  getConsentRequest: (challenge: string) => {
     return get('consent', challenge);
   },
   // Accepts a consent request.
-  acceptConsentRequest: function (challenge, body) {
+  acceptConsentRequest: (challenge: string, body: any) => {
     return put('consent', 'accept', challenge, body);
   },
   // Rejects a consent request.
-  rejectConsentRequest: function (challenge, body) {
+  rejectConsentRequest: (challenge: string, body: any) => {
     return put('consent', 'reject', challenge, body);
   },
   // Fetches information on a logout request.
-  getLogoutRequest: function (challenge) {
+  getLogoutRequest: (challenge: string) => {
     return get('logout', challenge);
   },
   // Accepts a logout request.
-  acceptLogoutRequest: function (challenge) {
+  acceptLogoutRequest: (challenge: string) => {
     return put('logout', 'accept', challenge, {});
   },
   // Reject a logout request.
-  rejectLogoutRequest: function (challenge) {
+  rejectLogoutRequest: (challenge: string) => {
     return put('logout', 'reject', challenge, {});
   },
 };
 
-module.exports = hydra;
+export default hydra;
