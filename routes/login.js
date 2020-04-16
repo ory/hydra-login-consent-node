@@ -50,6 +50,23 @@ router.post('/', csrfProtection, function (req, res, next) {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge;
 
+  // Let's see if the user decided to accept or reject the consent request..
+  if (req.body.submit === 'Deny access') {
+    // Looks like the consent request was denied by the user
+    return hydra.rejectLoginRequest(challenge, {
+      error: 'access_denied',
+      error_description: 'The resource owner denied the request'
+    })
+        .then(function (response) {
+          // All we need to do now is to redirect the browser back to hydra!
+          res.redirect(response.redirect_to);
+        })
+        // This will handle any error that happens when making HTTP calls to hydra
+        .catch(function (error) {
+          next(error);
+        });
+  }
+
   // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
   // for this!
   if (!(req.body.email === 'foo@bar.com' && req.body.password === 'foobar')) {
