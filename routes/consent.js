@@ -85,10 +85,11 @@ router.post('/', csrfProtection, function (req, res, next) {
   }
 
   var grant_scope = req.body.grant_scope
+  
   if (!Array.isArray(grant_scope)) {
     grant_scope = [grant_scope]
   }
-
+  
   // Seems like the user authenticated! Let's tell hydra...
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful
@@ -118,10 +119,9 @@ router.post('/', csrfProtection, function (req, res, next) {
         // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
         remember_for: 3600,
       })
-        .then(function (response) {
-          // All we need to do now is to redirect the user back to hydra!
-          res.redirect(response.redirect_to);
-        })
+      .then(function (response) {
+         res.redirect(response.redirect_to);
+      })
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(function (error) {

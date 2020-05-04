@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var url = require('url');
 var hydra = require('../services/hydra')
+var kratos = require('../services/kratos')
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -34,11 +35,22 @@ router.get('/', csrfProtection, function (req, res, next) {
         });
       }
 
-      // If authentication can't be skipped we MUST show the login UI.
-      res.render('login', {
-        csrfToken: req.csrfToken(),
-        challenge: challenge,
-      });
+      // Initiate the Kratos login
+      kratos.getLoginRequest()
+        // This will be called if the HTTP request was successful
+        .then(function (response) {
+          // Get the location header of the re-direct
+          var location = response.headers.get('location');
+          // Get the csrf_token set-Cookie header
+          var cookie = response.headers.get('set-cookie');
+          // Redirect
+          res.redirect(location + '&' + cookie + '&challenge=' + challenge);
+        })
+        // This will handle any error that happens when making HTTP calls to kratos
+        .catch(function (error) {
+           console.log(error);
+           next(error);
+        }); 
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(function (error) {
@@ -46,40 +58,47 @@ router.get('/', csrfProtection, function (req, res, next) {
     });
 });
 
+// Below block moved to kratos.js...
+
 router.post('/', csrfProtection, function (req, res, next) {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge;
+  // Get the Kratos session cookie, if the login was successful
+  var session = req.body.ory_kratos_session;
+  
+  console.log('Kratos session cookie:', session);
 
   // Let's see if the user decided to accept or reject the consent request..
   if (req.body.submit === 'Deny access') {
-    // Looks like the consent request was denied by the user
+    // Looks like the login request was denied by the user
     return hydra.rejectLoginRequest(challenge, {
       error: 'access_denied',
       error_description: 'The resource owner denied the request'
     })
-        .then(function (response) {
-          // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(response.redirect_to);
-        })
-        // This will handle any error that happens when making HTTP calls to hydra
-        .catch(function (error) {
-          next(error);
-        });
-  }
-
-  // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
-  // for this!
-  if (!(req.body.email === 'foo@bar.com' && req.body.password === 'foobar')) {
-    // Looks like the user provided invalid credentials, let's show the ui again...
-
-    res.render('login', {
-      csrfToken: req.csrfToken(),
-
-      challenge: challenge,
-
-      error: 'The username / password combination is not correct'
+    .then(function (response) {
+      // All we need to do now is to redirect the browser back to hydra!
+      res.redirect(response.redirect_to);
+    })
+      // This will handle any error that happens when making HTTP calls to hydra
+    .catch(function (error) {
+      next(error);
     });
-    return;
+  }
+  
+  if (session == null || session == undefined) {
+    // Looks like the login ws unsuccessful
+    return hydra.rejectLoginRequest(challenge, {
+      error: 'access_denied',
+      error_description: 'The resource owner failed to login'
+    })
+    .then(function (response) {
+      // All we need to do now is to redirect the browser back to hydra!
+      res.redirect(response.redirect_to);
+    })
+      // This will handle any error that happens when making HTTP calls to hydra
+    .catch(function (error) {
+      next(error);
+    });
   }
 
   // Seems like the user authenticated! Let's tell hydra...
@@ -98,28 +117,15 @@ router.post('/', csrfProtection, function (req, res, next) {
     // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
     // acr: '0',
   })
-    .then(function (response) {
-      // All we need to do now is to redirect the user back to hydra!
-      res.redirect(response.redirect_to);
-    })
-    // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
-      next(error);
-    });
+  .then(function (response) {
+    // All we need to do now is to redirect the user back to hydra!
+    res.redirect(response.redirect_to);
+  })
+  // This will handle any error that happens when making HTTP calls to hydra
+  .catch(function (error) {
+    next(error);
+  });
 
-  // You could also deny the login request which tells hydra that no one authenticated!
-  // hydra.rejectLoginRequest(challenge, {
-  //   error: 'invalid_request',
-  //   error_description: 'The user did something stupid...'
-  // })
-  //   .then(function (response) {
-  //     // All we need to do now is to redirect the browser back to hydra!
-  //     res.redirect(response.redirect_to);
-  //   })
-  //   // This will handle any error that happens when making HTTP calls to hydra
-  //   .catch(function (error) {
-  //     next(error);
-  //   });
 });
 
 module.exports = router;

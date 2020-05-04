@@ -9,6 +9,7 @@ var routes = require('./routes/index');
 var login = require('./routes/login');
 var logout = require('./routes/logout');
 var consent = require('./routes/consent');
+var kratos = require('./routes/kratos');
 
 var app = express();
 
@@ -28,6 +29,7 @@ app.use('/', routes);
 app.use('/login', login);
 app.use('/logout', logout);
 app.use('/consent', consent);
+app.use('/kratos', kratos);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

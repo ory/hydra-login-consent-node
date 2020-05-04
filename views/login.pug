@@ -5,13 +5,18 @@ block content
     if error
         p.
             #{error}
-    form(action="/login",method="POST")
-        input(type="hidden",name="_csrf",value=csrfToken)
+    form(action="/kratos",method="POST")
+        
         input(type="hidden",name="challenge",value=challenge)
+        input(type="hidden",name="request",value=request)
+        input(type="hidden",name="csrf_token",value=csrfToken)
+        input(type="hidden",name="_csrf",value=_csrf)
+        input(type="hidden",name="csrf_cookie",value=csrfCookie)
+        
         table(style="")
             tr
                 td
-                    input(type="email",id="email",name="email",placeholder="email@foobar.com")
+                    input(type="email",id="identifier",name="identifier")
                 td.
                     (it's "foo@bar.com")
             tr
