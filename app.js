@@ -13,7 +13,9 @@ var consent = require('./routes/consent');
 var kratos = require('./routes/kratos');
 
 var app = express();
-app.use(cors());
+app.use(cors({
+    credentials: true,
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
