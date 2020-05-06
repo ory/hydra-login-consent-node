@@ -12,3 +12,8 @@ COPY . /usr/src/app
 ENTRYPOINT npm start
 
 EXPOSE 3000
+
+
+#docker run --env HYDRA_ADMIN_URL=https://gateway.k8s-dev.avamonitoring.dev --env KRATOS_PUBLIC_URL=https://gateway.k8s-dev.avamonitoring.dev --env PORT=4000 -p 4000:4000 login
+#docker build . -t login
+#
