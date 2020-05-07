@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var url = require('url');
+var querystring = require('querystring');
 var hydra = require('../services/hydra')
 var kratos = require('../services/kratos')
 
@@ -43,8 +44,12 @@ router.get('/', csrfProtection, function (req, res, next) {
           var location = response.headers.get('location');
           // Get the csrf_token set-Cookie header
           var cookie = response.headers.get('set-cookie');
+          // Get the cookie value
+          cookie = cookie.substring('csrf_token'.length + 1);
+          // Create the redirect URL
+          var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie}));
           // Redirect
-          res.redirect(location + '&' + cookie + '&challenge=' + challenge);
+          res.redirect(redirect_to.toString());
         })
         // This will handle any error that happens when making HTTP calls to kratos
         .catch(function (error) {
