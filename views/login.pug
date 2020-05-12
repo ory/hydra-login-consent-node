@@ -1,31 +1,40 @@
 extends layout
 
+
 block content
-    h1 Please log in
-    if error
-        p.
-            #{error}
-    form(action="/kratos",method="POST")
-        
-        input(type="hidden",name="challenge",value=challenge)
-        input(type="hidden",name="request",value=request)
-        input(type="hidden",name="csrf_token",value=csrfToken)
-        input(type="hidden",name="_csrf",value=_csrf)
-        input(type="hidden",name="csrf_cookie",value=csrfCookie)
-        
-        table(style="")
-            tr
-                td
-                    input(type="email",id="identifier",name="identifier")
-                td.
-                    (it's "foo@bar.com")
-            tr
-                td
-                    input(type="password",id="password",name="password")
-                td.
-                    (it's "foobar")
-        input(type="checkbox",id="remember",name="remember",value="1")
-        label(for="remember") Remember me
-        br
-        input(type="submit",id="accept",name="submit",value="Log in")
-        input(type="submit",id="reject",name="submit",value="Deny access")
+
+
+    div.header
+        div
+            span Language: English -  Version 0.0.0.1
+
+
+
+
+    div.card
+        img(src="/images/AVA_Logo_RGB.png" alt="Avanet Logo")
+        div.card-body
+            form(action="/kratos",method="POST")
+                div.form-group
+                input(type="hidden",name="challenge",value=challenge)
+                input(type="hidden",name="request",value=request)
+                input(type="hidden",name="csrf_token",value=csrfToken)
+                input(type="hidden",name="_csrf",value=_csrf)
+                input(type="hidden",name="csrf_cookie",value=csrfCookie)
+
+                label(for="identifier") User Name
+                input(type="email", class="form-control" id="identifier",name="identifier")
+                label(for="password") Password
+                input(type="password", class="form-control", id="password",name="password")
+
+                div.input-container
+                input(type="checkbox",id="remember",class="margin5" name="remember",value="1")
+                label(for="remember") Remember me
+                br
+                input(type="submit",id="accept" class="btn btn-primary margin5", name="submit",value="Log in")
+                input(type="submit",id="reject",class="btn btn-primary", name="submit",value="Deny access")
+
+
+    div.footer
+        div
+            span © 2020 Ava Monitoring

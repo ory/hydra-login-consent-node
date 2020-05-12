@@ -1,35 +1,49 @@
 extends layout
 
+
 block content
-    h1 An application requests access to your data!
-    form(action="",method="POST")
-        input(type="hidden",name="challenge",value=challenge)
-        input(type="hidden",name="_csrf",value=csrfToken)
 
-        if client.logo_uri
-            img(src=client.logo_uri)
 
-        p.
-            Hi #{user}, application <strong>#{client.client_name || client.client_id}</strong> wants access resources on your behalf and to:
+    div.header
+        div
+            span Language: English -  Version 0.0.0.1
 
-        each scope in requested_scope
-            input(type="checkbox",id=scope,value=scope,name="grant_scope")
-            label(for=scope) #{scope}
-            br
+    div.card.width480
+        img(src="/images/AVA_Logo_RGB.png" alt="Avanet Logo")
+        div.card-body
+            h4 An application is requesting access to your data.
+            form(action="",method="POST")
+                input(type="hidden",name="challenge",value=challenge)
+                input(type="hidden",name="_csrf",value=csrfToken)
 
-        p.
-            Do you want to be asked next time when this application wants to access your data? The application will
-            not be able to ask for more permissions without your consent.
-        ul
-            if client.policy_uri
-                li
-                    a(href=client.policy_uri) Policy
-            if client.tos_uri
-                li
-                    a(href=client.tos_uri) Terms of Service
-        p
-            input(type="checkbox",id="remember",name="remember",value="1")
-            label(for="remember") Do not ask me again
-        p
-            input(type="submit",id="accept",name="submit",value="Allow access")
-            input(type="submit",id="reject",name="submit",value="Deny access")
+                if client.logo_uri
+                    img(src=client.logo_uri)
+
+                p.
+                    Hi #{user}, application <strong>#{client.client_name || client.client_id}</strong> wants access resources on your behalf and to:
+
+                each scope in requested_scope
+                      input(type="checkbox",class="margin5",id=scope,value=scope,name="grant_scope")
+                      label(for=scope) #{scope}
+                      br
+                p.
+                    Do you want to be asked next time when this application wants to access your data? The application will
+                    not be able to ask for more permissions without your consent.
+                ul.noLineStyle
+                    if client.policy_uri
+                    li
+                        a(href=client.policy_uri) Policy
+                            if client.tos_uri
+
+                    li
+                        a(href=client.tos_uri) Terms of Service
+                p
+                    input(type="checkbox",id="remember",class="margin5", name="remember",value="1")
+                    label(for="remember") Do not ask me again
+                p
+                    input(type="submit",id="accept", class="btn btn-primary margin5" , name="submit",value="Allow access")
+                    input(type="submit",id="reject",name="submit",class="btn btn-primary ",value="Deny access")
+
+    div.footer
+        div
+            span © 2020 Ava Monitoring

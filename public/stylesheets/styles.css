@@ -1,0 +1,86 @@
+body {
+     padding: 50px;
+     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+     position: absolute;
+     overflow: hidden;
+     background-image: url('../images/backgound.jpg');
+     background-size: cover;
+     top: 0;
+     left: 0;
+     width: 100%;
+     height: 100vh;
+
+}
+
+a {
+     color: #00B7FF;
+}
+
+
+.header {
+     background: #007399;
+     opacity: 0.6;
+     width:100%;
+     position: absolute;
+     top: 0px;
+     left: 0px;
+}
+
+.header div, .footer div {
+     margin: 14px;
+}
+
+.footer {
+     position: fixed;
+     bottom: 0;
+     left: 0;
+     width: 100%;
+     background: #171717;
+     opacity: 0.8; // TODO: opacity mixin
+}
+
+.header, .footer {
+     height: 50px;
+     color: whitesmoke;
+}
+
+
+div.card {
+     background-color: whitesmoke;
+     text-align: center;
+     border-radius: 10px; //TODO: Radius mixin
+-webkit-box-shadow: 10px 10px 23px -13px rgba(28,27,28,1);
+     -moz-box-shadow: 10px 10px 23px -13px rgba(28,27,28,1);
+     box-shadow: 10px 10px 23px -13px rgba(28,27,28,1);
+     width: 400px;
+     min-height: 440px;;
+
+     margin: 60px auto;
+     float: none;
+
+}
+
+div.card img {
+     padding: 40px 0 0;
+     text-align: center;
+}
+
+form {
+     padding: 40px;
+}
+
+.margin5 {
+     margin: 0 5px 0!important;
+}
+
+.width480 {
+     width: 480px!important;
+}
+
+.input-container {
+     margin-top: 10px;
+}
+
+.noLineStyle {
+     list-style: none;
+}

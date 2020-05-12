@@ -49,9 +49,9 @@ router.get('/', csrfProtection, function (req, res, next) {
           // Create the redirect URL
           var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie}));
           // Redirect
-          //res.redirect(redirect_to.toString());
-          res.location(redirect_to.toString());
-          res.status(302).send();
+           res.redirect(redirect_to.toString());
+          //res.location(redirect_to.toString());
+          //res.status(302).send();
         })
         // This will handle any error that happens when making HTTP calls to kratos
         .catch(function (error) {
