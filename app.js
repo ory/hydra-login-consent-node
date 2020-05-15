@@ -11,6 +11,7 @@ var login = require('./routes/login');
 var logout = require('./routes/logout');
 var consent = require('./routes/consent');
 var kratos = require('./routes/kratos');
+var error = require('./routes/errors');
 
 var app = express();
 app.use(cors({
@@ -34,6 +35,7 @@ app.use('/login', login);
 app.use('/logout', logout);
 app.use('/consent', consent);
 app.use('/kratos', kratos);
+app.use('/errors', error);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
