@@ -40,8 +40,8 @@ function get(request, token) {
           return Promise.reject(new Error(body.error.message))
         })
       }
-      
-      if (res.headers.get('content-type') == 'application/json') {
+    
+      if (res.headers.get('content-type').startsWith('application/json')) {
         return res.json();
       } else {
         return res;
