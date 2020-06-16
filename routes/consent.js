@@ -17,6 +17,12 @@ router.get('/', csrfProtection, function (req, res, next) {
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful
     .then(function (response) {
+      // We will make a session cookie value available in the id-token
+      var sessionCookie = '';
+      // Check to see if there is a session cookie available in the context
+      if (response.context != null) {
+        sessionCookie = response.context.ksc;
+      }
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
       if (response.skip) {
         // You can apply logic here, for example grant another scope, or do whatever...
@@ -38,7 +44,7 @@ router.get('/', csrfProtection, function (req, res, next) {
             // access_token: { foo: 'bar' },
 
             // This data will be available in the ID token.
-            // id_token: { baz: 'bar' },
+            id_token: { ksc: sessionCookie }
           }
         }).then(function (response) {
           // All we need to do now is to redirect the user back to hydra!
@@ -94,6 +100,13 @@ router.post('/', csrfProtection, function (req, res, next) {
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful
     .then(function (response) {
+      // We will make a session cookie value available in the id-token
+      var sessionCookie = '';
+      // Check to see if there is a session cookie available in the context
+      if (response.context != null) {
+        sessionCookie = response.context.ksc;
+      }
+      
       return hydra.acceptConsentRequest(challenge, {
         // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
         // are requested accidentally.
@@ -106,7 +119,7 @@ router.post('/', csrfProtection, function (req, res, next) {
           // access_token: { foo: 'bar' },
 
           // This data will be available in the ID token.
-          // id_token: { baz: 'bar' },
+          id_token: { ksc: sessionCookie }
         },
 
         // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.

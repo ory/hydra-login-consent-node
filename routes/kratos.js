@@ -1,17 +1,15 @@
 var express = require('express');
 var router = express.Router();
 var url = require('url');
-var cookieParser = require('cookie-parser')
-var hydra = require('../services/hydra')
-var kratos = require('../services/kratos')
+var setCookieParser = require('set-cookie-parser');
+var hydra = require('../services/hydra');
+var kratos = require('../services/kratos');
 
 // Sets up csrf protection
 var csrf = require('csurf');
 var csrfProtection = csrf({ cookie: true });
 
-var app = express()
-
-app.use(cookieParser())
+var app = express();
 
 const { URLSearchParams } = require('url');
 
@@ -74,10 +72,16 @@ router.post('/', csrfProtection, function (req, res, next) {
   kratos.acceptLoginRequest(request, csrf, params)
     .then(function (response) {
       // If the login was successful, we should have a Kratos session cookie
-      // This will be needed by the client later to perform a logout...
-      var cookie = response.headers.get('set-cookie');
+      // This will be needed to access self-service flow and to perform a logout...
+      var combinedCookieHeader = response.headers.get('set-cookie');
+      var splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader)
       
-      console.log('ory_kratos_session=', cookie);
+      var cookies = setCookieParser.parse(splitCookieHeaders, {
+        decodeValues: true,  // default: true
+        map: true            // default: false
+      });
+      
+      var sessionCookie = cookies['ory_kratos_session'].value;
       
       // Let's see if the user decided to accept or reject the consent request..
       if (req.body.submit === 'Deny access') {
@@ -107,6 +111,10 @@ router.post('/', csrfProtection, function (req, res, next) {
 
         // When the session expires, in seconds. Set this to 0 so it will never expire.
         remember_for: 3600,
+        
+        // Making the Kratos session cookie available as a context attribute so it can be added as a session attribute
+        // to the access or id token
+        context: {ksc: sessionCookie},
 
         // Sets which "level" (e.g. 2-factor authentication) of authentication the user has. The value is really arbitrary
         // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
