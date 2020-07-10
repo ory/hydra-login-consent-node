@@ -1,36 +1,39 @@
-var express = require('express');
-var router = express.Router();
-var url = require('url');
-var hydra = require('../services/hydra')
+import express from 'express'
+import url from 'url'
+import csrf from 'csurf'
+import {hydraAdmin} from '../config'
 
 // Sets up csrf protection
-var csrf = require('csurf');
-var csrfProtection = csrf({ cookie: true });
+const csrfProtection = csrf({cookie: true});
+const router = express.Router();
 
-router.get('/', csrfProtection, function (req, res, next) {
+router.get('/', csrfProtection, (req, res, next) => {
   // Parses the URL query
-  var query = url.parse(req.url, true).query;
+  const query = url.parse(req.url, true).query;
 
   // The challenge is used to fetch information about the login request from ORY Hydra.
-  var challenge = query.login_challenge;
+  const challenge = String(query.login_challenge);
+  if (!challenge) {
+    next(new Error('Expected a login challenge to be set but received none.'))
+    return
+  }
 
-  hydra.getLoginRequest(challenge)
-  // This will be called if the HTTP request was successful
-    .then(function (response) {
+  hydraAdmin.getLoginRequest(challenge)
+    .then(({body}) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
-      if (response.skip) {
+      if (body.skip) {
         // You can apply logic here, for example update the number of times the user logged in.
         // ...
 
         // Now it's time to grant the login request. You could also deny the request if something went terribly wrong
         // (e.g. your arch-enemy logging in...)
-        return hydra.acceptLoginRequest(challenge, {
+        return hydraAdmin.acceptLoginRequest(challenge, {
           // All we need to do is to confirm that we indeed want to log in the user.
-          subject: response.subject
-        }).then(function (response) {
+          subject: String(body.subject)
+        }).then(({body}) => {
           // All we need to do now is to redirect the user back to hydra!
-          res.redirect(response.redirect_to);
+          res.redirect(String(body.redirectTo));
         });
       }
 
@@ -41,30 +44,25 @@ router.get('/', csrfProtection, function (req, res, next) {
       });
     })
     // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
-      next(error);
-    });
+    .catch(next);
 });
 
-router.post('/', csrfProtection, function (req, res, next) {
+router.post('/', csrfProtection, (req, res, next) => {
   // The challenge is now a hidden input field, so let's take it from the request body instead
-  var challenge = req.body.challenge;
+  const challenge = req.body.challenge;
 
   // Let's see if the user decided to accept or reject the consent request..
   if (req.body.submit === 'Deny access') {
     // Looks like the consent request was denied by the user
-    return hydra.rejectLoginRequest(challenge, {
+    return hydraAdmin.rejectLoginRequest(challenge, {
       error: 'access_denied',
-      error_description: 'The resource owner denied the request'
+      errorDescription: 'The resource owner denied the request'
+    }).then(({body})=> {
+      // All we need to do now is to redirect the browser back to hydra!
+      res.redirect(String(body.redirectTo));
     })
-        .then(function (response) {
-          // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(response.redirect_to);
-        })
-        // This will handle any error that happens when making HTTP calls to hydra
-        .catch(function (error) {
-          next(error);
-        });
+      // This will handle any error that happens when making HTTP calls to hydra
+      .catch(next);
   }
 
   // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
@@ -74,16 +72,15 @@ router.post('/', csrfProtection, function (req, res, next) {
 
     res.render('login', {
       csrfToken: req.csrfToken(),
-
       challenge: challenge,
-
       error: 'The username / password combination is not correct'
     });
-    return;
+
+    return
   }
 
   // Seems like the user authenticated! Let's tell hydra...
-  hydra.acceptLoginRequest(challenge, {
+  hydraAdmin.acceptLoginRequest(challenge, {
     // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
     subject: 'foo@bar.com',
 
@@ -92,34 +89,30 @@ router.post('/', csrfProtection, function (req, res, next) {
     remember: Boolean(req.body.remember),
 
     // When the session expires, in seconds. Set this to 0 so it will never expire.
-    remember_for: 3600,
+    rememberFor: 3600,
 
     // Sets which "level" (e.g. 2-factor authentication) of authentication the user has. The value is really arbitrary
     // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
     // acr: '0',
   })
-    .then(function (response) {
+    .then( ({body})=> {
       // All we need to do now is to redirect the user back to hydra!
-      res.redirect(response.redirect_to);
+      res.redirect(String(body.redirectTo));
     })
     // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
-      next(error);
-    });
+    .catch(next);
 
   // You could also deny the login request which tells hydra that no one authenticated!
   // hydra.rejectLoginRequest(challenge, {
   //   error: 'invalid_request',
-  //   error_description: 'The user did something stupid...'
+  //   errorDescription: 'The user did something stupid...'
   // })
-  //   .then(function (response) {
+  //   .then(({body}) => {
   //     // All we need to do now is to redirect the browser back to hydra!
-  //     res.redirect(response.redirect_to);
+  //     res.redirect(String(body.redirectTo));
   //   })
   //   // This will handle any error that happens when making HTTP calls to hydra
-  //   .catch(function (error) {
-  //     next(error);
-  //   });
+  //   .catch(next);
 });
 
-module.exports = router;
+export default router

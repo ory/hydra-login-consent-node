@@ -9,6 +9,8 @@ RUN npm ci --silent; exit 0
 
 COPY . /usr/src/app
 
-ENTRYPOINT npm start
+RUN npm run build
+
+ENTRYPOINT npm run serve
 
 EXPOSE 3000

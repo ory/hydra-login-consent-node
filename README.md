@@ -17,7 +17,7 @@ application is bootstrapped using the `express` cli.
 
 ## Overview
 
-Apart from additions (`./routes/login.js`, `./routes/consent.js`) and their respective templates, only a [CSRF Middleware]
+Apart from additions (`./routes/login.ts`, `./routes/consent.ts`) and their respective templates, only a [CSRF Middleware]
 has been added. Everything else is the standard express template.
 
 Also, a simple helper that makes HTTP requests has been added to `./services/hydra.js` which uses the `node-fetch`
