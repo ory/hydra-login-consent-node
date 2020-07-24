@@ -21,6 +21,13 @@ app.use(cors({
     credentials: true,
 }));
 
+// Make some process env variables available to all templates
+app.use((req, res, next) => {
+  res.locals.selfURL = process.env.SELF_URL;
+  res.locals.avanetURL = process.env.AVANET_URL;
+  next();
+});
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
