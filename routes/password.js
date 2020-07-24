@@ -4,6 +4,7 @@ var url = require('url');
 var setCookieParser = require('set-cookie-parser');
 var querystring = require('querystring');
 var kratos = require('../services/kratos')
+var selfURL = process.env.SELF_URL;
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -44,7 +45,7 @@ router.get('/', csrfProtection, function (req, res, next) {
       // now it's being re-used. The only sensible thing to do is to redirect to the recover page and display
       // an error message there
       if (cookies['ory_kratos_session'] == null || cookies['ory_kratos_session'] == 'undefined') {
-        res.redirect('https://login.k8s-dev.avamonitoring.dev/recover?error=invalid_token');
+        res.redirect(selfURL+'/recover?error=invalid_token');
       }
       else {       
         sessionCookie = cookies['ory_kratos_session'].value;
