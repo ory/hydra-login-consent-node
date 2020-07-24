@@ -54,7 +54,7 @@ router.get('/', csrfProtection, function (req, res, next) {
 router.post('/', csrfProtection, function (req, res, next) {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge
-  // The challenge is now a hidden input field, so let's take it from the request body instead
+  // The request is now a hidden input field, so let's take it from the request body instead
   var request = req.body.request;
   // Get the original csrf_token retrieved in the call to initiate the login
   var csrf = req.body.csrf_cookie;
@@ -66,11 +66,14 @@ router.post('/', csrfProtection, function (req, res, next) {
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
   params.append('identifier', req.body.identifier);
-  params.append('password', req.body.password,);
+  params.append('password', req.body.password);
   params.append('csrf_token', req.body.csrf_token);
   
   kratos.acceptLoginRequest(request, csrf, params)
     .then(function (response) {
+      
+      console.log('response='+response);      
+      
       // If the login was successful, we should have a Kratos session cookie
       // This will be needed to access self-service flow and to perform a logout...
       var combinedCookieHeader = response.headers.get('set-cookie');
@@ -91,13 +94,13 @@ router.post('/', csrfProtection, function (req, res, next) {
           error_description: 'The resource owner denied the request'
         })
           .then(function (response) {
-          // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(response.redirect_to);
-        })
-        // This will handle any error that happens when making HTTP calls to hydra
-        .catch(function (error) {
-          next(error);
-        });
+            // All we need to do now is to redirect the browser back to hydra!
+            res.redirect(response.redirect_to);
+          })
+          // This will handle any error that happens when making HTTP calls to hydra
+          .catch(function (error) {
+            next(error);
+          });
       }
       
       // Seems like the user authenticated! Let's tell hydra...
@@ -131,15 +134,26 @@ router.post('/', csrfProtection, function (req, res, next) {
     })
     // This will handle any error that happens when making HTTP calls to Kratos
     .catch(function (error) {
-      console.log(error);
+      error.body.then(function(val) {
+        var message;
+        
+        if (typeof val == 'object') {
+          message = val.error.message;
+        }
+        else {
+          message = val;
+        }
       
-      // Render login screen
-     res.render('login', {
-        csrfToken: req.body.csrf_token,
-        _csrf: req.csrfToken(),
-        csrfCookie: req.body.csrf_cookie,
-        request: request,
-        challenge: challenge
+        // Render login screen
+        res.render('login', {
+          error: true,
+          error_message: message,
+          csrfToken: req.body.csrf_token,
+          _csrf: req.csrfToken(),
+          csrfCookie: req.body.csrf_cookie,
+          request: request,
+          challenge: challenge
+        });
       });
     });
 });

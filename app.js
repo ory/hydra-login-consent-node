@@ -13,6 +13,8 @@ var logout = require('./routes/logout');
 var consent = require('./routes/consent');
 var kratos = require('./routes/kratos');
 var error = require('./routes/errors');
+var recover = require('./routes/recover');
+var password = require('./routes/password');
 
 var app = express();
 app.use(cors({
@@ -22,6 +24,7 @@ app.use(cors({
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+app.locals.basedir = path.join(__dirname, 'public');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -37,6 +40,8 @@ app.use('/logout', logout);
 app.use('/consent', consent);
 app.use('/kratos', kratos);
 app.use('/errors', error);
+app.use('/recover', recover);
+app.use('/password', password);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

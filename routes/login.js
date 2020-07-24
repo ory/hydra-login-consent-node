@@ -15,7 +15,7 @@ router.get('/', csrfProtection, function (req, res, next) {
 
   // The challenge is used to fetch information about the login request from ORY Hydra.
   var challenge = query.login_challenge;
-
+  
   hydra.getLoginRequest(challenge)
   // This will be called if the HTTP request was successful
     .then(function (response) {
@@ -63,10 +63,11 @@ router.get('/', csrfProtection, function (req, res, next) {
     .catch(function (error) {
       next(error);
     });
+    
 });
 
 // Below block moved to kratos.js...
-
+/*
 router.post('/', csrfProtection, function (req, res, next) {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge;
@@ -134,5 +135,5 @@ router.post('/', csrfProtection, function (req, res, next) {
   });
 
 });
-
+*/
 module.exports = router;

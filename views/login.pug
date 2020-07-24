@@ -1,40 +1,47 @@
 extends layout
 
-
 block content
-
 
     div.header
         div
             span Language: English -  Version 0.0.0.1
-
-
-
-
+            
     div.card
-        img(src="/images/AVA_Logo_RGB.png" alt="Avanet Logo")
+        div.card-header
+            img(src="https://login.k8s-dev.avamonitoring.dev/images/AVA_Logo_RGB.png",alt="Avanet Logo")
         div.card-body
             form(action="/kratos",method="POST")
                 div.form-group
-                input(type="hidden",name="challenge",value=challenge)
-                input(type="hidden",name="request",value=request)
-                input(type="hidden",name="csrf_token",value=csrfToken)
-                input(type="hidden",name="_csrf",value=_csrf)
-                input(type="hidden",name="csrf_cookie",value=csrfCookie)
-
-                label(for="identifier") User Name
-                input(type="email", class="form-control" id="identifier",name="identifier")
-                label(for="password") Password
-                input(type="password", class="form-control", id="password",name="password")
-
-                div.input-container
-                input(type="checkbox",id="remember",class="margin5" name="remember",value="1")
-                label(for="remember") Remember me
-                br
-                input(type="submit",id="accept" class="btn btn-primary margin5", name="submit",value="Log in")
-                input(type="submit",id="reject",class="btn btn-primary", name="submit",value="Deny access")
-
+                    input(type="hidden",name="challenge",value=challenge)
+                    input(type="hidden",name="request",value=request)
+                    input(type="hidden",name="csrf_token",value=csrfToken)
+                    input(type="hidden",name="_csrf",value=_csrf)
+                    input(type="hidden",name="csrf_cookie",value=csrfCookie)
+                div.form-group
+                    h3(class="card-title") Sign in
+                if error
+                    div(class="alert alert-danger")
+                      h4(class="alert-heading") 
+                        <i class="fa fa-warning"></i> 
+                        | Error!
+                      hr
+                      p #{error_message}
+                div.form-group
+                    label(for="identifier") Your email
+                    input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
+                div.form-group(class="pass_show")
+                    label(for="password") Your password
+                    a(href="/recover",style={float: 'right'}) Forgot password?
+                    input(type="password",class="form-control",id="password",name="password",placeholder="********",value="",maxLength="16",required)
+                div.form-group
+                    input(type="checkbox",id="remember",class="margin5",name="remember",value="1")
+                    label(for="remember") Remember me
+                div.form-group      
+                    input(type="submit",id="accept",class="btn btn-primary btn-block",name="submit",value="Sign in")
 
     div.footer
         div
             span © 2020 Ava Monitoring
+            
+    script
+        include /scripts/login.js

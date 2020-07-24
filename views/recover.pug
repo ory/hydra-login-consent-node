@@ -1,0 +1,65 @@
+extends layout
+
+
+block content
+
+    div.header
+        div
+            span Language: English -  Version 0.0.0.1
+            
+    div.card
+        div.card-header
+            img(src="https://login.k8s-dev.avamonitoring.dev/images/AVA_Logo_RGB.png",alt="Avanet Logo")
+        if success
+            div.card-body
+                form
+                    div(class="alert alert-success")
+                        h4(class="alert-heading") 
+                            <i class="fa fa-check"></i> 
+                            | Success!
+                        hr
+                        ol(class="instructions")
+                            li Check your email for a password reset mail. Please allow for a few minutes for the mail to get delivered. If not found, also check your spam folder.
+                            li If email was found, follow the instructions in the email. 
+                            li The link in the eamil will only be <strong>valid for 1 hour</strong>.
+                            li If no email was found, please contact AVA Support as indicated below
+            div.card-footer
+                div.form-group
+                    h5 Contact us 
+                    a(href='mailto:support@avamonitoring.com') support@avamonitoring.com
+                
+        else
+            div.card-body
+                form(action="",method="POST")
+                    div.form-group
+                        input(type="hidden",name="request",value=request)
+                        input(type="hidden",name="csrf_token",value=csrfToken)
+                        input(type="hidden",name="_csrf",value=_csrf)
+                        input(type="hidden",name="csrf_cookie",value=csrfCookie)
+                    div.form-group
+                        h4(class="card-title") Forgot your password?
+                    if error
+                        div(class="alert alert-danger")
+                            h4(class="alert-heading") 
+                                <i class="fa fa-warning"></i> 
+                                | Error!
+                            hr
+                            each val in error_message
+                                p= val
+                    else
+                        div(class="alert alert-info")
+                            h4(class="alert-heading") 
+                                <i class="fa fa-info"></i> 
+                                | Important!
+                            hr
+                            p When submitting this form, you will receive a password reset link by mail. That link will only valid for 1 hour.
+                    div.form-group
+                        label(for="identifier") Your email
+                        input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
+                    div.form-group     
+                        input(type="submit",id="accept",class="btn btn-primary btn-block",name="submit",value="Reset password")
+                        input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login")
+
+    div.footer
+        div
+            span © 2020 Ava Monitoring

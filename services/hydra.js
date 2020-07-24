@@ -45,7 +45,6 @@ function put(flow, action, challenge, body) {
   const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl)
   url.search = querystring.stringify({[flow + '_challenge']: challenge})
   return fetch(
-    // Joins process.env.HYDRA_ADMIN_URL with the request path
     url.toString(),
     {
       method: 'PUT',
@@ -56,21 +55,21 @@ function put(flow, action, challenge, body) {
       }
     }
   )
-    .then(function (res) {
-      if (res.status < 200 || res.status > 302) {
-        // This will handle any errors that aren't network related (network related errors are handled automatically)
-        return res.json().then(function (body) {
-          console.error('An error occurred while making a HTTP request: ', body)
-          return Promise.reject(new Error(body.error.message))
-        })
-      }
+  .then(function (res) {
+    if (res.status < 200 || res.status > 302) {
+      // This will handle any errors that aren't network related (network related errors are handled automatically)
+      return res.json().then(function (body) {
+        console.error('An error occurred while making a HTTP request: ', body)
+        return Promise.reject(new Error(body.error.message))
+      })
+    }
 
-      if (res.headers.get('content-type').startsWith('application/json')) {
-        return res.json();
-      } else {
-        return res;
-      }
-    });
+    if (res.headers.get('content-type').startsWith('application/json')) {
+      return res.json();
+    } else {
+      return res;
+    }
+  });
 }
 
 var hydra = {
