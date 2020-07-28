@@ -17,7 +17,17 @@ router.get('/', csrfProtection, function (req, res, next) {
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful
     .then(function (response) {
-      // We will make a session cookie value available in the id-token
+      
+      // Organisation id
+      var orgId = response.context.oid;
+      // Parent organisation id
+      var parentOrgId = response.context.pid;
+      // Organisational unit id
+      var orgUnitId = response.context.oui;
+      // Identity id
+      var identityId = response.context.iid;
+      
+      // We will also make a session cookie value available in the id-token
       var sessionCookie = '';
       // Check to see if there is a session cookie available in the context
       if (response.context != null) {
@@ -44,7 +54,13 @@ router.get('/', csrfProtection, function (req, res, next) {
             // access_token: { foo: 'bar' },
 
             // This data will be available in the ID token.
-            id_token: { ksc: sessionCookie }
+            id_token: { 
+              ksc: sessionCookie, // Session cookie
+              oid: orgId,         // Organisation id
+              pid: parentOrgId,   // Parent organisation id
+              oui: orgUnitId,     // Orgnisational unit id
+              iid: identityId     // Identity id
+            }
           }
         }).then(function (response) {
           // All we need to do now is to redirect the user back to hydra!
@@ -106,6 +122,14 @@ router.post('/', csrfProtection, function (req, res, next) {
       if (response.context != null) {
         sessionCookie = response.context.ksc;
       }
+      // Organisation id
+      var orgId = response.context.oid;
+      // Parent organisation id
+      var parentOrgId = response.context.pid;
+      // Organisational unit id
+      var orgUnitId = response.context.oui;
+      // Identity id
+      var identityId = response.context.iid;
       
       return hydra.acceptConsentRequest(challenge, {
         // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
@@ -119,7 +143,13 @@ router.post('/', csrfProtection, function (req, res, next) {
           // access_token: { foo: 'bar' },
 
           // This data will be available in the ID token.
-          id_token: { ksc: sessionCookie }
+          id_token: { 
+            ksc: sessionCookie, // Session cookie
+            oid: orgId,         // Organisation id
+            pid: parentOrgId,   // Parent organisation id
+            oui: orgUnitId,     // Orgnisational unit id
+            iid: identityId     // Identity id
+          }
         },
 
         // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.

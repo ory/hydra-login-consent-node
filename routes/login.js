@@ -12,7 +12,8 @@ var csrfProtection = csrf({ cookie: true });
 router.get('/', csrfProtection, function (req, res, next) {
   // Parses the URL query
   var query = url.parse(req.url, true).query;
-
+  // Get the 'Referer' header
+  var referer = req.header('referer');
   // The challenge is used to fetch information about the login request from ORY Hydra.
   var challenge = query.login_challenge;
   
@@ -47,11 +48,9 @@ router.get('/', csrfProtection, function (req, res, next) {
           // Get the cookie value
           cookie = cookie.substring('csrf_token'.length + 1);
           // Create the redirect URL
-          var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie}));
+          var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie, 'referer': referer}));
           // Redirect
-           res.redirect(redirect_to.toString());
-           //res.location(redirect_to.toString());
-           //res.status(302).send();
+          res.redirect(redirect_to.toString());
         })
         // This will handle any error that happens when making HTTP calls to kratos
         .catch(function (error) {
@@ -66,74 +65,4 @@ router.get('/', csrfProtection, function (req, res, next) {
     
 });
 
-// Below block moved to kratos.js...
-/*
-router.post('/', csrfProtection, function (req, res, next) {
-  // The challenge is now a hidden input field, so let's take it from the request body instead
-  var challenge = req.body.challenge;
-  // Get the Kratos session cookie, if the login was successful
-  var session = req.body.ory_kratos_session;
-  
-  console.log('Kratos session cookie:', session);
-
-  // Let's see if the user decided to accept or reject the consent request..
-  if (req.body.submit === 'Deny access') {
-    // Looks like the login request was denied by the user
-    return hydra.rejectLoginRequest(challenge, {
-      error: 'access_denied',
-      error_description: 'The resource owner denied the request'
-    })
-    .then(function (response) {
-      // All we need to do now is to redirect the browser back to hydra!
-      res.redirect(response.redirect_to);
-    })
-      // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
-      next(error);
-    });
-  }
-  
-  if (session == null || session == undefined) {
-    // Looks like the login ws unsuccessful
-    return hydra.rejectLoginRequest(challenge, {
-      error: 'access_denied',
-      error_description: 'The resource owner failed to login'
-    })
-    .then(function (response) {
-      // All we need to do now is to redirect the browser back to hydra!
-      res.redirect(response.redirect_to);
-    })
-      // This will handle any error that happens when making HTTP calls to hydra
-    .catch(function (error) {
-      next(error);
-    });
-  }
-
-  // Seems like the user authenticated! Let's tell hydra...
-  hydra.acceptLoginRequest(challenge, {
-    // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
-    subject: 'foo@bar.com',
-
-    // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
-    // set the "skip" parameter in the other route to true on subsequent requests!
-    remember: Boolean(req.body.remember),
-
-    // When the session expires, in seconds. Set this to 0 so it will never expire.
-    remember_for: 3600,
-
-    // Sets which "level" (e.g. 2-factor authentication) of authentication the user has. The value is really arbitrary
-    // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
-    // acr: '0',
-  })
-  .then(function (response) {
-    // All we need to do now is to redirect the user back to hydra!
-    res.redirect(response.redirect_to);
-  })
-  // This will handle any error that happens when making HTTP calls to hydra
-  .catch(function (error) {
-    next(error);
-  });
-
-});
-*/
 module.exports = router;

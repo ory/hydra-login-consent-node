@@ -12,6 +12,7 @@ block content
         div.card-body
             form(action="/kratos",method="POST")
                 div.form-group
+                    input(type="hidden",name="referer",value=referer)
                     input(type="hidden",name="challenge",value=challenge)
                     input(type="hidden",name="request",value=request)
                     input(type="hidden",name="csrf_token",value=csrfToken)
