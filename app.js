@@ -24,7 +24,6 @@ app.use(cors({
 // Make some process env variables available to all templates
 app.use((req, res, next) => {
   res.locals.selfURL = process.env.SELF_URL;
-  res.locals.avanetURL = process.env.AVANET_URL;
   next();
 });
 
