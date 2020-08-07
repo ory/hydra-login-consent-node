@@ -111,7 +111,7 @@ router.post('/', csrfProtection, function (req, res, next) {
       var subnet = '';
       var idx = host.indexOf('.');
         if(idx < 0) {
-            subnet = 'localhost';
+            subnet = host;
         }
         else{
             subnet = host.substring(0, idx)
