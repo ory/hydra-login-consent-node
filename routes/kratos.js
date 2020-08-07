@@ -109,7 +109,9 @@ router.post('/', csrfProtection, function (req, res, next) {
       
       var host = new URL(referer).hostname;
       var idx = host.indexOf('.');
-      
+        if(idx < 0) {
+            idx = host.indexOf(':');
+        }
       var orgId = '';       // Organisation id
       var parentOrgId = ''; // Parent organisation id
       var orgUnitId = '';   // Organisational unit id
