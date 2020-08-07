@@ -108,18 +108,23 @@ router.post('/', csrfProtection, function (req, res, next) {
       }
       
       var host = new URL(referer).hostname;
+      var subnet = '';
       var idx = host.indexOf('.');
         if(idx < 0) {
-            idx = host.indexOf(':');
+            subnet = 'localhost';
+        }
+        else{
+            subnet = host.substring(0, idx)
         }
         console.log('host name',host );
         console.log('idx',idx );
+        console.log('host substring result',subnet);
       var orgId = '';       // Organisation id
       var parentOrgId = ''; // Parent organisation id
       var orgUnitId = '';   // Organisational unit id
       var identityId = '';  // Identity id
-        console.log('host substring result',host.substring(0, idx) );
-      avanet.getSessionAttributes(host.substring(0, idx), req.body.identifier, {
+
+      avanet.getSessionAttributes(subnet, req.body.identifier, {
         })
         // This will be called if the HTTP request was successful
         .then(function (response) {
