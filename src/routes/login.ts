@@ -41,6 +41,7 @@ router.get('/', csrfProtection, (req, res, next) => {
       res.render('login', {
         csrfToken: req.csrfToken(),
         challenge: challenge,
+        action: url.resolve(process.env.BASE_URL || '', '/login'),
       });
     })
     // This will handle any error that happens when making HTTP calls to hydra
