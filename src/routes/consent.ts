@@ -1,5 +1,6 @@
 import express from 'express'
 import url from 'url'
+import urljoin from 'url-join'
 import csrf from 'csurf'
 import {hydraAdmin} from '../config'
 
@@ -65,6 +66,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         requested_scope: body.requestedScope,
         user: body.subject,
         client: body.client,
+        action: urljoin(process.env.BASE_URL || '', '/consent'),
       });
     })
     // This will handle any error that happens when making HTTP calls to hydra

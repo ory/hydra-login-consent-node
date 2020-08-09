@@ -5,7 +5,7 @@ block content
     if error
         p.
             #{error}
-    form(action="/logout",method="POST")
+    form(action=action,method="POST")
         input(type="hidden",name="_csrf",value=csrfToken)
         input(type="hidden",name="challenge",value=challenge)
         input(type="submit",id="accept",value="Yes")

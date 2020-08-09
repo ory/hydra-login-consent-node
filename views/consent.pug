@@ -2,7 +2,7 @@ extends layout
 
 block content
     h1 An application requests access to your data!
-    form(action="",method="POST")
+    form(action=action,method="POST")
         input(type="hidden",name="challenge",value=challenge)
         input(type="hidden",name="_csrf",value=csrfToken)
 
