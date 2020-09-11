@@ -25,7 +25,7 @@
     "debug": "^4.1.1",
     "express": "^4.17.1",
     "morgan": "^1.10.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.1",
     "pug": "^2.0.4",
     "querystring": "^0.2.0",
     "serve-favicon": "^2.5.0",
