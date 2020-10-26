@@ -26,7 +26,8 @@ block content
                         <i class="fa fa-warning"></i> 
                         | Error!
                       hr
-                      p #{error_message}
+                      each val in error_message
+                          p= val
                 div.form-group
                     label(for="identifier") Your email
                     input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)

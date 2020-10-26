@@ -163,23 +163,18 @@ router.post('/', csrfProtection, function (req, res, next) {
         })
         // This will handle any error that happens when making HTTP calls to avanet company-user-mgmt microservice
         .catch(function (error) {
-          //error.body.then(function(val) {
+          error.body.then(function(json) {
             var message;
         
-            //if (typeof val == 'object') {
-              //message = val.error.message;
-            //}
-            //else {
-              //message = val;
-            //}
+
             if (error.status == 400) {
-              message = 'User is not allowed to log in at ' + referer + '.';
+              message = ['User is not allowed to log in at ' + referer + '. ', 'Please log in using the correct address.'];
             }
             else if (error.status == 401) {
-              message = 'Problem retrieving session information. Please contact AvaNet support.';
+              message = [json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
             }
             else {
-              message = 'Unexpected status code: ' + error.status + '. Please contact AvaNet support.';
+              message = ['Unexpected status: ' + error.status,  json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
             }
       
             // Render login screen
@@ -193,7 +188,7 @@ router.post('/', csrfProtection, function (req, res, next) {
               request: request,
               challenge: challenge
             });
-          //});
+          });
         });
     })
     // This will handle any error that happens when making HTTP calls to Kratos
@@ -202,10 +197,10 @@ router.post('/', csrfProtection, function (req, res, next) {
         var message;
         
         if (typeof val == 'object') {
-          message = val.error.message;
+          message = [val.error.message];
         }
         else {
-          message = val;
+          message = [val];
         }
       
         // Render login screen

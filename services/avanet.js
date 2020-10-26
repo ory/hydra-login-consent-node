@@ -42,7 +42,7 @@ function get(uri, host, subject) {
         // The headers of the response
         error.headers = res.headers;
         // Get the body
-        //error.body = res.json();
+        error.body = res.json();
         // Log error and reject
         logError(error);
         return Promise.reject(error);

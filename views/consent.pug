@@ -20,14 +20,14 @@ block content
                     p.
                         Hi <strong>#{user}</strong>, <br/><br/>application <strong>#{client.client_name || client.client_id}</strong> wants to access resources on your behalf to:
                     each scope in requested_scope
-                        input(type="checkbox",class="margin5",id=scope,value=scope,name="grant_scope")
+                        input(type="checkbox",class="margin5",id=scope,value=scope,name="grant_scope",checked="checked")
                         label(for=scope) #{scope}
                         br
                 div.form-group
                     p.
                         Do you want to be asked next time when this application wants to access your data? The application will not be able to ask for more permissions without your consent.
                 div.form-group
-                    input(type="checkbox",id="remember",class="margin5", name="remember",value="1")
+                    input(type="checkbox",id="remember",class="margin5",name="remember",value="1",checked="checked")
                     label(for="remember") Do not ask me again
                 div.form-group
                     input(type="submit",id="accept", class="btn btn-primary btn-block" , name="submit",value="Allow access")
