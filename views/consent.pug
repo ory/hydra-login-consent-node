@@ -2,9 +2,9 @@ extends layout
 
 block content
     h1 An application requests access to your data!
-    form(action=action,method="POST")
-        input(type="hidden",name="challenge",value=challenge)
-        input(type="hidden",name="_csrf",value=csrfToken)
+    form(action=action, method="POST")
+        input(type="hidden", name="challenge", value=challenge)
+        input(type="hidden", name="_csrf", value=csrfToken)
 
         if client.logo_uri
             img(src=client.logo_uri)
@@ -13,7 +13,7 @@ block content
             Hi #{user}, application <strong>#{client.client_name || client.client_id}</strong> wants access resources on your behalf and to:
 
         each scope in requested_scope
-            input(type="checkbox",id=scope,value=scope,name="grant_scope")
+            input(type="checkbox", class="grant_scope", id=scope, value=scope, name="grant_scope")
             label(for=scope) #{scope}
             br
 
@@ -28,8 +28,8 @@ block content
                 li
                     a(href=client.tos_uri) Terms of Service
         p
-            input(type="checkbox",id="remember",name="remember",value="1")
+            input(type="checkbox", id="remember", name="remember", value="1")
             label(for="remember") Do not ask me again
         p
-            input(type="submit",id="accept",name="submit",value="Allow access")
-            input(type="submit",id="reject",name="submit",value="Deny access")
+            input(type="submit", id="accept", name="submit", value="Allow access")
+            input(type="submit", id="reject", name="submit", value="Deny access")
