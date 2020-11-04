@@ -27,11 +27,37 @@ jobs:
           npm version -f --no-git-tag-version $CIRCLE_TAG
       - run: npm publish --access public
 
+  test:
+    docker:
+      - image: circleci/node:11.10
+    working_directory: ~/hydra-login-consent-node
+
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
+      - run: npm ci
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
+      - run: echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > ~/.npmrc
+      - run: npm run format:check
+      - run: npm run build
+
 workflows:
   version: 2
-  "release":
+  "Test and Release":
     jobs:
+      - test:
+          filters:
+            tags:
+              only: /.*/
       - release:
+          requires:
+            - test
           filters:
             tags:
               only: /.*/
