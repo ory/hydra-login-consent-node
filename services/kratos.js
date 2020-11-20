@@ -18,8 +18,8 @@ function get(flow, request, cookie, token) {
   var url;
   
   if (request != null && request != undefined) {
-    url = new URL(flow + '/requests', kratosUrl);
-    url.search = querystring.stringify({['request']: request});
+    url = new URL(flow + '/flows', kratosUrl);
+    url.search = querystring.stringify({['id']: request});
   }
   else if (token != null && token != undefined) {
     url = new URL(flow + '/link', kratosUrl);
@@ -35,7 +35,7 @@ function get(flow, request, cookie, token) {
       method: 'GET',
       redirect: 'manual',
       headers: {
-        'Cookie': 'csrf_token=' + cookie,
+        'Cookie': cookie,
         ...mockTlsTermination
       }
     }
@@ -71,8 +71,8 @@ function get(flow, request, cookie, token) {
 }
 
 function put(flow, request, cookie, body) {
-  const url = new URL(flow, kratosUrl)
-  url.search = querystring.stringify({['request']: request})
+  var url = new URL(flow, kratosUrl)
+  url.search = querystring.stringify({['flow']: request})
   
   return fetch(
     url.toString(),
@@ -88,6 +88,7 @@ function put(flow, request, cookie, body) {
     }
   )
   .then(function (res) {
+
     if (res.status < 200 || res.status > 302) {
       // Wrap response in error object and reject
       var error = new Error();
@@ -104,12 +105,13 @@ function put(flow, request, cookie, body) {
       else {
         error.body = res.text();
       }
+
       logError(error);
       return Promise.reject(error);
     }
     else { 
       var contentType = res.headers.get('content-type');
-      
+
       if (contentType != null && contentType.startsWith('application/json')) {
         return res.json();
       } else {
@@ -122,31 +124,31 @@ function put(flow, request, cookie, body) {
 var kratos = {
   // Fetches information on a login request.
   getLoginRequest: function (request, csrf) {
-    return get('/login', request, csrf, null);
+    return get('/login', request, 'csrf_token=' + csrf, null);
   },
   // Accepts a login request.
   acceptLoginRequest: function (request, csrf, body) {
     return put('/login', request, 'csrf_token=' + csrf, body);
   },
   // Initiates account recovery flow
-  accountRecoveryRequest: function() {
+  initiateAccountRecoveryFlow: function() {
     return get('/recovery', null, null, null);
   },
   // Fetches information on a recovery request.
-  getAccountRecoveryRequest: function(request, csrf) {
-    return get('/recovery', request, csrf, null);
-  },
-  // Accepts a recovery request.
-  acceptRecoveryRequest: function (request, csrf, body) {
-    return put('/recovery', request, 'csrf_token=' + csrf, body);
+  getAccountRecoveryFlow: function(request, csrf) {
+    return get('/recovery', request, 'csrf_token=' + csrf, null);
   },
   // Performs account recovery using token
-  performRecoveryRequest: function(token) {
+  completeRecoveryFlow: function(request, csrf, body) {
+    return put('/recovery/link', request, 'csrf_token=' + csrf, body);
+  },
+  // Performs account recovery using token
+  useRecoveryLink: function(token) {
     return get('/recovery', null, null, token);
   },
   // Fetches information on a settings request.
-  getSettingsRequest: function(request, csrf) {
-    return get('/settings', request, csrf, null);
+  getSettingsRequest: function(request, cookie) {
+    return get('/settings', request, 'ory_kratos_session=' + cookie, null);
   },
   setNewPasswordRequest: function(request, session, csrf, body) {
     var cookie = 'ory_kratos_session=' + session + '; ' + 'csrf_token=' + csrf;

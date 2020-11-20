@@ -21,12 +21,12 @@ router.get('/', csrfProtection, function (req, res, next) {
   var referer = query.referer;
   // The challenge will be used when we return to the Hydra login flow
   var challenge = query.challenge;
-  // The request is used to fetch information about the login request from ORY Kratos.
-  var request = query.request;
+  // The flow is used to fetch information about the login flow from ORY Kratos.
+  var flow = query.flow;
   // The csrf_token is needed to fetch the login context
   var csrf = query.csrf_token;
  
-  kratos.getLoginRequest(request, csrf)
+  kratos.getLoginRequest(flow, csrf)
     // This will be called if the HTTP request was successful
     .then(function (response) {
       // Response is a JSON object, and whe are interested in the csrf_token field
@@ -44,7 +44,7 @@ router.get('/', csrfProtection, function (req, res, next) {
         csrfToken: t,
         _csrf: req.csrfToken(),
         csrfCookie: csrf,
-        request: request,
+        flow: flow,
         challenge: challenge
       });
     })
@@ -60,8 +60,8 @@ router.post('/', csrfProtection, function (req, res, next) {
   var referer = req.body.referer;
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge
-  // The request is now a hidden input field, so let's take it from the request body instead
-  var request = req.body.request;
+  // The flow is now a hidden input field, so let's take it from the request body instead
+  var flow = req.body.flow;
   // Get the original csrf_token retrieved in the call to initiate the login
   var csrf = req.body.csrf_cookie;
   // Get the original csrf_token retrieved in the call to initiate the login
@@ -75,9 +75,9 @@ router.post('/', csrfProtection, function (req, res, next) {
   params.append('password', req.body.password);
   params.append('csrf_token', req.body.csrf_token);
   
-  kratos.acceptLoginRequest(request, csrf, params)
+  kratos.acceptLoginRequest(flow, csrf, params)
     .then(function (response) {
-      
+
       // If the login was successful, we should have a Kratos session cookie
       // This will be needed to access self-service flow and to perform a logout...
       var combinedCookieHeader = response.headers.get('set-cookie');
@@ -108,6 +108,7 @@ router.post('/', csrfProtection, function (req, res, next) {
       }
       
       var host = new URL(referer).hostname;
+      //var host = 'avanet.avamonitoring.dev'; // If running locally with a known user, set the host to a value mathing the user
       var idx = host.indexOf('.');
       
       var orgId = '';       // Organisation id
@@ -119,7 +120,7 @@ router.post('/', csrfProtection, function (req, res, next) {
         })
         // This will be called if the HTTP request was successful
         .then(function (response) {
-                    
+
           if (typeof response == 'object') { // JSON response
             orgId = response.organisationId;
             parentOrgId = response.parentOrganisationId;
@@ -129,6 +130,7 @@ router.post('/', csrfProtection, function (req, res, next) {
           
           // Seems like the user authenticated! Let's tell hydra...
           hydra.acceptLoginRequest(challenge, {
+
             // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
             subject: req.body.identifier,
 
@@ -137,7 +139,7 @@ router.post('/', csrfProtection, function (req, res, next) {
             remember: Boolean(req.body.remember),
 
             // When the session expires, in seconds. Set this to 0 so it will never expire.
-            remember_for: 3600,
+            remember_for: 0,
             
             // Making some session context available
             context: {
@@ -158,6 +160,7 @@ router.post('/', csrfProtection, function (req, res, next) {
           })
           // This will handle any error that happens when making HTTP calls to hydra
           .catch(function (error) {
+            console.log(error)
              next(error);
           });
         })
@@ -185,7 +188,7 @@ router.post('/', csrfProtection, function (req, res, next) {
               csrfToken: req.body.csrf_token,
               _csrf: req.csrfToken(),
               csrfCookie: req.body.csrf_cookie,
-              request: request,
+              flow: flow,
               challenge: challenge
             });
           });
@@ -211,7 +214,7 @@ router.post('/', csrfProtection, function (req, res, next) {
           csrfToken: req.body.csrf_token,
           _csrf: req.csrfToken(),
           csrfCookie: req.body.csrf_cookie,
-          request: request,
+          flow: flow,
           challenge: challenge
         });
       });

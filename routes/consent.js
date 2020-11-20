@@ -26,18 +26,15 @@ router.get('/', csrfProtection, function (req, res, next) {
       var orgUnitId = response.context.oui;
       // Identity id
       var identityId = response.context.iid;
-      
       // We will also make a session cookie value available in the id-token
       var sessionCookie = '';
+      
       // Check to see if there is a session cookie available in the context
       if (response.context != null) {
         sessionCookie = response.context.ksc;
       }
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
       if (response.skip) {
-        // You can apply logic here, for example grant another scope, or do whatever...
-        // ...
-
         // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
         return hydra.acceptConsentRequest(challenge, {
           // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
@@ -61,7 +58,15 @@ router.get('/', csrfProtection, function (req, res, next) {
               oui: orgUnitId,     // Orgnisational unit id
               iid: identityId     // Identity id
             }
-          }
+          },
+          
+          // This tells hydra to remember this consent request and allow the same client to request the same
+          // scopes from the same user, without showing the UI, in the future.
+          remember: true,
+
+          // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
+          remember_for: 0,
+          
         }).then(function (response) {
           // All we need to do now is to redirect the user back to hydra!
           res.redirect(response.redirect_to);
@@ -160,7 +165,7 @@ router.post('/', csrfProtection, function (req, res, next) {
         remember: Boolean(req.body.remember),
 
         // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-        remember_for: 3600,
+        remember_for: 0,
       })
       .then(function (response) {
          res.redirect(response.redirect_to);

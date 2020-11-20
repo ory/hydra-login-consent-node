@@ -15,7 +15,7 @@ router.get('/', csrfProtection, function (req, res, next) {
   var err = url.parse(req.url, true).query.error;
         
   // Initiate the account recovery flow
-  kratos.accountRecoveryRequest()
+  kratos.initiateAccountRecoveryFlow()
     // This will be called if the HTTP request was successful
     .then(function (response) {
       // Get the location http response header
@@ -23,14 +23,14 @@ router.get('/', csrfProtection, function (req, res, next) {
       // Parses the URL query
       var query = url.parse(location, true).query;
       // Get the request param
-      var request = query.request;
+      var flow = query.flow;
       // Get the csrf cookie from http header
       var cookie = response.headers.get('set-cookie');
       // Get the cookie value
       cookie = cookie.substring('csrf_token'.length + 1);
       
       // Get the account recovery request
-      kratos.getAccountRecoveryRequest(request, cookie)
+      kratos.getAccountRecoveryFlow(flow, cookie)
         // This will be called if the HTTP request was successful
         .then(function (response) {
           // Response is a JSON object, and whe are interested in the csrf_token field
@@ -54,7 +54,7 @@ router.get('/', csrfProtection, function (req, res, next) {
             csrfToken: t,
             _csrf: req.csrfToken(),
             csrfCookie: cookie,
-            request: request
+            flow: flow
           });
         })
         // This will handle any error that happens when making HTTP calls to kratos
@@ -71,17 +71,17 @@ router.get('/', csrfProtection, function (req, res, next) {
 });
 
 router.post('/', csrfProtection, function (req, res, next) {
-  // The request param is now a hidden input field, so let's take it from the request body instead
-  var request = req.body.request;
+  // The flow param is now a hidden input field, so let's take it from the request body instead
+  var flow = req.body.flow;
   // Get the csrf cookie
   var csrf = req.body.csrf_cookie;
-  // Create a form body and append the fields we want to submit to Kratos
+  
   var params = new URLSearchParams();
   params.append('email', req.body.identifier);
   params.append('csrf_token', req.body.csrf_token);
   
   // Accept the recovery request
-  kratos.acceptRecoveryRequest(request, csrf, params)
+  kratos.completeRecoveryFlow(flow, csrf, params)
     .then(function (response) {
       res.render('recover', {
         success: true
