@@ -10,12 +10,6 @@ import { ConsentRequestSession } from '@oryd/hydra-client'
 const csrfProtection = csrf({ cookie: true })
 const router = express.Router()
 
-hydraAdmin.listOAuth2Clients(10, 0).then(({ body }) => {
-  body.forEach(client => {
-    console.log(client)
-  })
-})
-
 router.get('/', csrfProtection, (req, res, next) => {
   // Parses the URL query
   const query = url.parse(req.url, true).query
