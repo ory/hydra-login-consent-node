@@ -2,7 +2,7 @@
   "name": "hydra-login-consent-logout",
   "version": "0.0.0",
   "bin": {
-    "hydra-login-consent-logout": "./lib/app.js"
+    "hydra-login-consent-logout": "lib/app.js"
   },
   "prettier": "ory-prettier-styles",
   "consts": {

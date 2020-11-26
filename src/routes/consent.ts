@@ -21,6 +21,9 @@ router.get('/', csrfProtection, (req, res, next) => {
     return
   }
 
+  // This section processes consent requests and either shows the consent UI or
+  // accepts the consent request right away if the user has given consent to this
+  // app before
   hydraAdmin
     .getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
@@ -69,6 +72,7 @@ router.get('/', csrfProtection, (req, res, next) => {
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)
+    // The consent request has now either been accepted automatically or rendered.
 })
 
 router.post('/', csrfProtection, (req, res, next) => {
@@ -92,6 +96,7 @@ router.post('/', csrfProtection, (req, res, next) => {
         .catch(next)
     )
   }
+  // label:consent-deny-end
 
   let grantScope = req.body.grant_scope
   if (!Array.isArray(grantScope)) {
@@ -155,6 +160,7 @@ router.post('/', csrfProtection, (req, res, next) => {
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)
+    // label:docs-accept-consent
 })
 
 export default router
