@@ -22,7 +22,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   hydraAdmin
     .getLogoutRequest(challenge)
     // This will be called if the HTTP request was successful
-    .then(({ body }) => {
+    .then(() => {
       // Here we have access to e.g. response.subject, response.sid, ...
 
       // The most secure way to perform a logout request is by asking the user if he/she really want to log out.
@@ -56,9 +56,9 @@ router.post('/', csrfProtection, (req, res, next) => {
   // The user agreed to log out, let's accept the logout request.
   hydraAdmin
     .acceptLogoutRequest(challenge)
-    .then(({ body }) => {
+    .then(({ data: body }) => {
       // All we need to do now is to redirect the user back to hydra!
-      res.redirect(String(body.redirectTo))
+      res.redirect(String(body.redirect_to))
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)

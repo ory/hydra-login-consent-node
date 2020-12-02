@@ -27,7 +27,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   hydraAdmin
     .getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
-    .then(({ body }) => {
+    .then(({ data: body }) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
       if (body.skip) {
         // You can apply logic here, for example grant another scope, or do whatever...
@@ -38,10 +38,10 @@ router.get('/', csrfProtection, (req, res, next) => {
           .acceptConsentRequest(challenge, {
             // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
             // are requested accidentally.
-            grantScope: body.requestedScope,
+            grant_scope: body.requested_scope,
 
             // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-            grantAccessTokenAudience: body.requestedAccessTokenAudience,
+            grant_access_token_audience: body.requested_access_token_audience,
 
             // The session allows us to set session data for id and access tokens
             session: {
@@ -52,9 +52,9 @@ router.get('/', csrfProtection, (req, res, next) => {
               // idToken: { baz: 'bar' },
             }
           })
-          .then(({ body }) => {
+          .then(({ data: body }) => {
             // All we need to do now is to redirect the user back to hydra!
-            res.redirect(String(body.redirectTo))
+            res.redirect(String(body.redirect_to))
           })
       }
 
@@ -64,7 +64,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         challenge: challenge,
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
         // and what additional data you have available.
-        requested_scope: body.requestedScope,
+        requested_scope: body.requested_scope,
         user: body.subject,
         client: body.client,
         action: urljoin(process.env.BASE_URL || '', '/consent')
@@ -86,11 +86,11 @@ router.post('/', csrfProtection, (req, res, next) => {
       hydraAdmin
         .rejectConsentRequest(challenge, {
           error: 'access_denied',
-          errorDescription: 'The resource owner denied the request'
+          error_description: 'The resource owner denied the request'
         })
-        .then(({ body }) => {
+        .then(({ data: body }) => {
           // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(String(body.redirectTo))
+          res.redirect(String(body.redirect_to))
         })
         // This will handle any error that happens when making HTTP calls to hydra
         .catch(next)
@@ -107,12 +107,12 @@ router.post('/', csrfProtection, (req, res, next) => {
   let session: ConsentRequestSession = {
     // This data will be available when introspecting the token. Try to avoid sensitive information here,
     // unless you limit who can introspect tokens.
-    accessToken: {
+    access_token: {
       // foo: 'bar'
     },
 
     // This data will be available in the ID token.
-    idToken: {
+    id_token: {
       // baz: 'bar'
     }
   }
@@ -128,12 +128,12 @@ router.post('/', csrfProtection, (req, res, next) => {
   hydraAdmin
     .getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
-    .then(({ body }) => {
+    .then(({ data: body }) => {
       return hydraAdmin
         .acceptConsentRequest(challenge, {
           // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
           // are requested accidentally.
-          grantScope: grantScope,
+          grant_scope: grantScope,
 
           // If the environment variable CONFORMITY_FAKE_CLAIMS is set we are assuming that
           // the app is built for the automated OpenID Connect Conformity Test Suite. You
@@ -144,18 +144,18 @@ router.post('/', csrfProtection, (req, res, next) => {
           session: oidcConformityMaybeFakeSession(grantScope, body, session),
 
           // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-          grantAccessTokenAudience: body.requestedAccessTokenAudience,
+          grant_access_token_audience: body.requested_access_token_audience,
 
           // This tells hydra to remember this consent request and allow the same client to request the same
           // scopes from the same user, without showing the UI, in the future.
           remember: Boolean(req.body.remember),
 
           // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-          rememberFor: 3600
+          remember_for: 3600
         })
-        .then(({ body }) => {
+        .then(({ data: body }) => {
           // All we need to do now is to redirect the user back to hydra!
-          res.redirect(String(body.redirectTo))
+          res.redirect(String(body.redirect_to))
         })
     })
     // This will handle any error that happens when making HTTP calls to hydra

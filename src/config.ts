@@ -1,15 +1,16 @@
-import { AdminApi } from '@oryd/hydra-client'
+import { AdminApi, Configuration } from '@oryd/hydra-client'
 
-const hydraAdmin = new AdminApi(process.env.HYDRA_ADMIN_URL)
+const baseOptions: any = {}
+
 if (process.env.MOCK_TLS_TERMINATION) {
-  let headers = { 'X-Forwarded-Proto': 'https' }
-  if (hydraAdmin.defaultHeaders) {
-    headers = {
-      ...hydraAdmin.defaultHeaders,
-      ...headers
-    }
-  }
-  hydraAdmin.defaultHeaders = headers
+  baseOptions.headers = { 'X-Forwarded-Proto': 'https' }
 }
+
+const hydraAdmin = new AdminApi(
+  new Configuration({
+    basePath: process.env.HYDRA_ADMIN_URL,
+    baseOptions
+  })
+)
 
 export { hydraAdmin }
