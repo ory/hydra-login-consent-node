@@ -72,7 +72,7 @@ router.get('/', csrfProtection, (req, res, next) => {
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)
-    // The consent request has now either been accepted automatically or rendered.
+  // The consent request has now either been accepted automatically or rendered.
 })
 
 router.post('/', csrfProtection, (req, res, next) => {
@@ -160,7 +160,7 @@ router.post('/', csrfProtection, (req, res, next) => {
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)
-    // label:docs-accept-consent
+  // label:docs-accept-consent
 })
 
 export default router

@@ -5,7 +5,7 @@
     "hydra-login-consent-logout": "lib/app.js"
   },
   "prettier": "ory-prettier-styles",
-  "consts": {
+  "config": {
     "prettierTarget": "{src,views}/{*,**/*}.{ts,js,json}"
   },
   "scripts": {
@@ -13,11 +13,11 @@
     "serve": "node lib/app.js",
     "start": "ts-node-dev --watch public,views --respawn src/app.ts",
     "test": "npm-run-all build",
-    "format": "prettier --write ${npm_package_consts_prettierTarget}",
-    "format:check": "prettier --check ${npm_package_consts_prettierTarget}"
+    "format": "prettier --write ${npm_package_config_prettierTarget}",
+    "format:check": "prettier --check ${npm_package_config_prettierTarget}"
   },
   "dependencies": {
-    "@oryd/hydra-client": "^1.5.0-beta.5",
+    "@oryd/hydra-client": "1.9.0-alpha.2",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.9.36",
     "@types/express": "^4.17.7",
@@ -38,8 +38,8 @@
   },
   "devDependencies": {
     "npm-run-all": "^4.1.5",
-    "ory-prettier-styles": "^1.0.1",
-    "prettier": "^1.19.1",
+    "ory-prettier-styles": "1.1.1",
+    "prettier": "2.2.1",
     "ts-node-dev": "^1.0.0-pre.43"
   }
 }
