@@ -22,7 +22,7 @@ router.get('/', csrfProtection, (req, res, next) => {
 
   hydraAdmin
     .getLoginRequest(challenge)
-    .then(({ body }) => {
+    .then(({ data: body }) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
       if (body.skip) {
@@ -36,9 +36,9 @@ router.get('/', csrfProtection, (req, res, next) => {
             // All we need to do is to confirm that we indeed want to log in the user.
             subject: String(body.subject)
           })
-          .then(({ body }) => {
+          .then(({ data: body }) => {
             // All we need to do now is to redirect the user back to hydra!
-            res.redirect(String(body.redirectTo))
+            res.redirect(String(body.redirect_to))
           })
       }
 
@@ -47,7 +47,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         csrfToken: req.csrfToken(),
         challenge: challenge,
         action: urljoin(process.env.BASE_URL || '', '/login'),
-        hint: body.oidcContext?.loginHint || ''
+        hint: body.oidc_context?.login_hint || ''
       })
     })
     // This will handle any error that happens when making HTTP calls to hydra
@@ -65,11 +65,11 @@ router.post('/', csrfProtection, (req, res, next) => {
       hydraAdmin
         .rejectLoginRequest(challenge, {
           error: 'access_denied',
-          errorDescription: 'The resource owner denied the request'
+          error_description: 'The resource owner denied the request'
         })
-        .then(({ body }) => {
+        .then(({ data: body }) => {
           // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(String(body.redirectTo))
+          res.redirect(String(body.redirect_to))
         })
         // This will handle any error that happens when making HTTP calls to hydra
         .catch(next)
@@ -94,7 +94,7 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   hydraAdmin
     .getLoginRequest(challenge)
-    .then(({ body: loginRequest }) =>
+    .then(({ data: loginRequest }) =>
       hydraAdmin
         .acceptLoginRequest(challenge, {
           // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
@@ -105,7 +105,7 @@ router.post('/', csrfProtection, (req, res, next) => {
           remember: Boolean(req.body.remember),
 
           // When the session expires, in seconds. Set this to 0 so it will never expire.
-          rememberFor: 3600,
+          remember_for: 3600,
 
           // Sets which "level" (e.g. 2-factor authentication) of authentication the user has. The value is really arbitrary
           // and optional. In the context of OpenID Connect, a value of 0 indicates the lowest authorization level.
@@ -119,9 +119,9 @@ router.post('/', csrfProtection, (req, res, next) => {
           // If that variable is not set, the ACR value will be set to the default passed here ('0')
           acr: oidcConformityMaybeFakeAcr(loginRequest, '0')
         })
-        .then(({ body }) => {
+        .then(({ data: body }) => {
           // All we need to do now is to redirect the user back to hydra!
-          res.redirect(String(body.redirectTo))
+          res.redirect(String(body.redirect_to))
         })
     )
     // This will handle any error that happens when making HTTP calls to hydra

@@ -16,9 +16,11 @@ export const oidcConformityMaybeFakeAcr = (
     return fallback
   }
 
-  return request.oidcContext?.acrValues &&
-    request.oidcContext.acrValues.length > 0
-    ? request.oidcContext.acrValues[request.oidcContext.acrValues.length - 1]
+  return request.oidc_context?.acr_values &&
+    request.oidc_context.acr_values.length > 0
+    ? request.oidc_context.acr_values[
+        request.oidc_context.acr_values.length - 1
+      ]
     : fallback
 }
 
@@ -75,10 +77,10 @@ export const oidcConformityMaybeFakeSession = (
   }
 
   return {
-    accessToken: session.accessToken,
-    idToken: {
+    access_token: session.access_token,
+    id_token: {
       ...idToken,
-      ...session.idToken
+      ...session.id_token
     }
   }
 }
