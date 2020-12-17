@@ -1,7 +1,8 @@
 var fetch = require('node-fetch')
 var querystring = require('querystring');
 
-var kratosUrl = process.env.KRATOS_PUBLIC_URL
+var kratosPublicURL = process.env.KRATOS_PUBLIC_URL
+var kratosAdminURL = process.env.KRATOS_ADMIN_URL
 var mockTlsTermination = {}
 
 if (process.env.MOCK_TLS_TERMINATION) {
@@ -18,15 +19,15 @@ function get(flow, request, cookie, token) {
   var url;
   
   if (request != null && request != undefined) {
-    url = new URL(flow + '/flows', kratosUrl);
+    url = new URL(flow + '/flows', kratosPublicURL);
     url.search = querystring.stringify({['id']: request});
   }
   else if (token != null && token != undefined) {
-    url = new URL(flow + '/link', kratosUrl);
+    url = new URL(flow + '/link', kratosPublicURL);
     url.search = querystring.stringify({['token']: token});
   }
   else {
-    url = new URL(flow, kratosUrl);
+    url = new URL(flow, kratosPublicURL);
   }
   
   return fetch(
@@ -41,6 +42,9 @@ function get(flow, request, cookie, token) {
     }
     )
     .then(function (res) {
+      
+      var contentType = res.headers.get('content-type');
+      
       if (res.status < 200 || res.status > 302) {
         // Wrap response in error object and reject
         var error = new Error();
@@ -51,7 +55,7 @@ function get(flow, request, cookie, token) {
         // The headers of the response
         error.headers = res.headers;
         // Check the content type and get the body as a promise
-        if (res.headers.get('content-type').startsWith('application/json')) {
+        if (contentType != null && contentType.startsWith('application/json')) {
           error.body = res.json();
         }
         else {
@@ -61,7 +65,7 @@ function get(flow, request, cookie, token) {
         return Promise.reject(error);
       }
       else { 
-        if (res.headers.get('content-type').startsWith('application/json')) {
+        if (contentType != null && contentType.startsWith('application/json')) {
           return res.json();
         } else {
           return res;
@@ -71,7 +75,7 @@ function get(flow, request, cookie, token) {
 }
 
 function put(flow, request, cookie, body) {
-  var url = new URL(flow, kratosUrl)
+  var url = new URL(flow, kratosPublicURL)
   url.search = querystring.stringify({['flow']: request})
   
   return fetch(
@@ -88,7 +92,9 @@ function put(flow, request, cookie, body) {
     }
   )
   .then(function (res) {
-
+    
+    var contentType = res.headers.get('content-type');
+    
     if (res.status < 200 || res.status > 302) {
       // Wrap response in error object and reject
       var error = new Error();
@@ -99,20 +105,18 @@ function put(flow, request, cookie, body) {
       // The headers of the response
       error.headers = res.headers;
       // Check the content type and get the body as a promise
-      if (res.headers.get('content-type').startsWith('application/json')) {
+      if (contentType != null && contentType.startsWith('application/json')) {
         error.body = res.json();
       }
       else {
         error.body = res.text();
       }
-
+      
       logError(error);
       return Promise.reject(error);
     }
     else { 
-      var contentType = res.headers.get('content-type');
-
-      if (contentType != null && contentType.startsWith('application/json')) {
+      if (contentType!= null && contentType.startsWith('application/json')) {
         return res.json();
       } else {
         return res;

@@ -33,7 +33,7 @@ block content
                     input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
                 div.form-group(class="pass_show")
                     label(for="password") Your password
-                    a(href="/recover",style={float: 'right'}) Forgot password?
+                    a(href="/recover?referer="+referer,style={float: 'right'}) Forgot password?
                     input(type="password",class="form-control",id="password",name="password",placeholder="********",value="",maxLength="16",required)
                 div.form-group
                     input(type="checkbox",id="remember",class="margin5",name="remember",value="1")

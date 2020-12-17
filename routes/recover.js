@@ -3,6 +3,7 @@ var router = express.Router();
 var url = require('url');
 var querystring = require('querystring');
 var kratos = require('../services/kratos')
+var avanet = require('../services/avanet');
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -11,8 +12,11 @@ var csrfProtection = csrf({ cookie: true });
 const { URLSearchParams } = require('url');
 
 router.get('/', csrfProtection, function (req, res, next) {
+  var query = url.parse(req.url, true).query;
   // Check for errors
   var err = url.parse(req.url, true).query.error;
+  // Get referer, if present
+  var referer = query.referer;
         
   // Initiate the account recovery flow
   kratos.initiateAccountRecoveryFlow()
@@ -54,7 +58,8 @@ router.get('/', csrfProtection, function (req, res, next) {
             csrfToken: t,
             _csrf: req.csrfToken(),
             csrfCookie: cookie,
-            flow: flow
+            flow: flow,
+            referer: referer
           });
         })
         // This will handle any error that happens when making HTTP calls to kratos
@@ -71,26 +76,66 @@ router.get('/', csrfProtection, function (req, res, next) {
 });
 
 router.post('/', csrfProtection, function (req, res, next) {
+  // Get the referer field
+  var referer = req.body.referer;
+  // Get the hostname
+  var host = new URL(referer).hostname;
+  // Get the email field
+  var subject = req.body.identifier;
   // The flow param is now a hidden input field, so let's take it from the request body instead
   var flow = req.body.flow;
   // Get the csrf cookie
   var csrf = req.body.csrf_cookie;
+  // Get the csrf_token field
+  var csrf_token = req.body.csrf_token;
   
-  var params = new URLSearchParams();
-  params.append('email', req.body.identifier);
-  params.append('csrf_token', req.body.csrf_token);
-  
-  // Accept the recovery request
-  kratos.completeRecoveryFlow(flow, csrf, params)
+  // To make sure it's a valid email for the referer, try to get session attributes
+  avanet.getSessionAttributes(host.substring(0, host.indexOf('.')), subject, {
+  })
+    // This will be called if the HTTP request was successful
     .then(function (response) {
-      res.render('recover', {
-        success: true
-      });
+  
+      
+  
+      var params = new URLSearchParams();
+      params.append('email', subject);
+      params.append('csrf_token', csrf_token);
+  
+      // Accept the recovery request
+      kratos.completeRecoveryFlow(flow, csrf, params)
+        .then(function (response) {
+   
+          res.render('recover', {
+            success: true
+          });
+        })
     })
     // This will handle any error that happens when making HTTP calls to kratos
     .catch(function (error) {
-       console.log(error);
-       next(error);
+      error.body.then(function(val) {
+        
+        var message;
+        
+        console.log(val);
+        
+        if (typeof val == 'object') {
+          message = [val.errorDescription];
+        }
+        else {
+          message = [val];
+        }
+        
+        res.render('recover', {
+          success: false,
+          error: (message != null),
+          error_message : message,
+          csrfToken: csrf_token,
+          _csrf: req.csrfToken(),
+          csrfCookie: csrf,
+          flow: flow,
+          referer: referer
+        });
+      });
     });
 });
 

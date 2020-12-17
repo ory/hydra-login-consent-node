@@ -64,25 +64,38 @@ router.post('/', csrfProtection, function (req, res, next) {
   var flow = req.body.flow;
   // Get the original csrf_token retrieved in the call to initiate the login
   var csrf = req.body.csrf_cookie;
-  // Get the original csrf_token retrieved in the call to initiate the login
+  // Get the nodejs csrf token
   var _csrf = req.body._csrf;
   // Get the remember me
   var remember = req.body.remember;
+  // Get csrf_token
+  var csrf_token = req.body.csrf_token;
   
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
   params.append('identifier', req.body.identifier);
   params.append('password', req.body.password);
-  params.append('csrf_token', req.body.csrf_token);
+  params.append('csrf_token', csrf_token);
   
   kratos.acceptLoginRequest(flow, csrf, params)
     .then(function (response) {
-
+      
       // If the login was successful, we should have a Kratos session cookie
       // This will be needed to access self-service flow and to perform a logout...
       var combinedCookieHeader = response.headers.get('set-cookie');
-      var splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader)
       
+      if (combinedCookieHeader == null) {
+        var error = new Error();
+        // Add an error message as body
+        error.body = new Promise((resolve, reject) => {
+          resolve('Invalid username and/or password');
+        });
+        
+        // Throw error
+        throw error;
+      }
+      
+      var splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader)
       var cookies = setCookieParser.parse(splitCookieHeaders, {
         decodeValues: true,  // default: true
         map: true            // default: false
@@ -185,9 +198,9 @@ router.post('/', csrfProtection, function (req, res, next) {
               error: true,
               error_message: message,
               referer: referer,
-              csrfToken: req.body.csrf_token,
+              csrfToken: csrf_token,
               _csrf: req.csrfToken(),
-              csrfCookie: req.body.csrf_cookie,
+              csrfCookie: csrf,
               flow: flow,
               challenge: challenge
             });
@@ -196,6 +209,7 @@ router.post('/', csrfProtection, function (req, res, next) {
     })
     // This will handle any error that happens when making HTTP calls to Kratos
     .catch(function (error) {
+
       error.body.then(function(val) {
         var message;
         
@@ -211,9 +225,9 @@ router.post('/', csrfProtection, function (req, res, next) {
           error: true,
           error_message: message,
           referer: referer,
-          csrfToken: req.body.csrf_token,
+          csrfToken: csrf_token,
           _csrf: req.csrfToken(),
-          csrfCookie: req.body.csrf_cookie,
+          csrfCookie: csrf,
           flow: flow,
           challenge: challenge
         });
