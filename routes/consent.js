@@ -10,10 +10,9 @@ var csrfProtection = csrf({ cookie: true });
 router.get('/', csrfProtection, function (req, res, next) {
   // Parses the URL query
   var query = url.parse(req.url, true).query;
-
   // The challenge is used to fetch information about the consent request from ORY Hydra.
   var challenge = query.consent_challenge;
-
+  
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful
     .then(function (response) {
@@ -28,6 +27,8 @@ router.get('/', csrfProtection, function (req, res, next) {
       var identityId = response.context.iid;
       // We will also make a session cookie value available in the id-token
       var sessionCookie = '';
+      // The referer is used in case we need to re-direct to re-initiate the login flow
+      var referer = response.context.ref;
       
       // Check to see if there is a session cookie available in the context
       if (response.context != null) {
@@ -77,6 +78,7 @@ router.get('/', csrfProtection, function (req, res, next) {
       res.render('consent', {
         csrfToken: req.csrfToken(),
         challenge: challenge,
+        referer: referer,
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
         // and what additional data you have available.
         requested_scope: response.requested_scope,
@@ -93,9 +95,13 @@ router.get('/', csrfProtection, function (req, res, next) {
 router.post('/', csrfProtection, function (req, res, next) {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge;
-
+  // Get the granted scope
+  var grant_scope = req.body.grant_scope
+  console.log('granted scope=<'+grant_scope+'>');
+  
   // Let's see if the user decided to accept or reject the consent request..
-  if (req.body.submit === 'Deny access') {
+  // This will also check if the user granted no scopes...
+  if (req.body.submit == 'Deny access' || grant_scope == null || grant_scope == undefined) {
     // Looks like the consent request was denied by the user
     return hydra.rejectConsentRequest(challenge, {
       error: 'access_denied',
@@ -110,13 +116,11 @@ router.post('/', csrfProtection, function (req, res, next) {
         next(error);
       });
   }
-
-  var grant_scope = req.body.grant_scope
   
   if (!Array.isArray(grant_scope)) {
     grant_scope = [grant_scope]
   }
-  
+
   // Seems like the user authenticated! Let's tell hydra...
   hydra.getConsentRequest(challenge)
   // This will be called if the HTTP request was successful

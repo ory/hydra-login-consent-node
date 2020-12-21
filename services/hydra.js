@@ -42,8 +42,9 @@ function get(flow, challenge) {
 
 // A little helper that takes type (can be "login" or "consent"), the action (can be "accept" or "reject") and a challenge and returns the response from ORY Hydra.
 function put(flow, action, challenge, body) {
-  const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl)
-  url.search = querystring.stringify({[flow + '_challenge']: challenge})
+  const url = new URL('/oauth2/auth/requests/' + flow + '/' + action, hydraUrl);
+  url.search = querystring.stringify({[flow + '_challenge']: challenge});
+  
   return fetch(
     url.toString(),
     {
@@ -56,15 +57,28 @@ function put(flow, action, challenge, body) {
     }
   )
   .then(function (res) {
+    var contentType = res.headers.get('content-type');
+    
     if (res.status < 200 || res.status > 302) {
-      // This will handle any errors that aren't network related (network related errors are handled automatically)
-      return res.json().then(function (body) {
-        console.error('An error occurred while making a HTTP request: ', body)
-        return Promise.reject(new Error(body.error.message))
-      })
+      // Wrap response in error object and reject
+        var error = new Error();
+        // The url that caused exception
+        error.url = url.toString();
+        // The response status
+        error.status = res.status;
+        // The headers of the response
+        error.headers = res.headers;
+        // Check the content type and get the body as a promise
+        if (contentType != null && contentType.startsWith('application/json')) {
+          error.body = res.json();
+        }
+        else {
+          error.body = res.text();
+        }
+        return Promise.reject(error);
     }
 
-    if (res.headers.get('content-type').startsWith('application/json')) {
+    if (contentType != null && contentType.startsWith('application/json')) {
       return res.json();
     } else {
       return res;

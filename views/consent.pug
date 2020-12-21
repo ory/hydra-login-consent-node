@@ -10,12 +10,13 @@ block content
         div.card-header
             img(src=selfURL+"/images/AVA_Logo_RGB.png",alt="Avanet Logo")
         div.card-body
-            form(action="",method="POST")
+            form(id="consent",action="",method="POST")
                 div.form-group
                     h4(class="card-title") An application is requesting access to your data.
                 div.form-group
                     input(type="hidden",name="challenge",value=challenge)
                     input(type="hidden",name="_csrf",value=csrfToken)
+                    input(type="hidden",id="referer",name="referer",value=referer)
                 div.form-group
                     p.
                         Hi <strong>#{user}</strong>, <br/><br/>application <strong>#{client.client_name || client.client_id}</strong> wants to access resources on your behalf to:
@@ -30,8 +31,8 @@ block content
                     input(type="checkbox",id="remember",class="margin5",name="remember",value="1",checked="checked")
                     label(for="remember") Do not ask me again
                 div.form-group
-                    input(type="submit",id="accept", class="btn btn-primary btn-block" , name="submit",value="Allow access")
-                    input(type="submit",id="reject", class="btn btn-secondary btn-block" , name="reject",value="Deny access")
+                    input(type="submit",id="accept", class="btn btn-primary btn-block" ,   name="submit",value="Allow access")
+                    input(type="submit",id="reject", class="btn btn-secondary btn-block" , name="submit",value="Deny access")
                 div.form-group
                     p(style="text-align:center;").
                         <a href="#{client.policy_uri}">Policy</a>&emsp;|&emsp; <a href="#{client.tos_uri}">Terms of service</a>
@@ -39,3 +40,7 @@ block content
     div.footer
         div
             span © 2020 Ava Monitoring
+            
+    script
+        include /scripts/consent.js
+        

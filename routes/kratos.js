@@ -156,6 +156,7 @@ router.post('/', csrfProtection, function (req, res, next) {
             
             // Making some session context available
             context: {
+              ref: referer,       // Where the login originated from
               ksc: sessionCookie, // Kratos session cookie
               oid: orgId,         // Organisation id
               pid: parentOrgId,   // Parent organisation id
@@ -168,13 +169,20 @@ router.post('/', csrfProtection, function (req, res, next) {
             acr: '0',
           })
           .then(function (response) {
-            // All we need to do now is to redirect the user back to hydra!
+            // Re-direct back to Hydra
             res.redirect(response.redirect_to);
           })
           // This will handle any error that happens when making HTTP calls to hydra
           .catch(function (error) {
-            console.log(error)
-             next(error);
+            error.body.then(function(val) {
+              if (error.status == 409) { // User hit the Back button
+                res.redirect(referer);   // Re-start the login flow
+              } 
+              else {
+                console.log(error)
+                next(error);
+              }
+            });
           });
         })
         // This will handle any error that happens when making HTTP calls to avanet company-user-mgmt microservice
