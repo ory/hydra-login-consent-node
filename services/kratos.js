@@ -74,8 +74,12 @@ function get(flow, request, cookie, token) {
     });
 }
 
-function put(flow, request, cookie, body) {
-  var url = new URL(flow, kratosPublicURL)
+function putAdmin(flow, request, cookie, body) {
+  return put(flow, request, cookie, body, kratosAdminURL);
+}
+
+function put(flow, request, cookie, body, kratosURL) {
+  var url = new URL(flow, kratosURL != null ? kratosURL : kratosPublicURL)
   url.search = querystring.stringify({['flow']: request})
   
   return fetch(
@@ -154,9 +158,18 @@ var kratos = {
   getSettingsRequest: function(request, cookie) {
     return get('/settings', request, 'ory_kratos_session=' + cookie, null);
   },
+  // Sets new password
   setNewPasswordRequest: function(request, session, csrf, body) {
     var cookie = 'ory_kratos_session=' + session + '; ' + 'csrf_token=' + csrf;
     return put('/password', request, cookie, body);
+  },
+  // Fetches information about the current session
+  getSessionIdentity: function(session) {
+    return get('/sessions/whoami', null, 'ory_kratos_session=' + session, null);
+  },
+  // Updates an identity (Admin endpoint)
+  updateIdentity: function(id, body) {
+    return putAdmin('/identities/' + id, null, null, body);
   }
 };
 

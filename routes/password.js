@@ -151,10 +151,22 @@ router.post('/set', csrfProtection, function (req, res, next) {
   // Set the new password
   kratos.setNewPasswordRequest(flow, session, csrf, params)
     .then(function (response) {
-      res.render('password', {
-        success: true,
-        login_links: login_links
-      });
+      // Get session information
+      kratos.getSessionIdentity(session)
+        .then(function (response) {
+          
+          var id = response.identity.id;
+          var schemaId = response.identity.schema_id;
+          var traits = response.identity.traits;
+          
+          console.log('traits=' + traits);
+          
+          res.render('password', {
+            success: true,
+            login_links: login_links
+          });
+        })
+        
     })
     // This will handle any error that happens when making HTTP calls to kratos
     .catch(function (error) {
