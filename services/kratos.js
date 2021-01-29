@@ -74,18 +74,63 @@ function get(flow, request, cookie, token) {
     });
 }
 
-function putAdmin(flow, request, cookie, body) {
-  return put(flow, request, cookie, body, kratosAdminURL, 'PUT');
+function put(flow, body) {
+  var url = new URL(flow, kratosAdminURL)
+  
+  return fetch(
+    url.toString(),
+    {
+      method: 'PUT',
+      body: body,
+      redirect: 'manual',
+      headers: {
+        'Content-Type': 'application/json',
+        ...mockTlsTermination
+      }
+    }
+  )
+  .then(function (res) {
+    
+    var contentType = res.headers.get('content-type');
+    
+    if (res.status < 200 || res.status > 302) {
+      // Wrap response in error object and reject
+      var error = new Error();
+      // The url that caused exception
+      error.url = url.toString();
+      // The response status
+      error.status = res.status;
+      // The headers of the response
+      error.headers = res.headers;
+      // Check the content type and get the body as a promise
+      if (contentType != null && contentType.startsWith('application/json')) {
+        error.body = res.json();
+      }
+      else {
+        error.body = res.text();
+      }
+      
+      logError(error);
+      return Promise.reject(error);
+    }
+    else { 
+      if (contentType!= null && contentType.startsWith('application/json')) {
+        return res.json();
+      } else {
+        return res;
+      }
+    }
+  })
 }
 
-function put(flow, request, cookie, body, kratosURL, method) {
-  var url = new URL(flow, kratosURL != null ? kratosURL : kratosPublicURL)
+function post(flow, request, cookie, body) {
+  var url = new URL(flow, kratosPublicURL)
   url.search = querystring.stringify({['flow']: request})
   
   return fetch(
     url.toString(),
     {
-      method: method != null ? method : 'POST',
+      method: 'POST',
       body: body,
       redirect: 'manual',
       headers: {
@@ -136,7 +181,7 @@ var kratos = {
   },
   // Accepts a login request.
   acceptLoginRequest: function (request, csrf, body) {
-    return put('/login', request, 'csrf_token=' + csrf, body);
+    return post('/login', request, 'csrf_token=' + csrf, body);
   },
   // Initiates account recovery flow
   initiateAccountRecoveryFlow: function() {
@@ -148,7 +193,7 @@ var kratos = {
   },
   // Performs account recovery using token
   completeRecoveryFlow: function(request, csrf, body) {
-    return put('/recovery/link', request, 'csrf_token=' + csrf, body);
+    return post('/recovery/link', request, 'csrf_token=' + csrf, body);
   },
   // Performs account recovery using token
   useRecoveryLink: function(token) {
@@ -161,7 +206,7 @@ var kratos = {
   // Sets new password
   setNewPasswordRequest: function(request, session, csrf, body) {
     var cookie = 'ory_kratos_session=' + session + '; ' + 'csrf_token=' + csrf;
-    return put('/password', request, cookie, body);
+    return post('/password', request, cookie, body);
   },
   // Fetches information about the current session
   getSessionIdentity: function(session) {
@@ -169,7 +214,7 @@ var kratos = {
   },
   // Updates an identity (Admin endpoint)
   updateIdentity: function(id, body) {
-    return putAdmin('/identities/' + id, null, null, body);
+    return put('/identities/' + id, body);
   }
 };
 
