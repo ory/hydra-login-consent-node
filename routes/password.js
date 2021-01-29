@@ -18,7 +18,7 @@ router.get('/', csrfProtection, function (req, res, next) {
   var query = url.parse(req.url, true).query
   // Get the token param
   var token = query.token;
-  
+
   // Perform account recovery
   kratos.useRecoveryLink(token)
     // This will be called if the HTTP request was successful
@@ -38,21 +38,21 @@ router.get('/', csrfProtection, function (req, res, next) {
         decodeValues: true,  // default: true
         map: true            // default: false
       });
-  
+
       var sessionCookie = '';
- 
+
       // If the session cookie is undefined, it's most likely because a recovery link can only be used once, and 
       // now it's being re-used. The only sensible thing to do is to redirect to the recover page and display
       // an error message there
       if (cookies['ory_kratos_session'] == null || cookies['ory_kratos_session'] == 'undefined') {
-        res.redirect(selfURL+'/recover?error=invalid_token');
+        res.redirect(selfURL + '/recover?error=invalid_token');
       }
-      else {       
+      else {
         sessionCookie = cookies['ory_kratos_session'].value;
-      
+
         // Get the csrf_cookie
         var csrf = cookies['csrf_token'].value;
-        
+
         // Get the settings request
         kratos.getSettingsRequest(flow, sessionCookie)
           // This will be called if the HTTP request was successful
@@ -72,13 +72,13 @@ router.get('/', csrfProtection, function (req, res, next) {
             // Response is a JSON object, and whe are interested in the csrf_token field
             var fields = response.methods.password.config.fields;
             var t;
-        
-            for (i in fields) { 
+
+            for (i in fields) {
               if (fields[i].name == 'csrf_token') {
                 t = fields[i].value;
               }
             }
-        
+
             res.render('password', {
               session: sessionCookie,
               csrfToken: t,
@@ -91,24 +91,24 @@ router.get('/', csrfProtection, function (req, res, next) {
           })
           // This will handle any error that happens when making HTTP calls to kratos
           .catch(function (error) {
-             console.log(error);
-             next(error);
+            console.log(error);
+            next(error);
           });
-      }         
+      }
     })
     // This will handle any error that happens when making HTTP calls to kratos
     .catch(function (error) {
- 
-      error.body.then(function(val) {
+
+      error.body.then(function (val) {
         var message;
-        
+
         if (typeof val == 'object') {
           message = val.error.message;
         }
         else {
           message = val;
         }
-      
+
         res.render('password', {
           error: true,
           error_message: error.body,
@@ -141,46 +141,53 @@ router.post('/set', csrfProtection, function (req, res, next) {
       host: 'https://' + ohosts[index] + '.' + domain
     }
     login_links.unshift(link);
-  }); 
+  });
 
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
   params.append('password', password);
   params.append('csrf_token', csrf_token);
-  
+
   // Set the new password
   kratos.setNewPasswordRequest(flow, session, csrf, params)
     .then(function (response) {
       // Get session information
       kratos.getSessionIdentity(session)
         .then(function (response) {
-          
+
           var id = response.identity.id;
           var schemaId = response.identity.schema_id;
           var traits = response.identity.traits;
-          
-          console.log('traits=' + traits);
-          
-          res.render('password', {
-            success: true,
-            login_links: login_links
-          });
+
+          if (traits != null) {
+            traits.status = traits.status == "CREATED" ? "ACTIVE" : traits.status;
+            
+            var body = {
+              "traits": traits,
+              "schema_id": schemaId
+            };
+            kratos.updateIdentity(id, JSON.stringify(body)).then(function (response) {});
+            res.render('password', {
+              success: true,
+              login_links: login_links
+            });
+          }
         })
-        
+
     })
     // This will handle any error that happens when making HTTP calls to kratos
     .catch(function (error) {
-      
-      error.body.then(function(val) {
+
+      error.body.then(function (val) {
         var message;
-       
+
         if (typeof val == 'object') {
           message = val.error.message;
         }
         else {
           message = val;
         }
-        
+
         res.render('password', {
           error: true,
           error_message: message,
