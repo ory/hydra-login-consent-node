@@ -75,17 +75,17 @@ function get(flow, request, cookie, token) {
 }
 
 function putAdmin(flow, request, cookie, body) {
-  return put(flow, request, cookie, body, kratosAdminURL);
+  return put(flow, request, cookie, body, kratosAdminURL, 'PUT');
 }
 
-function put(flow, request, cookie, body, kratosURL) {
+function put(flow, request, cookie, body, kratosURL, method) {
   var url = new URL(flow, kratosURL != null ? kratosURL : kratosPublicURL)
   url.search = querystring.stringify({['flow']: request})
   
   return fetch(
     url.toString(),
     {
-      method: 'POST',
+      method: method != null ? method : 'POST',
       body: body,
       redirect: 'manual',
       headers: {
