@@ -57,9 +57,11 @@ block content
                     div.form-group
                         label(for="identifier") Your email
                         input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
-                    div.form-group     
-                        input(type="submit",id="submit",class="btn btn-primary btn-block",name="submit",value="Reset password")
-                        input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login",onclick="history.back();")
+                    if error
+                    else
+                        div.form-group     
+                            input(type="submit",id="submit",class="btn btn-primary btn-block",name="submit",value="Reset password")
+                            input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login",onclick="history.back();")
 
     div.footer
         div
