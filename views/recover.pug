@@ -53,12 +53,10 @@ block content
                                 <i class="fa fa-info"></i> 
                                 | Important!
                             hr
-                            p When submitting this form, you will receive a password reset link by mail. That link will only valid for 1 hour.
-                    div.form-group
-                        label(for="identifier") Your email
-                        input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
-                    if error
-                    else
+                            p When submitting this form, you will receive a password reset link by mail. The link can only be used once, and will only valid for 1 hour.
+                        div.form-group
+                            label(for="identifier") Your email
+                            input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
                         div.form-group     
                             input(type="submit",id="submit",class="btn btn-primary btn-block",name="submit",value="Reset password")
                             input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login",onclick="history.back();")
