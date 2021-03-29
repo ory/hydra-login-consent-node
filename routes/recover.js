@@ -17,6 +17,8 @@ router.get('/', csrfProtection, function (req, res, next) {
   var err = url.parse(req.url, true).query.error;
   // Get referer, if present
   var referer = query.referer;
+  var host = new URL(referer).hostname;
+  host = host.substring(0, host.indexOf('.'));
         
   // Initiate the account recovery flow
   kratos.initiateAccountRecoveryFlow()
@@ -59,7 +61,8 @@ router.get('/', csrfProtection, function (req, res, next) {
             _csrf: req.csrfToken(),
             csrfCookie: cookie,
             flow: flow,
-            referer: referer
+            referer: referer,
+            host: host
           });
         })
         // This will handle any error that happens when making HTTP calls to kratos
@@ -78,8 +81,8 @@ router.get('/', csrfProtection, function (req, res, next) {
 router.post('/', csrfProtection, function (req, res, next) {
   // Get the referer field
   var referer = req.body.referer;
-  // Get the hostname
   var host = new URL(referer).hostname;
+  host = host.substring(0, host.indexOf('.'));
   // Get the email field
   var subject = req.body.identifier;
   // The flow param is now a hidden input field, so let's take it from the request body instead
@@ -90,7 +93,7 @@ router.post('/', csrfProtection, function (req, res, next) {
   var csrf_token = req.body.csrf_token;
   
   // To make sure it's a valid email for the referer, try to get session attributes
-  avanet.getSessionAttributes(host.substring(0, host.indexOf('.')), subject, {
+  avanet.getSessionAttributes(host, subject, {
   })
     // This will be called if the HTTP request was successful
     .then(function (response) {
@@ -106,7 +109,8 @@ router.post('/', csrfProtection, function (req, res, next) {
         .then(function (response) {
    
           res.render('recover', {
-            success: true
+            success: true,
+            host: host
           });
         })
     })
@@ -133,7 +137,8 @@ router.post('/', csrfProtection, function (req, res, next) {
           _csrf: req.csrfToken(),
           csrfCookie: csrf,
           flow: flow,
-          referer: referer
+          referer: referer,
+          host: host
         });
       });
     });

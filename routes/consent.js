@@ -29,6 +29,9 @@ router.get('/', csrfProtection, function (req, res, next) {
       var sessionCookie = '';
       // The referer is used in case we need to re-direct to re-initiate the login flow
       var referer = response.context.ref;
+      // The host is used to render the correct logo
+      var host = new URL(referer).hostname;
+      host = host.substring(0, host.indexOf('.'));
       
       // Check to see if there is a session cookie available in the context
       if (response.context != null) {
@@ -79,6 +82,7 @@ router.get('/', csrfProtection, function (req, res, next) {
         csrfToken: req.csrfToken(),
         challenge: challenge,
         referer: referer,
+        host: host,
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
         // and what additional data you have available.
         requested_scope: response.requested_scope,

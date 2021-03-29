@@ -19,6 +19,8 @@ router.get('/', csrfProtection, function (req, res, next) {
   var query = url.parse(req.url, true).query;
   // Get the host parameter that will tell us where the login request originated from
   var referer = query.referer;
+  var host = new URL(referer).hostname;
+  host = host.substring(0, host.indexOf('.'));
   // The challenge will be used when we return to the Hydra login flow
   var challenge = query.challenge;
   // The flow is used to fetch information about the login flow from ORY Kratos.
@@ -40,6 +42,7 @@ router.get('/', csrfProtection, function (req, res, next) {
       }
       
       res.render('login', {
+        host: host,
         referer: referer,
         csrfToken: t,
         _csrf: req.csrfToken(),
@@ -58,6 +61,8 @@ router.get('/', csrfProtection, function (req, res, next) {
 router.post('/', csrfProtection, function (req, res, next) {
   // The referer parameter is now a hidden input field, so let's take it from the request body instead
   var referer = req.body.referer;
+  var host = new URL(referer).hostname;
+  host = host.substring(0, host.indexOf('.'));
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge
   // The flow is now a hidden input field, so let's take it from the request body instead
@@ -120,16 +125,17 @@ router.post('/', csrfProtection, function (req, res, next) {
           });
       }
       
-      var host = new URL(referer).hostname;
+      //var host = new URL(referer).hostname;
       //var host = 'avanet.avamonitoring.dev'; // If running locally with a known user, set the host to a value mathing the user
-      var idx = host.indexOf('.');
+      //var idx = host.indexOf('.');
       
       var orgId = '';       // Organisation id
       var parentOrgId = ''; // Parent organisation id
       var orgUnitId = '';   // Organisational unit id
       var identityId = '';  // Identity id
       
-      avanet.getSessionAttributes(host.substring(0, idx), req.body.identifier, {
+      //avanet.getSessionAttributes(host.substring(0, idx), req.body.identifier, {
+      avanet.getSessionAttributes(host, req.body.identifier, {
         })
         // This will be called if the HTTP request was successful
         .then(function (response) {
@@ -205,6 +211,7 @@ router.post('/', csrfProtection, function (req, res, next) {
             res.render('login', {
               error: true,
               error_message: message,
+              host: host,
               referer: referer,
               csrfToken: csrf_token,
               _csrf: req.csrfToken(),
@@ -232,6 +239,7 @@ router.post('/', csrfProtection, function (req, res, next) {
         res.render('login', {
           error: true,
           error_message: message,
+          host: host,
           referer: referer,
           csrfToken: csrf_token,
           _csrf: req.csrfToken(),
