@@ -6,6 +6,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var setCookieParser = require('set-cookie-parser');
 var bodyParser = require('body-parser');
+var url = require('url');
 
 var routes = require('./routes/index');
 var login = require('./routes/login');
@@ -24,6 +25,8 @@ app.use(cors({
 // Make some process env variables available to all templates
 app.use((req, res, next) => {
   res.locals.selfURL = process.env.SELF_URL;
+  var host = new URL(req.header('referer')).hostname;
+  res.locals.host = host.substring(0, host.indexOf('.'));
   next();
 });
 

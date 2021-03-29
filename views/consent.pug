@@ -4,11 +4,11 @@ block content
 
     div.header
         div
-            span Language: English -  Version 0.0.0.1
+            span Language: English -  Version 0.1.0
 
     div.card.width480
         div.card-header
-            img(src=selfURL+"/images/AVA_Logo_RGB.png",alt="Avanet Logo")
+            img(src=selfURL+"/images/"+host+".png",alt="Logo")
         div.card-body
             form(id="consent",action="",method="POST")
                 div.form-group
@@ -39,7 +39,7 @@ block content
                     
     div.footer
         div
-            span © 2020 Ava Monitoring
+            span © 2021 Ava Monitoring
             
     script
         include /scripts/consent.js
