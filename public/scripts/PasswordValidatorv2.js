@@ -15,10 +15,11 @@ var PasswordValidator = new function () {
     this.uppercaseConfigured = true;
     this.digitConfigured = true;
     this.specialConfigured = true;
-    this.prohibitedConfigured = true;
+    this.prohibitedConfigured = false;
 
-    this.specialCharacters = ['_', '#', '%', '*', '@'];
-    this.prohibitedCharacters = ['$', '&', '=', '!'];
+    
+    this.specialCharacters = ['_', '#', '%', '*', '@', '!', '”', '$', '&', '\'', '(', ')', '+', ', ', '-', '.', '/', ':', ';', '<', '=', '>', '?', '[', '\\', ']', '^', '`', '{', '|', '}', '~'];
+    this.prohibitedCharacters = [];
 
     this.elementnumber = 0;
     this.setup = function (passwordField, verifyField) {
