@@ -60,7 +60,8 @@ router.get('/', csrfProtection, function (req, res, next) {
               oid: orgId,         // Organisation id
               pid: parentOrgId,   // Parent organisation id
               oui: orgUnitId,     // Orgnisational unit id
-              iid: identityId     // Identity id
+              iid: identityId,    // Identity id
+              ref: referer        // Referer
             }
           },
           
@@ -101,7 +102,6 @@ router.post('/', csrfProtection, function (req, res, next) {
   var challenge = req.body.challenge;
   // Get the granted scope
   var grant_scope = req.body.grant_scope
-  console.log('granted scope=<'+grant_scope+'>');
   
   // Let's see if the user decided to accept or reject the consent request..
   // This will also check if the user granted no scopes...
@@ -143,6 +143,8 @@ router.post('/', csrfProtection, function (req, res, next) {
       var orgUnitId = response.context.oui;
       // Identity id
       var identityId = response.context.iid;
+      // Referer
+      var referer = response.context.ref;
       
       return hydra.acceptConsentRequest(challenge, {
         // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
@@ -161,7 +163,8 @@ router.post('/', csrfProtection, function (req, res, next) {
             oid: orgId,         // Organisation id
             pid: parentOrgId,   // Parent organisation id
             oui: orgUnitId,     // Orgnisational unit id
-            iid: identityId     // Identity id
+            iid: identityId,    // Identity id
+            ref: referer        // Referer
           }
         },
 
