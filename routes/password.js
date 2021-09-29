@@ -55,7 +55,7 @@ router.get('/', csrfProtection, function (req, res, next) {
       // If the session cookie is undefined, it's most likely because a recovery link can only be used once, and 
       // now it's being re-used. The only sensible thing to do is to redirect to the recover page and display
       // an error message there
-      if (sessionCookie == 'u') {
+      if (sessionCookie == '') {
         res.redirect(selfURL + '/recover?error=invalid_token');
       }
       else {
@@ -101,7 +101,7 @@ router.get('/', csrfProtection, function (req, res, next) {
           })
           // This will handle any error that happens when making HTTP calls to kratos
           .catch(function (error) {
-            console.log(error);
+            logger.error(error);
             next(error);
           });
       }
@@ -118,6 +118,8 @@ router.get('/', csrfProtection, function (req, res, next) {
         else {
           message = val;
         }
+        
+        logger.error(error);
 
         res.render('password', {
           error: true,
@@ -201,6 +203,8 @@ router.post('/set', csrfProtection, function (req, res, next) {
         else {
           message = val;
         }
+        
+        logger.error(error);
 
         res.render('password', {
           error: true,

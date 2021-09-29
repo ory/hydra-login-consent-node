@@ -11,7 +11,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
 }
 
 function logError(error) {
-  console.log('error={status: '+error.status+', url: '+error.url+'}');
+  logger.error('error={status: '+error.status+', url: '+error.url+'}');
 }
 
 function get(uri, host, subject) {

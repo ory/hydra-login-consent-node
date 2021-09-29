@@ -1,8 +1,10 @@
+var winston = require('winston');
+var expressWinston = require('express-winston');
+
 var express = require('express');
 var cors = require('cors');
 var path = require('path');
 var favicon = require('serve-favicon');
-var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var setCookieParser = require('set-cookie-parser');
 var bodyParser = require('body-parser');
@@ -18,6 +20,7 @@ var recover = require('./routes/recover');
 var password = require('./routes/password');
 
 var app = express();
+
 app.use(cors({
     credentials: true,
 }));
@@ -26,6 +29,7 @@ app.use(cors({
 app.use((req, res, next) => {
   res.locals.selfURL = process.env.SELF_URL;
   res.locals.loginTimeout = process.env.LOGIN_TIMEOUT;
+  res.locals.recoveryLifespan = process.env.RECOVERY_LIFESPAN;
   next();
 });
 
@@ -36,11 +40,41 @@ app.locals.basedir = path.join(__dirname, 'public');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(logger('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(expressWinston.logger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.logstash()
+  ),
+  meta: false,
+  msg: "HTTP  ",
+  expressFormat: true,
+  colorize: false,
+  ignoreRoute: function (req, res) { return false; }
+}));
+
+logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console()
+  ],
+  format: winston.format.combine(
+    winston.format.timestamp(),
+    winston.format.logstash()
+  ),
+  meta: false,
+  msg: "HTTP  ",
+  expressFormat: true,
+  colorize: false,
+  ignoreRoute: function (req, res) { return false; }
+});
 
 app.use('/', routes);
 app.use('/login', login);

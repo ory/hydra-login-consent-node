@@ -52,12 +52,13 @@ router.get('/', csrfProtection, function (req, res, next) {
         })
         // This will handle any error that happens when making HTTP calls to kratos
         .catch(function (error) {
-           console.log(error);
+           logger.error(error);
            next(error);
         }); 
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(function (error) {
+      logger.error(error);
       next(error);
     });
     

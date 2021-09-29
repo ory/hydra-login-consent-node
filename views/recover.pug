@@ -14,10 +14,10 @@ block content
                             <i class="fa fa-check"></i> 
                             | Success!
                         hr
-                        ol(class="instructions")
-                            li Check your email for a password reset mail. Please allow for a few minutes for the mail to get delivered. If not found, also check your spam folder.
-                            li If email was found, follow the instructions in the email. 
-                            li The link in the email will only be <strong>valid for 1 hour</strong>.
+                        ul(class="instructions")
+                            li Check your email for a password reset mail. Please allow for a few minutes for the mail to be delivered. If not found, check your spam folder.
+                            li If an email was found, follow the instructions in the email. 
+                            li The link in the email will only be <strong>valid for #{recoveryLifespan} hours</strong>.
                             li If no email was found, please contact AVA Support as indicated below
             div.card-footer
                 div.form-group
@@ -26,7 +26,7 @@ block content
                 
         else
             div.card-body
-                form(id="form1",action="",method="POST")
+                form(id="form1",action="/recover",method="POST")
                     div.form-group
                         input(type="hidden",name="flow",value=flow)
                         input(type="hidden",name="csrf_token",value=csrfToken)
@@ -43,20 +43,20 @@ block content
                             hr
                             each val in error_message
                                 p= val
-                    else
-                        div(class="alert alert-info")
-                            h4(class="alert-heading") 
-                                <i class="fa fa-info"></i> 
-                                | Important!
-                            hr
-                            p When submitting this form, you will receive a password reset link by mail. The link can only be used once, and will only valid for 1 hour.
-                        div.form-group
-                            label(for="identifier") Your email
-                            input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
-                            input(type="hidden",name="method",value="link")
-                        div.form-group     
-                            input(type="submit",id="submit",class="btn btn-primary btn-block",name="submit",value="Reset password")
-                            input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login",onclick="history.back();")
+
+                    div(class="alert alert-info")
+                        h4(class="alert-heading") 
+                            <i class="fa fa-info"></i> 
+                            | Important!
+                        hr
+                        p When submitting this form, you will receive a password reset link by email. The link will only valid for #{recoveryLifespan} hours.
+                    div.form-group
+                        label(for="identifier") Your email
+                        input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
+                        input(type="hidden",name="method",value="link")
+                    div.form-group     
+                        input(type="submit",id="submit",class="btn btn-primary btn-block",name="submit",value="Reset password")
+                        input(type="submit",id="cancel",class="btn btn-secondary btn-block",name="cancel",value="Back to login",onclick="history.back();")
 
     div.footer
         div

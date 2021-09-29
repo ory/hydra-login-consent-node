@@ -12,7 +12,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
 }
 
 function logError(error) {
-  console.log('error={status: '+error.status+', url: '+error.url+'}');
+  logger.error('error={status: '+error.status+', url: '+error.url+'}');
 }
 
 function get(uri, params, cookie) {
@@ -135,7 +135,7 @@ function post(flow, request, cookie, body) {
   .then(function (res) {
     
     var contentType = res.headers.get('content-type');
-    
+     
     if (res.status < 200 || res.status > 303) {
       // Wrap response in error object and reject
       var error = new Error();

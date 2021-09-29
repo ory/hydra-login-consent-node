@@ -17,8 +17,8 @@ router.get('/', csrfProtection, function (req, res, next) {
   var err = url.parse(req.url, true).query.error;
   // Get referer, if present
   var referer = query.referer;
-  var host = new URL(referer).hostname;
-  host = host.substring(0, host.indexOf('.'));
+  // The hostname of the referer
+  var host = 'avanet';
         
   // Initiate the account recovery flow
   kratos.initiateAccountRecoveryFlow()
@@ -51,7 +51,10 @@ router.get('/', csrfProtection, function (req, res, next) {
           });
           
           if (err == 'invalid_token') {
-            err = ['The recovery token has either expired or has already been used. Please try to recover your account again.','Recovery links are only valid for 1 hour.'];
+            err = ['The recovery token has either expired or has already been used. Please try again.'];
+          } else {
+            host = new URL(referer).hostname;
+            host = host.substring(0, host.indexOf('.'));
           }
           
           res.render('recover', {
@@ -68,22 +71,18 @@ router.get('/', csrfProtection, function (req, res, next) {
         })
         // This will handle any error that happens when making HTTP calls to kratos
         .catch(function (error) {
-          console.log(error);
+          logger.error(error);
           next(error);
         });
     })
     // This will handle any error that happens when making HTTP calls to kratos
     .catch(function (error) {
-       console.log(error);
+       logger.error(error);
        next(error);
     });
 });
 
 router.post('/', csrfProtection, function (req, res, next) {
-  // Get the referer field
-  var referer = req.body.referer;
-  var host = new URL(referer).hostname;
-  host = host.substring(0, host.indexOf('.'));
   // Get the email field
   var subject = req.body.identifier;
   // Get the method field
@@ -94,56 +93,57 @@ router.post('/', csrfProtection, function (req, res, next) {
   var csrf = req.body.csrf_cookie;
   // Get the csrf_token field
   var csrf_token = req.body.csrf_token;
+  // Get the referer field, if present
+  var referer = req.body.referer;
+  // The hostname of the referer
+  var host = 'avanet';
   
-  // To make sure it's a valid email for the referer, try to get session attributes
-  avanet.getSessionAttributes(host, subject, {
-  })
-    // This will be called if the HTTP request was successful
+  var params = new URLSearchParams();
+  params.append('email', subject);
+  params.append('method', method);
+  params.append('csrf_token', csrf_token);
+  
+  // Accept the recovery request
+  kratos.completeRecoveryFlow(flow, csrf, params)
     .then(function (response) {
-  
-      var params = new URLSearchParams();
-      params.append('email', subject);
-      params.append('method', method);
-      params.append('csrf_token', csrf_token);
-  
-      // Accept the recovery request
-      kratos.completeRecoveryFlow(flow, csrf, params)
-        .then(function (response) {
-   
-          res.render('recover', {
-            success: true,
-            host: host
-          });
-        })
+      
+      if (referer != null && referer != 'undefined' && referer != '') {
+        host = new URL(referer).hostname;
+        host = host.substring(0, host.indexOf('.'));
+      }
+          
+      res.render('recover', {
+        success: true,
+        host: host
+      });
     })
-    // This will handle any error that happens when making HTTP calls to kratos
-    .catch(function (error) {
-      error.body.then(function(val) {
+  // This will handle any error that happens when making HTTP calls to kratos
+  .catch(function (error) {
+    error.body.then(function(val) {
         
-        var message;
-        
-        console.log(val);
-        
-        if (typeof val == 'object') {
-          message = [val.errorDescription];
-        }
-        else {
-          message = [val];
-        }
-        
-        res.render('recover', {
-          success: false,
-          error: (message != null),
-          error_message : message,
-          csrfToken: csrf_token,
-          _csrf: req.csrfToken(),
-          csrfCookie: csrf,
-          flow: flow,
-          referer: referer,
-          host: host
-        });
+      var message;
+          
+      if (typeof val == 'object') {
+        message = [val.errorDescription];
+      } else {
+        message = [val];
+      }
+      
+      logger.error(message);
+      
+      res.render('recover', {
+        success: false,
+        error: (message != null),
+        error_message : message,
+        csrfToken: csrf_token,
+        _csrf: req.csrfToken(),
+        csrfCookie: csrf,
+        flow: flow,
+        referer: referer,
+        host: host
       });
     });
+  });
 });
 
 module.exports = router;
