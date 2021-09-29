@@ -15,19 +15,11 @@ function logError(error) {
   console.log('error={status: '+error.status+', url: '+error.url+'}');
 }
 
-function get(flow, request, cookie, token) {
-  var url;
+function get(uri, params, cookie) {
+  var url = new URL(uri, kratosPublicURL);
   
-  if (request != null && request != undefined) {
-    url = new URL(flow + '/flows', kratosPublicURL);
-    url.search = querystring.stringify({['id']: request});
-  }
-  else if (token != null && token != undefined) {
-    url = new URL(flow + '/link', kratosPublicURL);
-    url.search = querystring.stringify({['token']: token});
-  }
-  else {
-    url = new URL(flow, kratosPublicURL);
+  if (params != null && params != undefined) {
+    url.search = querystring.stringify(params);
   }
   
   return fetch(
@@ -45,7 +37,7 @@ function get(flow, request, cookie, token) {
       
       var contentType = res.headers.get('content-type');
       
-      if (res.status < 200 || res.status > 302) {
+      if (res.status < 200 || res.status > 303) {
         // Wrap response in error object and reject
         var error = new Error();
         // The url that caused exception
@@ -93,7 +85,7 @@ function put(flow, body) {
     
     var contentType = res.headers.get('content-type');
     
-    if (res.status < 200 || res.status > 302) {
+    if (res.status < 200 || res.status > 303) {
       // Wrap response in error object and reject
       var error = new Error();
       // The url that caused exception
@@ -144,7 +136,7 @@ function post(flow, request, cookie, body) {
     
     var contentType = res.headers.get('content-type');
     
-    if (res.status < 200 || res.status > 302) {
+    if (res.status < 200 || res.status > 303) {
       // Wrap response in error object and reject
       var error = new Error();
       // The url that caused exception
@@ -176,41 +168,45 @@ function post(flow, request, cookie, body) {
 
 var kratos = {
   // Fetches information on a login request.
-  getLoginRequest: function (request, csrf) {
-    return get('/login', request, 'csrf_token=' + csrf, null);
+  initiateLoginRequest: function () {
+    return get('/self-service/login/browser', null, null);
+  },
+  // Fetches information on a login request.
+  getLoginRequest: function (id, csrf) {
+    return get('/self-service/login/flows', {id:id}, csrf);
   },
   // Accepts a login request.
-  acceptLoginRequest: function (request, csrf, body) {
-    return post('/login', request, 'csrf_token=' + csrf, body);
+  acceptLoginRequest: function (flow, csrf, body) {
+    return post('/self-service/login', flow, csrf, body);
   },
   // Initiates account recovery flow
   initiateAccountRecoveryFlow: function() {
-    return get('/recovery', null, null, null);
+    return get('/self-service/recovery/browser', null, null);
   },
   // Fetches information on a recovery request.
-  getAccountRecoveryFlow: function(request, csrf) {
-    return get('/recovery', request, 'csrf_token=' + csrf, null);
+  getAccountRecoveryFlow: function(id, csrf) {
+    return get('/self-service/recovery/flows', {id:id}, csrf);
   },
   // Performs account recovery using token
-  completeRecoveryFlow: function(request, csrf, body) {
-    return post('/recovery/link', request, 'csrf_token=' + csrf, body);
+  completeRecoveryFlow: function(flow, csrf, body) {
+    return post('/self-service/recovery', flow, csrf, body);
   },
   // Performs account recovery using token
-  useRecoveryLink: function(token) {
-    return get('/recovery', null, null, token);
+  useRecoveryLink: function(flow, token) {
+    return get('/self-service/recovery', {flow:flow,token:token}, null);
   },
   // Fetches information on a settings request.
-  getSettingsRequest: function(request, cookie) {
-    return get('/settings', request, 'ory_kratos_session=' + cookie, null);
+  getSettingsRequest: function(id, cookie) {
+    return get('/self-service/settings/flows', {id:id}, 'ory_kratos_session=' + cookie);
   },
   // Sets new password
-  setNewPasswordRequest: function(request, session, csrf, body) {
-    var cookie = 'ory_kratos_session=' + session + '; ' + 'csrf_token=' + csrf;
-    return post('/password', request, cookie, body);
+  setNewPasswordRequest: function(flow, session, csrf, body) {
+    var cookie = 'ory_kratos_session=' + session + '; ' + csrf;
+    return post('/self-service/settings', flow, cookie, body);
   },
   // Fetches information about the current session
   getSessionIdentity: function(session) {
-    return get('/sessions/whoami', null, 'ory_kratos_session=' + session, null);
+    return get('/sessions/whoami', null, 'ory_kratos_session=' + session);
   },
   // Updates an identity (Admin endpoint)
   updateIdentity: function(id, body) {

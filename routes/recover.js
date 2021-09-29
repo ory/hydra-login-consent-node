@@ -32,22 +32,23 @@ router.get('/', csrfProtection, function (req, res, next) {
       var flow = query.flow;
       // Get the csrf cookie from http header
       var cookie = response.headers.get('set-cookie');
-      // Get the cookie value
-      cookie = cookie.substring('csrf_token'.length + 1);
       
       // Get the account recovery request
       kratos.getAccountRecoveryFlow(flow, cookie)
         // This will be called if the HTTP request was successful
         .then(function (response) {
           // Response is a JSON object, and whe are interested in the csrf_token field
-          var fields = response.methods.link.config.fields;
+          var nodes = response.ui.nodes;
           var t;
       
-          for (i in fields) { 
-            if (fields[i].name == 'csrf_token') {
-              t = fields[i].value;
+          nodes.forEach(element => {
+            if (element.group == 'default') {
+            // Get attributes
+              if (element.attributes.name == 'csrf_token') {
+                t = element.attributes.value;
+              }
             }
-          }
+          });
           
           if (err == 'invalid_token') {
             err = ['The recovery token has either expired or has already been used. Please try to recover your account again.','Recovery links are only valid for 1 hour.'];
@@ -85,6 +86,8 @@ router.post('/', csrfProtection, function (req, res, next) {
   host = host.substring(0, host.indexOf('.'));
   // Get the email field
   var subject = req.body.identifier;
+  // Get the method field
+  var method = req.body.method;
   // The flow param is now a hidden input field, so let's take it from the request body instead
   var flow = req.body.flow;
   // Get the csrf cookie
@@ -98,10 +101,9 @@ router.post('/', csrfProtection, function (req, res, next) {
     // This will be called if the HTTP request was successful
     .then(function (response) {
   
-      
-  
       var params = new URLSearchParams();
       params.append('email', subject);
+      params.append('method', method);
       params.append('csrf_token', csrf_token);
   
       // Accept the recovery request

@@ -32,14 +32,17 @@ router.get('/', csrfProtection, function (req, res, next) {
     // This will be called if the HTTP request was successful
     .then(function (response) {
       // Response is a JSON object, and whe are interested in the csrf_token field
-      var fields = response.methods.password.config.fields;
+      var nodes = response.ui.nodes;
       var t;
       
-      for (i in fields) { 
-        if (fields[i].name == 'csrf_token') {
-          t = fields[i].value;
+      nodes.forEach(element => {
+        if (element.group == 'default') {
+          // Get attributes
+          if (element.attributes.name == 'csrf_token') {
+            t = element.attributes.value;
+          }
         }
-      }
+      });
       
       res.render('login', {
         host: host,
@@ -75,10 +78,13 @@ router.post('/', csrfProtection, function (req, res, next) {
   var remember = req.body.remember;
   // Get csrf_token
   var csrf_token = req.body.csrf_token;
+  // Get the identifier, as lowercase to avoid any case issues
+  var identifier = req.body.identifier.toLowerCase();
   
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
-  params.append('identifier', req.body.identifier);
+  params.append('method', 'password');
+  params.append('password_identifier', identifier);
   params.append('password', req.body.password);
   params.append('csrf_token', csrf_token);
   
@@ -135,7 +141,7 @@ router.post('/', csrfProtection, function (req, res, next) {
       var identityId = '';  // Identity id
       
       //avanet.getSessionAttributes(host.substring(0, idx), req.body.identifier, {
-      avanet.getSessionAttributes(host, req.body.identifier, {
+      avanet.getSessionAttributes(host, identifier, {
         })
         // This will be called if the HTTP request was successful
         .then(function (response) {
@@ -151,7 +157,7 @@ router.post('/', csrfProtection, function (req, res, next) {
           hydra.acceptLoginRequest(challenge, {
 
             // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
-            subject: req.body.identifier,
+            subject: identifier,
 
             // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
             // set the "skip" parameter in the other route to true on subsequent requests!

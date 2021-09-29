@@ -38,15 +38,13 @@ router.get('/', csrfProtection, function (req, res, next) {
       }
 
       // Initiate the Kratos login
-      kratos.getLoginRequest()
+      kratos.initiateLoginRequest()
         // This will be called if the HTTP request was successful
         .then(function (response) {
           // Get the location header of the re-direct
           var location = response.headers.get('location');
           // Get the csrf_token set-Cookie header
           var cookie = response.headers.get('set-cookie');
-          // Get the cookie value
-          cookie = cookie.substring('csrf_token'.length + 1);
           // Create the redirect URL
           var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie, 'referer': referer}));
           // Redirect

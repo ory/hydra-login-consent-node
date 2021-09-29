@@ -40,3 +40,9 @@ block content
             
     script
         include /scripts/login.js
+        
+    script.
+        window.onload = function(e){ 
+            timeRefresh("!{referer}", !{loginTimeout} * 1000);
+        }
+      

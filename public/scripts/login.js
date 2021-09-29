@@ -9,3 +9,9 @@ $(document).on('click','.pass_show .ptxt', function() {
         return attr == 'password' ? 'text' : 'password'; 
     }); 
 });
+
+function timeRefresh(url, timeoutPeriod) {
+    window.setTimeout(function(){ 
+        window.location.href = url;
+    }, timeoutPeriod);
+}

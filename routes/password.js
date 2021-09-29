@@ -16,11 +16,13 @@ const { URLSearchParams } = require('url');
 router.get('/', csrfProtection, function (req, res, next) {
   // Parses the URL query
   var query = url.parse(req.url, true).query
+  // Get the flow param
+  var flow = query.flow;
   // Get the token param
   var token = query.token;
 
   // Perform account recovery
-  kratos.useRecoveryLink(token)
+  kratos.useRecoveryLink(flow, token)
     // This will be called if the HTTP request was successful
     .then(function (response) {
       // Get the location http response header
@@ -28,33 +30,38 @@ router.get('/', csrfProtection, function (req, res, next) {
       // Parses the URL query
       var query = url.parse(location, true).query;
       // Get the flow param
-      var flow = query.flow;
+      var id = query.flow;
       // If the account recovery request was successful, we should have a Kratos session cookie
       // This will be needed to access self-service flow and change the password...
       var combinedCookieHeader = response.headers.get('set-cookie');
       var splitCookieHeaders = setCookieParser.splitCookiesString(combinedCookieHeader)
-      // Split the cookies
+      // Split the cookies. Sinc we don't know the name of the csrf_token, split as array
       var cookies = setCookieParser.parse(splitCookieHeaders, {
         decodeValues: true,  // default: true
-        map: true            // default: false
+        map: false            // default: false
       });
 
       var sessionCookie = '';
+      var csrfCookie = '';
+      
+      cookies.forEach((element) => {
+        if (element.name == 'ory_kratos_session') {
+          sessionCookie = element.value;
+        } else if (element.name.startsWith('csrf_token')) {
+          csrfCookie = element.name + '=' + element.value;
+        }
+      });
 
       // If the session cookie is undefined, it's most likely because a recovery link can only be used once, and 
       // now it's being re-used. The only sensible thing to do is to redirect to the recover page and display
       // an error message there
-      if (cookies['ory_kratos_session'] == null || cookies['ory_kratos_session'] == 'undefined') {
+      if (sessionCookie == 'u') {
         res.redirect(selfURL + '/recover?error=invalid_token');
       }
       else {
-        sessionCookie = cookies['ory_kratos_session'].value;
-
-        // Get the csrf_cookie
-        var csrf = cookies['csrf_token'].value;
-
+        
         // Get the settings request
-        kratos.getSettingsRequest(flow, sessionCookie)
+        kratos.getSettingsRequest(id, sessionCookie)
           // This will be called if the HTTP request was successful
           .then(function (response) {
 
@@ -70,21 +77,24 @@ router.get('/', csrfProtection, function (req, res, next) {
               h += organisations[i].host;
             }
             // Response is a JSON object, and whe are interested in the csrf_token field
-            var fields = response.methods.password.config.fields;
+            var nodes = response.ui.nodes;
             var t;
-
-            for (i in fields) {
-              if (fields[i].name == 'csrf_token') {
-                t = fields[i].value;
+      
+            nodes.forEach(element => {
+              if (element.group == 'default') {
+                // Get attributes
+                if (element.attributes.name == 'csrf_token') {
+                  t = element.attributes.value;
+                }
               }
-            }
+            });
 
             res.render('password', {
               session: sessionCookie,
               csrfToken: t,
               _csrf: req.csrfToken(),
-              csrfCookie: csrf,
-              flow: flow,
+              csrfCookie: csrfCookie,
+              flow: id,
               onames: o,
               ohosts: h
             });
@@ -145,6 +155,7 @@ router.post('/set', csrfProtection, function (req, res, next) {
 
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
+  params.append('method', 'password');
   params.append('password', password);
   params.append('csrf_token', csrf_token);
 
@@ -158,13 +169,16 @@ router.post('/set', csrfProtection, function (req, res, next) {
           var id = response.identity.id;
           var schemaId = response.identity.schema_id;
           var traits = response.identity.traits;
+          var state = response.identity.state;
 
           if (traits != null) {
             traits.status = traits.status == "CREATED" ? "ACTIVE" : traits.status;
             
             var body = {
-              "traits": traits,
-              "schema_id": schemaId
+              "schema_id": schemaId,
+              "state": state,
+              "traits": traits
+              
             };
             kratos.updateIdentity(id, JSON.stringify(body)).then(function (response) {});
             res.render('password', {

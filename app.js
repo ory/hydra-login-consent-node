@@ -25,8 +25,7 @@ app.use(cors({
 // Make some process env variables available to all templates
 app.use((req, res, next) => {
   res.locals.selfURL = process.env.SELF_URL;
-  //var host = new URL(req.header('referer')).hostname;
-  //res.locals.host = host.substring(0, host.indexOf('.'));
+  res.locals.loginTimeout = process.env.LOGIN_TIMEOUT;
   next();
 });
 
