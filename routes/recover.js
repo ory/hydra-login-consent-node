@@ -124,7 +124,7 @@ router.post('/', csrfProtection, function (req, res, next) {
       var message;
           
       if (typeof val == 'object') {
-        message = [val.errorDescription];
+        message = [val.error.message];
       } else {
         message = [val];
       }

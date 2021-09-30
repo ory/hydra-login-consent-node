@@ -35,6 +35,8 @@ function get(uri, params, cookie) {
     )
     .then(function (res) {
       
+      logger.info('GET ' + url.toString() + " " + res.status);
+      
       var contentType = res.headers.get('content-type');
       
       if (res.status < 200 || res.status > 303) {
@@ -83,6 +85,8 @@ function put(flow, body) {
   )
   .then(function (res) {
     
+    logger.info('PUT ' + url.toString() + " " + res.status);
+    
     var contentType = res.headers.get('content-type');
     
     if (res.status < 200 || res.status > 303) {
@@ -115,7 +119,7 @@ function put(flow, body) {
   })
 }
 
-function post(flow, request, cookie, body) {
+function post(flow, request, cookie, body, contentType) {
   var url = new URL(flow, kratosPublicURL)
   url.search = querystring.stringify({['flow']: request})
   
@@ -127,12 +131,15 @@ function post(flow, request, cookie, body) {
       redirect: 'manual',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': contentType,
         'Cookie': cookie,
         ...mockTlsTermination
       }
     }
   )
   .then(function (res) {
+    
+    logger.info('POST ' + url.toString() + " " + res.status);
     
     var contentType = res.headers.get('content-type');
      
@@ -156,7 +163,7 @@ function post(flow, request, cookie, body) {
       logError(error);
       return Promise.reject(error);
     }
-    else { 
+    else {
       if (contentType!= null && contentType.startsWith('application/json')) {
         return res.json();
       } else {
@@ -177,7 +184,7 @@ var kratos = {
   },
   // Accepts a login request.
   acceptLoginRequest: function (flow, csrf, body) {
-    return post('/self-service/login', flow, csrf, body);
+    return post('/self-service/login', flow, csrf, body, 'text/html');
   },
   // Initiates account recovery flow
   initiateAccountRecoveryFlow: function() {
@@ -189,7 +196,7 @@ var kratos = {
   },
   // Performs account recovery using token
   completeRecoveryFlow: function(flow, csrf, body) {
-    return post('/self-service/recovery', flow, csrf, body);
+    return post('/self-service/recovery', flow, csrf, body, 'application/json');
   },
   // Performs account recovery using token
   useRecoveryLink: function(flow, token) {
@@ -202,7 +209,7 @@ var kratos = {
   // Sets new password
   setNewPasswordRequest: function(flow, session, csrf, body) {
     var cookie = 'ory_kratos_session=' + session + '; ' + csrf;
-    return post('/self-service/settings', flow, cookie, body);
+    return post('/self-service/settings', flow, cookie, body, 'application/json');
   },
   // Fetches information about the current session
   getSessionIdentity: function(session) {
