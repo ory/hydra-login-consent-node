@@ -1,37 +1,25 @@
 extends layout
-
 block content
 
-    div.card.width480
+    div.card.termsCard
         div.card-header
             img(src=selfURL+"/images/"+host+".png",alt="Logo")
         div.card-body
             form(id="consent",action="",method="POST")
                 div.form-group
-                    h4(class="card-title") An application is requesting access to your data.
+                    h3(class="card-title") Terms of use
+                div
+                    include terms.pug
                 div.form-group
-                    input(type="hidden",name="challenge",value=challenge)
-                    input(type="hidden",name="_csrf",value=csrfToken)
-                    input(type="hidden",id="referer",name="referer",value=referer)
-                div.form-group
-                    p.
-                        Hi <strong>#{user}</strong>, <br/><br/>application <strong>#{client.client_name || client.client_id}</strong> wants to access resources on your behalf to:
-                    each scope in requested_scope
-                        input(type="checkbox",class="margin5",id=scope,value=scope,name="grant_scope",checked="checked")
-                        label(for=scope) #{scope}
-                        br
-                div.form-group
-                    p.
-                        Do you want to be asked next time when this application wants to access your data? The application will not be able to ask for more permissions without your consent.
-                div.form-group
-                    input(type="checkbox",id="remember",class="margin5",name="remember",value="1",checked="checked")
-                    label(for="remember") Do not ask me again
-                div.form-group
-                    input(type="submit",id="accept", class="btn btn-primary btn-block" ,   name="submit",value="Allow access")
-                    input(type="submit",id="reject", class="btn btn-secondary btn-block" , name="submit",value="Deny access")
-                div.form-group
-                    p(style="text-align:center;").
-                        <a href="#{client.policy_uri}">Policy</a>&emsp;|&emsp; <a href="#{client.tos_uri}">Terms of service</a>
+                    div.row
+                        div.col
+                            input(type="submit",id="reject", class="btn btn-secondary btn-block" , name="submit",value="Decline")
+                        div.col
+                            input(type="submit",id="accept", class="btn btn-primary btn-block" ,   name="submit",value="Accept terms")
+                div.row
+                    div.col
+                        p(style="text-align:center;").
+                            <a href="#{client.policy_uri}">Policy</a>
                     
     div.footer
         div
