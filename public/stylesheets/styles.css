@@ -122,13 +122,18 @@ form {
      min-height: 300px;
      overflow-y: scroll;
      margin-bottom: 20px;
+     font-size: 0.9rem;
 }
 .terms h2{
      color:#000 !important;
      font-size:1.2rem;
 }
-.terms p {
-     font-size: 0.9rem;
+.terms ul {
+     padding: 0;
+    list-style-type: none;
+}
+.terms li{
+     margin:0.5rem 0
 }
 div.termsCard{
      max-width:800px;
