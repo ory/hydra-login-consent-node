@@ -5,7 +5,8 @@
     "hydra-login-consent-logout": "./bin/www"
   },
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "dev": "SELF_URL=http://localhost:3000 node ./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
