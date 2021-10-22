@@ -14,6 +14,9 @@ block content
                     input(type="hidden",name="challenge",value=challenge)
                     input(type="hidden",name="_csrf",value=csrfToken)
                     input(type="hidden",id="referer",name="referer",value=referer)
+                    each scope in requested_scope
+                        input(type="hidden",id=scope,value=scope,name="grant_scope")
+                       
                 div.form-group
                     input(type="checkbox",id="remember",class="margin5",name="remember",value="1",checked="checked")
                     label(for="remember") Do not ask me again
