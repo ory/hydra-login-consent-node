@@ -36,5 +36,7 @@ router.get('/dev', function(req, res) {
         res.redirect(selfURL);
     }
 });
-
+router.post('/dev', function (req, res, next) {
+console.log(req.body.remember)
+})
 module.exports = router;

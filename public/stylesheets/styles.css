@@ -1,11 +1,15 @@
+html{
+     background: #232521;
+}
 body {
      padding: 50px;
      color: whitesmoke;
      font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
      background-image: url('../images/backgound.jpg');
      background-size: cover;
+     background-attachment: fixed;
      width: 100%;
-     height: 100vh;
+     min-height: 100vh;
 }
 
 h1, h2 {
@@ -65,7 +69,7 @@ div.card-body {
 }
 
 div.card img {
-     padding: 40px 0 0;
+     padding: 20px 0 0;
      text-align: center;
 }
 
