@@ -18,6 +18,7 @@ var kratos = require('./routes/kratos');
 var error = require('./routes/errors');
 var recover = require('./routes/recover');
 var password = require('./routes/password');
+var dev = require('./routes/dev');
 
 var app = express();
 
@@ -84,6 +85,7 @@ app.use('/kratos', kratos);
 app.use('/errors', error);
 app.use('/recover', recover);
 app.use('/password', password);
+app.use('/', dev);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

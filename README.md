@@ -35,3 +35,7 @@ Please head over to the [ORY Hydra 5 Minute Tutorial](https://www.ory.sh/docs/hy
 
 You can mock TLS Termination by setting environment variable `MOCK_TLS_TERMINATION` to any value, for example `MOCK_TLS_TERMINATION=y`.
 This will add `X-Forwarded-Proto: https` to each HTTP Request Header.
+## UI development
+For developing and testing the UI a dev route (`./routes/dev.js`) has been created. Here you can serve the different templates and populate them with mock data. The pages are not functional but will show the UI without any errors. set the `viewToTest` variable to the pug-file you want to test and add view data to `viewData` object if it not exists.
+
+Run the app with `npm run dev` Add additional environment varibles if needed.
