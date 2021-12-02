@@ -2,7 +2,7 @@ import express from 'express'
 import url from 'url'
 import urljoin from 'url-join'
 import csrf from 'csurf'
-import { hydraAdmin } from '../config'
+import { hydraAdmin, users } from '../config'
 import { oidcConformityMaybeFakeAcr } from './stub/oidc-cert'
 
 // Sets up csrf protection
@@ -78,7 +78,7 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
   // for this!
-  if (!(req.body.email === 'foo@bar.com' && req.body.password === 'foobar')) {
+  if (!(req.body.email in users)) {
     // Looks like the user provided invalid credentials, let's show the ui again...
 
     res.render('login', {
@@ -98,7 +98,7 @@ router.post('/', csrfProtection, (req, res, next) => {
       hydraAdmin
         .acceptLoginRequest(challenge, {
           // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
-          subject: 'foo@bar.com',
+          subject: req.body.email + '@quadrio.demo',
 
           // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
           // set the "skip" parameter in the other route to true on subsequent requests!
