@@ -46,7 +46,7 @@ router.post('/', csrfProtection, (req, res, next) => {
         .rejectLogoutRequest(challenge)
         .then(() => {
           // The user did not want to log out. Let's redirect him back somewhere or do something else.
-          res.redirect('https://www.ory.sh/')
+          res.redirect('https://auth.quadrio-dev-foerderlotse.de/')
         })
         // This will handle any error that happens when making HTTP calls to hydra
         .catch(next)
