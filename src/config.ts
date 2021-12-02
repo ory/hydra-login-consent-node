@@ -13,4 +13,10 @@ const hydraAdmin = new AdminApi(
   })
 )
 
-export { hydraAdmin }
+const users = {
+  antragsteller1: {},
+  antragsteller2: {},
+  bewilligungsstelle: {},
+}
+
+export { hydraAdmin, users }
