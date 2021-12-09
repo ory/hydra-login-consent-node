@@ -187,78 +187,98 @@ router.post('/', csrfProtection, function (req, res, next) {
           })
           // This will handle any error that happens when making HTTP calls to hydra
           .catch(function (error) {
-            error.body.then(function(val) {
-              if (error.status == 409) { // User hit the Back button
-                res.redirect(referer);   // Re-start the login flow
-              } 
-              else {
-                logger.error(error)
-                next(error);
-              }
-            });
+            if(! error.body) { // Added to debug "Cannot read property 'then' of undefined" during load testing
+              logger.error("No body in hydra.acceptLoginRequest() error");
+              logger.error(error)
+              next(error);
+            }
+            else {
+              error.body.then(function (val) {
+                if(error.status == 409) { // User hit the Back button
+                  res.redirect(referer);   // Re-start the login flow
+                }
+                else {
+                  logger.error(error)
+                  next(error);
+                }
+              });
+            }
           });
         })
         // This will handle any error that happens when making HTTP calls to avanet company-user-mgmt microservice
         .catch(function (error) {
-          error.body.then(function(json) {
-            var message;
-        
+          if(! error.body) { // Added to debug "Cannot read property 'then' of undefined" during load testing
+            logger.error("No body in avanet.getSessionAttributes() error");
+            logger.error(error)
+            next(error);
+          }
+          else {
+            error.body.then(function (json) {
+              var message;
 
-            if (error.status == 400) {
-              message = ['User is not allowed to log in at ' + referer + '. ', 'Please log in using the correct address.'];
-            }
-            else if (error.status == 401) {
-              message = [json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
-            }
-            else {
-              message = ['Unexpected status: ' + error.status,  json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
-            }
-            
-            logger.error(message);
-      
-            // Render login screen
-            res.render('login', {
-              error: true,
-              error_message: message,
-              host: host,
-              referer: referer,
-              csrfToken: csrf_token,
-              _csrf: req.csrfToken(),
-              csrfCookie: csrf,
-              flow: flow,
-              challenge: challenge
+
+              if(error.status == 400) {
+                message = ['User is not allowed to log in at ' + referer + '. ', 'Please log in using the correct address.'];
+              }
+              else if(error.status == 401) {
+                message = [json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
+              }
+              else {
+                message = ['Unexpected status: ' + error.status, json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
+              }
+
+              logger.error(message);
+
+              // Render login screen
+              res.render('login', {
+                error: true,
+                error_message: message,
+                host: host,
+                referer: referer,
+                csrfToken: csrf_token,
+                _csrf: req.csrfToken(),
+                csrfCookie: csrf,
+                flow: flow,
+                challenge: challenge
+              });
             });
-          });
+          }
         });
     })
     // This will handle any error that happens when making HTTP calls to Kratos
     .catch(function (error) {
+      if(! error.body) { // Added to debug "Cannot read property 'then' of undefined" during load testing
+        logger.error("No body in kratos.acceptLoginRequest() error");
+        logger.error(error)
+        next(error);
+      }
+      else {
+        error.body.then(function (val) {
+          var message;
 
-      error.body.then(function(val) {
-        var message;
-        
-        if (typeof val == 'object') {
-          message = [val.error.message];
-        }
-        else {
-          message = [val];
-        }
-        
-        logger.error(message);
-      
-        // Render login screen
-        res.render('login', {
-          error: true,
-          error_message: message,
-          host: host,
-          referer: referer,
-          csrfToken: csrf_token,
-          _csrf: req.csrfToken(),
-          csrfCookie: csrf,
-          flow: flow,
-          challenge: challenge
+          if(typeof val == 'object') {
+            message = [val.error.message];
+          }
+          else {
+            message = [val];
+          }
+
+          logger.error(message);
+
+          // Render login screen
+          res.render('login', {
+            error: true,
+            error_message: message,
+            host: host,
+            referer: referer,
+            csrfToken: csrf_token,
+            _csrf: req.csrfToken(),
+            csrfCookie: csrf,
+            flow: flow,
+            challenge: challenge
+          });
         });
-      });
+      }
     });
 });
 
