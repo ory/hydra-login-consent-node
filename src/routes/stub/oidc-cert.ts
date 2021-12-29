@@ -6,7 +6,7 @@ import {
   ConsentRequest,
   ConsentRequestSession,
   LoginRequest
-} from '@oryd/hydra-client'
+} from '@ory/hydra-client'
 
 export const oidcConformityMaybeFakeAcr = (
   request: LoginRequest,

@@ -18,7 +18,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   if (!challenge) {
     next(new Error('Expected a login challenge to be set but received none.'))
     return
-  }
+  } 
 
   hydraAdmin
     .getLoginRequest(challenge)
@@ -78,7 +78,12 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   // Let's check if the user provided valid credentials. Of course, you'd use a database or some third-party service
   // for this!
-  if (!(req.body.email in users)) {
+  const username : string = req.body.email
+  const user = users.find( user => {
+    return user.id === username
+  })
+
+  if (!user) {
     // Looks like the user provided invalid credentials, let's show the ui again...
 
     res.render('login', {
@@ -89,6 +94,8 @@ router.post('/', csrfProtection, (req, res, next) => {
 
     return
   }
+  
+  
 
   // Seems like the user authenticated! Let's tell hydra...
 
@@ -98,7 +105,7 @@ router.post('/', csrfProtection, (req, res, next) => {
       hydraAdmin
         .acceptLoginRequest(challenge, {
           // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
-          subject: req.body.email + '@quadrio.demo',
+          subject: user.email,
 
           // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
           // set the "skip" parameter in the other route to true on subsequent requests!

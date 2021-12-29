@@ -2,9 +2,9 @@ import express from 'express'
 import url from 'url'
 import urljoin from 'url-join'
 import csrf from 'csurf'
-import { hydraAdmin } from '../config'
+import { hydraAdmin, users } from '../config'
 import { oidcConformityMaybeFakeSession } from './stub/oidc-cert'
-import { ConsentRequestSession } from '@oryd/hydra-client'
+import { ConsentRequestSession } from '@ory/hydra-client'
 
 // Sets up csrf protection
 const csrfProtection = csrf({ cookie: true })
@@ -33,6 +33,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 
+        console.log(body, users)
         // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
         return hydraAdmin
           .acceptConsentRequest(challenge, {
@@ -49,7 +50,7 @@ router.get('/', csrfProtection, (req, res, next) => {
               // unless you limit who can introspect tokens.
               // accessToken: { foo: 'bar' },
               // This data will be available in the ID token.
-              // idToken: { baz: 'bar' },
+              // id_token: { baz: 'bar' },
             }
           })
           .then(({ data: body }) => {
@@ -103,25 +104,13 @@ router.post('/', csrfProtection, (req, res, next) => {
     grantScope = [grantScope]
   }
 
-  // The session allows us to set session data for id and access tokens
-  let session: ConsentRequestSession = {
-    // This data will be available when introspecting the token. Try to avoid sensitive information here,
-    // unless you limit who can introspect tokens.
-    access_token: {
-      // foo: 'bar'
-    },
 
-    // This data will be available in the ID token.
-    id_token: {
-      // baz: 'bar'
-    }
-  }
 
   // Here is also the place to add data to the ID or access token. For example,
   // if the scope 'profile' is added, add the family and given name to the ID Token claims:
   // if (grantScope.indexOf('profile')) {
-  //   session.id_token.family_name = 'Doe'
-  //   session.id_token.given_name = 'John'
+  // session.id_token.family_name = 'Doe'
+  // session.id_token.given_name = 'John'
   // }
 
   // Let's fetch the consent request again to be able to set `grantAccessTokenAudience` properly.
@@ -129,6 +118,24 @@ router.post('/', csrfProtection, (req, res, next) => {
     .getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
+      const user = users.find( user => {
+        return user.email === body.subject
+      })
+
+
+      // The session allows us to set session data for id and access tokens
+      let session: ConsentRequestSession = {
+        // This data will be available when introspecting the token. Try to avoid sensitive information here,
+        // unless you limit who can introspect tokens.
+        access_token: {
+          roles: user ? user.roles : []
+        },
+
+        // This data will be available in the ID token.
+        id_token: user
+      }
+      console.log(session)
+
       return hydraAdmin
         .acceptConsentRequest(challenge, {
           // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
