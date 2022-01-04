@@ -13,7 +13,7 @@ block content
             Hi #{user}, application <strong>#{client.client_name || client.client_id}</strong> wants access resources on your behalf and to:
 
         each scope in requested_scope
-            input(type="checkbox", class="grant_scope", id=scope, value=scope, name="grant_scope")
+            input(type="checkbox", class="grant_scope", id=scope, value=scope, name="grant_scope", checked="true")
             label(for=scope) #{scope}
             br
 

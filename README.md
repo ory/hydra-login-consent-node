@@ -5,6 +5,9 @@ application is bootstrapped using the `express` cli.
 
 ---
 
+
+`export HYDRA_ADMIN_URL=http://auth.quadrio-dev-foerderlotse.de:4445`
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 

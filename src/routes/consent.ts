@@ -29,7 +29,7 @@ router.get('/', csrfProtection, (req, res, next) => {
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
-      if (body.skip) {
+      if (body.skip || req.cookies.challengeSaml) {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 

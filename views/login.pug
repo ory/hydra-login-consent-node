@@ -5,6 +5,7 @@ block content
     if error
         p.
             #{error}
+    //- a(href="http://localhost:3003/login") Login with Bürgerkonto (SAML) 
     form(action=action, method="POST")
         input(type="hidden", name="_csrf", value=csrfToken)
         input(type="hidden", name="challenge", value=challenge)
@@ -13,12 +14,12 @@ block content
                 td
                     input(type="text", id="email", name="email", value=hint, placeholder="username")
                 td.
-                    (it's "foo@bar.com")
+                    (it's "antragsteller1")
             tr
                 td
                     input(type="password", id="password", name="password")
                 td.
-                    (it's "foobar")
+                    (it's empty)
         input(type="checkbox", id="remember", name="remember", value="1")
         label(for="remember") Remember me
         br
