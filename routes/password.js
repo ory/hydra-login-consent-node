@@ -158,7 +158,7 @@ router.post('/set', csrfProtection, function (req, res, next) {
             kratos.updateIdentity(id, JSON.stringify(body)).then(function () {});
             res.render('password', {
               success: true,
-              domain: domain
+              loginUrl: 'https://' + domain
             });
           }
         })
