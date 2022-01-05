@@ -8,12 +8,12 @@ block content
         div.card-body
             form(action="/kratos",method="POST")
                 div.form-group
-                    input(type="hidden",name="referer",value=referer)
                     input(type="hidden",name="challenge",value=challenge)
                     input(type="hidden",name="flow",value=flow)
                     input(type="hidden",name="csrf_token",value=csrfToken)
                     input(type="hidden",name="_csrf",value=_csrf)
                     input(type="hidden",name="csrf_cookie",value=csrfCookie)
+                    input(type="hidden",name="domain",value=domain)
                 div.form-group
                     h3(class="card-title") Sign in
                 if error
@@ -29,7 +29,7 @@ block content
                     input(type="email",class="form-control",id="identifier",name="identifier",placeholder="Email",required)
                 div.form-group(class="pass_show")
                     label(for="password") Your password
-                    a(href="/recover?referer="+referer,style={float: 'right'}) Forgot password?
+                    a(href="/recover",style={float: 'right'}) Forgot password?
                     input(type="password",class="form-control",id="password",name="password",placeholder="********",value="",maxLength="16",required)
                 div.form-group      
                     input(type="submit",id="accept",class="btn btn-primary btn-block",name="submit",value="Sign in")
@@ -43,6 +43,6 @@ block content
         
     script.
         window.onload = function(e){ 
-            timeRefresh("!{referer}", !{loginTimeout} * 1000);
+            timeRefresh(!{loginTimeout} * 1000);
         }
       

@@ -13,7 +13,6 @@ block content
                 div.form-group
                     input(type="hidden",name="challenge",value=challenge)
                     input(type="hidden",name="_csrf",value=csrfToken)
-                    input(type="hidden",id="referer",name="referer",value=referer)
                     input(type="hidden",id="remember",name="remember",value="1")
                     each scope in requested_scope
                         input(type="hidden",id=scope,value=scope,name="grant_scope")

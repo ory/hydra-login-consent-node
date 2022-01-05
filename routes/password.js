@@ -64,18 +64,6 @@ router.get('/', csrfProtection, function (req, res, next) {
         kratos.getSettingsRequest(id, sessionCookie)
           // This will be called if the HTTP request was successful
           .then(function (response) {
-
-            // Get the list of organisations the user can sign in to
-            var organisations = response.identity.traits.organisations;
-            var o = '', h = '';
-            for (i in organisations) {
-              if (i > 0) {
-                o += ',';
-                h += ',';
-              }
-              o += organisations[i].name;
-              h += organisations[i].host;
-            }
             // Response is a JSON object, and whe are interested in the csrf_token field
             var nodes = response.ui.nodes;
             var t;
@@ -94,9 +82,7 @@ router.get('/', csrfProtection, function (req, res, next) {
               csrfToken: t,
               _csrf: req.csrfToken(),
               csrfCookie: csrfCookie,
-              flow: id,
-              onames: o,
-              ohosts: h
+              flow: id
             });
           })
           // This will handle any error that happens when making HTTP calls to kratos
@@ -141,19 +127,6 @@ router.post('/set', csrfProtection, function (req, res, next) {
   var csrf_token = req.body.csrf_token;
   // Get the new password
   var password = req.body.password;
-  // Get the org names
-  var onames = req.body.onames.split(',');
-  // Get the org hosts
-  var ohosts = req.body.ohosts.split(',');
-  // Create login links
-  var login_links = [];
-  onames.forEach(function (item, index) {
-    link = {
-      name: item,
-      host: 'https://' + ohosts[index] + '.' + domain
-    }
-    login_links.unshift(link);
-  });
 
   // Create a form body and append the fields we want to submit to Kratos
   var params = new URLSearchParams();
@@ -163,7 +136,7 @@ router.post('/set', csrfProtection, function (req, res, next) {
 
   // Set the new password
   kratos.setNewPasswordRequest(flow, session, csrf, params)
-    .then(function (response) {
+    .then(function () {
       // Get session information
       kratos.getSessionIdentity(session)
         .then(function (response) {
@@ -182,10 +155,10 @@ router.post('/set', csrfProtection, function (req, res, next) {
               "traits": traits
               
             };
-            kratos.updateIdentity(id, JSON.stringify(body)).then(function (response) {});
+            kratos.updateIdentity(id, JSON.stringify(body)).then(function () {});
             res.render('password', {
               success: true,
-              login_links: login_links
+              domain: domain
             });
           }
         })

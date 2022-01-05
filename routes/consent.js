@@ -27,11 +27,6 @@ router.get('/', csrfProtection, function (req, res, next) {
       var identityId = response.context.iid;
       // We will also make a session cookie value available in the id-token
       var sessionCookie = '';
-      // The referer is used in case we need to re-direct to re-initiate the login flow
-      var referer = response.context.ref;
-      // The host is used to render the correct logo
-      var host = new URL(referer).hostname;
-      host = host.substring(0, host.indexOf('.'));
       
       // Check to see if there is a session cookie available in the context
       if (response.context != null) {
@@ -61,7 +56,6 @@ router.get('/', csrfProtection, function (req, res, next) {
               pid: parentOrgId,   // Parent organisation id
               oui: orgUnitId,     // Orgnisational unit id
               iid: identityId,    // Identity id
-              ref: referer        // Referer
             }
           },
           
@@ -82,8 +76,6 @@ router.get('/', csrfProtection, function (req, res, next) {
       res.render('consent', {
         csrfToken: req.csrfToken(),
         challenge: challenge,
-        referer: referer,
-        host: host,
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
         // and what additional data you have available.
         requested_scope: response.requested_scope,
@@ -143,8 +135,6 @@ router.post('/', csrfProtection, function (req, res, next) {
       var orgUnitId = response.context.oui;
       // Identity id
       var identityId = response.context.iid;
-      // Referer
-      var referer = response.context.ref;
       
       return hydra.acceptConsentRequest(challenge, {
         // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
@@ -164,7 +154,6 @@ router.post('/', csrfProtection, function (req, res, next) {
             pid: parentOrgId,   // Parent organisation id
             oui: orgUnitId,     // Orgnisational unit id
             iid: identityId,    // Identity id
-            ref: referer        // Referer
           }
         },
 

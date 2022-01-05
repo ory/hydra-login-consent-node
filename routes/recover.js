@@ -2,8 +2,7 @@ var express = require('express');
 var router = express.Router();
 var url = require('url');
 var querystring = require('querystring');
-var kratos = require('../services/kratos')
-var avanet = require('../services/avanet');
+var kratos = require('../services/kratos');
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -12,13 +11,8 @@ var csrfProtection = csrf({ cookie: true });
 const { URLSearchParams } = require('url');
 
 router.get('/', csrfProtection, function (req, res, next) {
-  var query = url.parse(req.url, true).query;
   // Check for errors
   var err = url.parse(req.url, true).query.error;
-  // Get referer, if present
-  var referer = query.referer;
-  // The hostname of the referer
-  var host = 'avanet';
         
   // Initiate the account recovery flow
   kratos.initiateAccountRecoveryFlow()
@@ -52,9 +46,6 @@ router.get('/', csrfProtection, function (req, res, next) {
           
           if (err == 'invalid_token') {
             err = ['The recovery token has either expired or has already been used. Please try again.'];
-          } else {
-            host = new URL(referer).hostname;
-            host = host.substring(0, host.indexOf('.'));
           }
           
           res.render('recover', {
@@ -64,9 +55,7 @@ router.get('/', csrfProtection, function (req, res, next) {
             csrfToken: t,
             _csrf: req.csrfToken(),
             csrfCookie: cookie,
-            flow: flow,
-            referer: referer,
-            host: host
+            flow: flow
           });
         })
         // This will handle any error that happens when making HTTP calls to kratos
@@ -93,10 +82,6 @@ router.post('/', csrfProtection, function (req, res, next) {
   var csrf = req.body.csrf_cookie;
   // Get the csrf_token field
   var csrf_token = req.body.csrf_token;
-  // Get the referer field, if present
-  var referer = req.body.referer;
-  // The hostname of the referer
-  var host = 'avanet';
   
   var params = new URLSearchParams();
   params.append('email', subject);
@@ -107,14 +92,8 @@ router.post('/', csrfProtection, function (req, res, next) {
   kratos.completeRecoveryFlow(flow, csrf, params)
     .then(function (response) {
       
-      if (referer != null && referer != 'undefined' && referer != '') {
-        host = new URL(referer).hostname;
-        host = host.substring(0, host.indexOf('.'));
-      }
-          
       res.render('recover', {
-        success: true,
-        host: host
+        success: true
       });
     })
   // This will handle any error that happens when making HTTP calls to kratos
@@ -138,9 +117,7 @@ router.post('/', csrfProtection, function (req, res, next) {
         csrfToken: csrf_token,
         _csrf: req.csrfToken(),
         csrfCookie: csrf,
-        flow: flow,
-        referer: referer,
-        host: host
+        flow: flow
       });
     });
   });

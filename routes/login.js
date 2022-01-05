@@ -3,7 +3,7 @@ var router = express.Router();
 var url = require('url');
 var querystring = require('querystring');
 var hydra = require('../services/hydra')
-var kratos = require('../services/kratos')
+var kratos = require('../services/kratos');
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -12,8 +12,6 @@ var csrfProtection = csrf({ cookie: true });
 router.get('/', csrfProtection, function (req, res, next) {
   // Parses the URL query
   var query = url.parse(req.url, true).query;
-  // Get the 'Referer' header
-  var referer = req.header('referer');
   // The challenge is used to fetch information about the login request from ORY Hydra.
   var challenge = query.login_challenge;
   
@@ -46,7 +44,7 @@ router.get('/', csrfProtection, function (req, res, next) {
           // Get the csrf_token set-Cookie header
           var cookie = response.headers.get('set-cookie');
           // Create the redirect URL
-          var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie, 'referer': referer}));
+          var redirect_to = new URL(location + '&' + querystring.stringify({['challenge']: challenge, 'csrf_token': cookie}));
           // Redirect
           res.redirect(redirect_to.toString());
         })

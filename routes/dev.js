@@ -7,8 +7,6 @@ const mockData = {
     login:{
         error: false,
         error_message: 'message',
-        host: 'avanet',
-        referer: 'referer',
         csrfToken: 'csrf_token',
         _csrf: 'req.csrfToken()',
         csrfCookie: 'csrf',
@@ -18,15 +16,13 @@ const mockData = {
   consent:{
     csrfToken: 'req.csrfToken()',
     challenge: 'challenge',
-    referer: 'referer',
-    host: 'avanet',
     requested_scope: ['openid'],
     user:'Username',
     client: {client_name:'Clientname',client_id:'id',policy_uri:'',tos_uri:''},
   }
 }
 
-const viewToTest = 'consent'
+const viewToTest = 'login'
 const viewData = mockData[viewToTest]
 
 router.get('/dev', function(req, res) {

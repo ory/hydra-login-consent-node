@@ -6,9 +6,7 @@ var cors = require('cors');
 var path = require('path');
 var favicon = require('serve-favicon');
 var cookieParser = require('cookie-parser');
-var setCookieParser = require('set-cookie-parser');
 var bodyParser = require('body-parser');
-var url = require('url');
 
 var routes = require('./routes/index');
 var login = require('./routes/login');
@@ -29,7 +27,7 @@ app.use(cors({
 // Make some process env variables available to all templates
 app.use((req, res, next) => {
   res.locals.selfURL = process.env.SELF_URL;
-  res.locals.loginTimeout = process.env.LOGIN_TIMEOUT;
+  res.locals.loginTimeout = process.env.LOGIN_TIMEOUT || 60 * 59;
   res.locals.recoveryLifespan = process.env.RECOVERY_LIFESPAN;
   next();
 });
@@ -59,7 +57,7 @@ app.use(expressWinston.logger({
   msg: "HTTP  ",
   expressFormat: true,
   colorize: false,
-  ignoreRoute: function (req, res) { return false; }
+  ignoreRoute: function () { return false; }
 }));
 
 logger = winston.createLogger({
@@ -74,7 +72,7 @@ logger = winston.createLogger({
   msg: "HTTP  ",
   expressFormat: true,
   colorize: false,
-  ignoreRoute: function (req, res) { return false; }
+  ignoreRoute: function () { return false; }
 });
 
 app.use('/', routes);

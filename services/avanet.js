@@ -14,9 +14,9 @@ function logError(error) {
   logger.error('error={status: '+error.status+', url: '+error.url+'}');
 }
 
-function get(uri, host, subject) {
+function get(uri, subject) {
   var url = new URL(uri, gatewayUrl);
-  url.search = querystring.stringify({['host']: host, 'subject': subject});
+  url.search = querystring.stringify({'subject': subject});
 
   return fetch(
     url.toString(),
@@ -56,8 +56,8 @@ function get(uri, host, subject) {
 
 var avanet = {
   // Fetches session attributes for a logged in user
-  getSessionAttributes: function (host, subject) {
-    return get('/companyusermgmt/v1/session-attributes', host, subject);
+  getSessionAttributes: function (subject) {
+    return get('/companyusermgmt/v1/session-attributes', subject);
   }
 };
 

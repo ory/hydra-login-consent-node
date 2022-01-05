@@ -10,8 +10,9 @@ $(document).on('click','.pass_show .ptxt', function() {
     }); 
 });
 
-function timeRefresh(url, timeoutPeriod) {
-    window.setTimeout(function(){ 
-        window.location.href = url;
+function timeRefresh(timeoutPeriod) {
+    window.setTimeout(function(){
+        var domain = document.getElementsByName('domain')[0];
+        if (domain) window.location.href = domain;
     }, timeoutPeriod);
 }

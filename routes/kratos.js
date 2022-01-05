@@ -1,3 +1,4 @@
+/* global logger */
 var express = require('express');
 var router = express.Router();
 var url = require('url');
@@ -5,6 +6,7 @@ var setCookieParser = require('set-cookie-parser');
 var hydra = require('../services/hydra');
 var kratos = require('../services/kratos');
 var avanet = require('../services/avanet');
+var domain = process.env.DOMAIN;
 
 // Sets up csrf protection
 var csrf = require('csurf');
@@ -17,10 +19,6 @@ const { URLSearchParams } = require('url');
 router.get('/', csrfProtection, function (req, res, next) {
   // Parses the URL query
   var query = url.parse(req.url, true).query;
-  // Get the host parameter that will tell us where the login request originated from
-  var referer = query.referer;
-  var host = new URL(referer).hostname;
-  host = host.substring(0, host.indexOf('.'));
   // The challenge will be used when we return to the Hydra login flow
   var challenge = query.challenge;
   // The flow is used to fetch information about the login flow from ORY Kratos.
@@ -44,14 +42,14 @@ router.get('/', csrfProtection, function (req, res, next) {
         }
       });
       
+      
       res.render('login', {
-        host: host,
-        referer: referer,
         csrfToken: t,
         _csrf: req.csrfToken(),
         csrfCookie: csrf,
         flow: flow,
-        challenge: challenge
+        challenge: challenge,
+        domain: domain
       });
     })
     // This will handle any error that happens when making HTTP calls to kratos
@@ -62,20 +60,12 @@ router.get('/', csrfProtection, function (req, res, next) {
 });
 
 router.post('/', csrfProtection, function (req, res, next) {
-  // The referer parameter is now a hidden input field, so let's take it from the request body instead
-  var referer = req.body.referer;
-  var host = new URL(referer).hostname;
-  host = host.substring(0, host.indexOf('.'));
   // The challenge is now a hidden input field, so let's take it from the request body instead
   var challenge = req.body.challenge
   // The flow is now a hidden input field, so let's take it from the request body instead
   var flow = req.body.flow;
   // Get the original csrf_token retrieved in the call to initiate the login
   var csrf = req.body.csrf_cookie;
-  // Get the nodejs csrf token
-  var _csrf = req.body._csrf;
-  // Get the remember me
-  var remember = req.body.remember;
   // Get csrf_token
   var csrf_token = req.body.csrf_token;
   // Get the identifier, as lowercase to avoid any case issues
@@ -132,18 +122,12 @@ router.post('/', csrfProtection, function (req, res, next) {
           });
       }
       
-      //var host = new URL(referer).hostname;
-      //var host = 'avanet.avamonitoring.dev'; // If running locally with a known user, set the host to a value mathing the user
-      //var idx = host.indexOf('.');
-      
       var orgId = '';       // Organisation id
       var parentOrgId = ''; // Parent organisation id
       var orgUnitId = '';   // Organisational unit id
       var identityId = '';  // Identity id
       
-      //avanet.getSessionAttributes(host.substring(0, idx), req.body.identifier, {
-      avanet.getSessionAttributes(host, identifier, {
-        })
+      avanet.getSessionAttributes(identifier)
         // This will be called if the HTTP request was successful
         .then(function (response) {
 
@@ -169,7 +153,6 @@ router.post('/', csrfProtection, function (req, res, next) {
             
             // Making some session context available
             context: {
-              ref: referer,       // Where the login originated from
               ksc: sessionCookie, // Kratos session cookie
               oid: orgId,         // Organisation id
               pid: parentOrgId,   // Parent organisation id
@@ -193,9 +176,9 @@ router.post('/', csrfProtection, function (req, res, next) {
               next(error);
             }
             else {
-              error.body.then(function (val) {
+              error.body.then(function () {
                 if(error.status == 409) { // User hit the Back button
-                  res.redirect(referer);   // Re-start the login flow
+                  res.redirect(domain);   // Re-start the login flow
                 }
                 else {
                   logger.error(error)
@@ -218,7 +201,7 @@ router.post('/', csrfProtection, function (req, res, next) {
 
 
               if(error.status == 400) {
-                message = ['User is not allowed to log in at ' + referer + '. ', 'Please log in using the correct address.'];
+                message = ['User is not allowed to log in.'];
               }
               else if(error.status == 401) {
                 message = [json.errorDescription, json.traceId, json.spanId, 'Please contact AvaNet support at support@avamonitoring.com.'];
@@ -233,13 +216,12 @@ router.post('/', csrfProtection, function (req, res, next) {
               res.render('login', {
                 error: true,
                 error_message: message,
-                host: host,
-                referer: referer,
                 csrfToken: csrf_token,
                 _csrf: req.csrfToken(),
                 csrfCookie: csrf,
                 flow: flow,
-                challenge: challenge
+                challenge: challenge,
+                domain: domain
               });
             });
           }
@@ -269,13 +251,12 @@ router.post('/', csrfProtection, function (req, res, next) {
           res.render('login', {
             error: true,
             error_message: message,
-            host: host,
-            referer: referer,
             csrfToken: csrf_token,
             _csrf: req.csrfToken(),
             csrfCookie: csrf,
             flow: flow,
-            challenge: challenge
+            challenge: challenge,
+            domain: domain
           });
         });
       }
