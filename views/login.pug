@@ -5,7 +5,7 @@ block content
     if error
         p.
             #{error}
-    a(href="http://localhost:3003/login") Login with Bürgerkonto (SAML) 
+    a(href="https://saml.quadrio-dev-foerderlotse.de/login") Login with Bürgerkonto (SAML) 
     form(action=action, method="POST")
         input(type="hidden", name="_csrf", value=csrfToken)
         input(type="hidden", name="challenge", value=challenge)
