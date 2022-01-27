@@ -29,11 +29,14 @@ router.get('/', csrfProtection, (req, res, next) => {
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
-      if (body.skip || req.cookies.challengeSaml) {
+      if (body.skip || req.cookies.challengeSaml ) {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 
         console.log(body, users)
+        const user = users.find( user => {
+          return user.email === body.subject
+        })
         // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
         return hydraAdmin
           .acceptConsentRequest(challenge, {
@@ -48,9 +51,11 @@ router.get('/', csrfProtection, (req, res, next) => {
             session: {
               // This data will be available when introspecting the token. Try to avoid sensitive information here,
               // unless you limit who can introspect tokens.
-              // accessToken: { foo: 'bar' },
+              access_token: {
+                roles: user ? user.roles : []
+              },
               // This data will be available in the ID token.
-              // id_token: { baz: 'bar' },
+              id_token: user
             }
           })
           .then(({ data: body }) => {
