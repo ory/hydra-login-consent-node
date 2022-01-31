@@ -92,7 +92,6 @@ router.post("/", csrfProtection, (req, res, next) => {
   }
 
   // Seems like the user authenticated! Let's tell hydra...
-
   hydraAdmin
     .getOAuth2LoginRequest({ loginChallenge: challenge })
     .then((loginRequest) =>
@@ -101,7 +100,7 @@ router.post("/", csrfProtection, (req, res, next) => {
           loginChallenge: challenge,
           acceptOAuth2LoginRequest: {
             // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
-            subject: "foo@bar.com",
+            subject: req.body.email,
 
             // This tells hydra to remember the browser and automatically authenticate the user in future requests. This will
             // set the "skip" parameter in the other route to true on subsequent requests!
