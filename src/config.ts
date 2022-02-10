@@ -45,13 +45,193 @@ const users : Array<User> = [
     }
   },
   {
-    id: 'bewilligungsstelle',
-    roles: ['approver'],
-    given_name: 'Sachbearbeiter',
-    family_name: '',
-    email: 'bewilligungsstelle@quadrio-dev-foerderlotse.de',
+    id: 'antragsteller3',
+    roles: ['user'],
+    given_name: 'Karolin',
+    family_name: 'Pfeifer',
+    email: 'antragsteller3@quadrio-dev-foerderlotse.de',
     ext: {
       roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller4',
+    roles: ['user'],
+    given_name: 'Max',
+    family_name: 'Walter',
+    email: 'antragsteller4@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller5',
+    roles: ['user'],
+    given_name: 'Owen',
+    family_name: 'White',
+    email: 'antragsteller5@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller6',
+    roles: ['user'],
+    given_name: 'Jake',
+    family_name: 'Nash',
+    email: 'antragsteller6@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller7',
+    roles: ['user'],
+    given_name: 'Sam',
+    family_name: 'Roberts',
+    email: 'antragsteller7@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller8',
+    roles: ['user'],
+    given_name: 'Rachel',
+    family_name: 'Sharp',
+    email: 'antragsteller8@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller9',
+    roles: ['user'],
+    given_name: 'Sally',
+    family_name: 'Davies',
+    email: 'antragsteller9@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller10',
+    roles: ['user'],
+    given_name: 'Joanne',
+    family_name: 'Campbell',
+    email: 'antragsteller10@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller11',
+    roles: ['user'],
+    given_name: 'Andrew',
+    family_name: 'Davidson',
+    email: 'antragsteller11@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller12',
+    roles: ['user'],
+    given_name: 'Kimberly',
+    family_name: 'Chapman',
+    email: 'antragsteller12@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller13',
+    roles: ['user'],
+    given_name: 'Brian',
+    family_name: 'Hart',
+    email: 'antragsteller13@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller14',
+    roles: ['user'],
+    given_name: 'Jake',
+    family_name: 'North',
+    email: 'antragsteller14@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller15',
+    roles: ['user'],
+    given_name: 'Rose',
+    family_name: 'Piper',
+    email: 'antragsteller15@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller16',
+    roles: ['user'],
+    given_name: 'Jasmine',
+    family_name: 'Langdon',
+    email: 'antragsteller16@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller17',
+    roles: ['user'],
+    given_name: 'Lucas',
+    family_name: 'Randall',
+    email: 'antragsteller17@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller18',
+    roles: ['user'],
+    given_name: 'Joshua',
+    family_name: 'White',
+    email: 'antragsteller18@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller19',
+    roles: ['user'],
+    given_name: 'Alan',
+    family_name: 'Clark',
+    email: 'antragsteller19@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller20',
+    roles: ['user'],
+    given_name: 'Bernadette',
+    family_name: 'Watson',
+    email: 'antragsteller20@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'bewilligungsstelle',
+    roles: ['approver', 'dataadmin'],
+    given_name: 'Sach',
+    family_name: 'Bearbeiter',
+    email: 'bewilligungsstelle@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['approver', 'dataadmin']
     }
   }
 ]
