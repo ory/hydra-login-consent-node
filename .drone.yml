@@ -1,0 +1,90 @@
+kind: pipeline
+type: kubernetes
+name: pullReqest
+
+steps:
+- name: build
+  image: node:10.8-alpine
+  commands:
+  - npm ci --silent
+  volumes:
+    - name: drone-npm-efs
+      path: /drone/src/node_modules
+
+# Cache NPM dependencies from EFS volume to improve pipeline performance
+volumes:
+  - name: drone-npm-efs
+    claim:
+      name: drone-npm-efs-claim
+
+trigger:
+  event:
+    - pull_request
+  branch:
+    - master
+
+---
+kind: pipeline
+type: kubernetes
+name: mergeMaster
+
+steps:
+- name: Publish to AWS ECR
+  image: plugins/ecr
+  settings:
+    access_key:
+      from_secret: aws_access_key
+    secret_key:
+      from_secret: aws_secret_key
+    registry: 059741451001.dkr.ecr.eu-north-1.amazonaws.com
+    repo: avanet-login-consent-node
+    region: eu-north-1
+    tags:
+      - ${DRONE_COMMIT}
+      - ${DRONE_BUILD_NUMBER}
+# TODO A2-1283 Trigger automatic update after moving chart to avanet-charts
+#- name: Trigger avanet-charts
+#  image: plugins/downstream
+#  settings:
+#    server: https://drone.k8s-dev.avamonitoring.dev/
+#    token:
+#      from_secret: drone_api_token
+#    params:
+#      - AVA_COMMIT=${DRONE_COMMIT}
+#      - AVA_TAG=${DRONE_BUILD_NUMBER}
+#      - AVA_ORIGINAL_COMMIT_AUTHOR_AVATAR=${DRONE_COMMIT_AUTHOR_AVATAR}
+#      - AVA_ORIGINAL_COMMIT_AUTHOR=${DRONE_COMMIT_AUTHOR}
+#      - |
+#        AVA_ORIGINAL_COMMIT_MESSAGE=${DRONE_COMMIT_MESSAGE}
+#      - AVA_ORIGINAL_COMMIT_SHA=${DRONE_COMMIT_SHA}
+#      - AVA_ORIGINAL_COMMIT_LINK=${DRONE_COMMIT_LINK}
+#      - AVA_IMAGE=avanet-login-consent-node
+#      - AVA_APPLICATION=avanet-login-consent-node
+#    deploy: production
+#    last_successful: true
+#    repositories:
+#      - avamonitoring/avanet-charts@master
+
+trigger:
+  event:
+    - push
+  branch:
+    - master
+---
+kind: secret
+name: aws_access_key
+get:
+  path: secret/data/dev/cluster-svc/drone
+  name: AWS_ACCESS_KEY
+---
+kind: secret
+name: aws_secret_key
+get:
+  path: secret/data/dev/cluster-svc/drone
+  name: AWS_ACCESS_SECRET
+---
+kind: secret
+name: drone_api_token
+get:
+  path: secret/data/dev/cluster-svc/drone
+  name: DRONE_API_TOKEN
