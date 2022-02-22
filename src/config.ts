@@ -14,6 +14,7 @@ const hydraAdmin = new AdminApi(
 )
 interface User {
   id: string,
+  user_id: string,
   roles: Array<string>,
   given_name: string,
   family_name: string,
@@ -26,6 +27,7 @@ interface User {
 const users : Array<User> = [
   {
     id: 'antragsteller1',
+    user_id: 'antragsteller1',
     roles: ['user'],
     given_name: 'Max und Maria',
     family_name: 'Mustermann',
@@ -36,6 +38,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller2',
+    user_id: 'antragsteller2',
     roles: ['user'],
     given_name: 'Jonathan',
     family_name: 'Doe',
@@ -46,6 +49,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller3',
+    user_id: 'antragsteller3',
     roles: ['user'],
     given_name: 'Karolin',
     family_name: 'Pfeifer',
@@ -56,6 +60,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller4',
+    user_id: 'antragsteller4',
     roles: ['user'],
     given_name: 'Max',
     family_name: 'Walter',
@@ -66,6 +71,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller5',
+    user_id: 'antragsteller5',
     roles: ['user'],
     given_name: 'Owen',
     family_name: 'White',
@@ -76,6 +82,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller6',
+    user_id: 'antragsteller6',
     roles: ['user'],
     given_name: 'Jake',
     family_name: 'Nash',
@@ -86,6 +93,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller7',
+    user_id: 'antragsteller7',
     roles: ['user'],
     given_name: 'Sam',
     family_name: 'Roberts',
@@ -96,6 +104,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller8',
+    user_id: 'antragsteller8',
     roles: ['user'],
     given_name: 'Rachel',
     family_name: 'Sharp',
@@ -106,6 +115,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller9',
+    user_id: 'antragsteller9',
     roles: ['user'],
     given_name: 'Sally',
     family_name: 'Davies',
@@ -116,6 +126,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller10',
+    user_id: 'antragsteller10',
     roles: ['user'],
     given_name: 'Joanne',
     family_name: 'Campbell',
@@ -126,6 +137,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller11',
+    user_id: 'antragsteller11',
     roles: ['user'],
     given_name: 'Andrew',
     family_name: 'Davidson',
@@ -136,6 +148,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller12',
+    user_id: 'antragsteller12',
     roles: ['user'],
     given_name: 'Kimberly',
     family_name: 'Chapman',
@@ -146,6 +159,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller13',
+    user_id: 'antragsteller13',
     roles: ['user'],
     given_name: 'Brian',
     family_name: 'Hart',
@@ -156,6 +170,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller14',
+    user_id: 'antragsteller14',
     roles: ['user'],
     given_name: 'Jake',
     family_name: 'North',
@@ -166,6 +181,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller15',
+    user_id: 'antragsteller15',
     roles: ['user'],
     given_name: 'Rose',
     family_name: 'Piper',
@@ -176,6 +192,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller16',
+    user_id: 'antragsteller16',
     roles: ['user'],
     given_name: 'Jasmine',
     family_name: 'Langdon',
@@ -186,6 +203,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller17',
+    user_id: 'antragsteller17',
     roles: ['user'],
     given_name: 'Lucas',
     family_name: 'Randall',
@@ -196,6 +214,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller18',
+    user_id: 'antragsteller18',
     roles: ['user'],
     given_name: 'Joshua',
     family_name: 'White',
@@ -206,6 +225,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller19',
+    user_id: 'antragsteller19',
     roles: ['user'],
     given_name: 'Alan',
     family_name: 'Clark',
@@ -216,6 +236,7 @@ const users : Array<User> = [
   },
   {
     id: 'antragsteller20',
+    user_id: 'antragsteller20',
     roles: ['user'],
     given_name: 'Bernadette',
     family_name: 'Watson',
@@ -226,6 +247,7 @@ const users : Array<User> = [
   },
   {
     id: 'bewilligungsstelle',
+    user_id: 'bewilligungsstelle',
     roles: ['approver', 'dataadmin'],
     given_name: 'Sach',
     family_name: 'Bearbeiter',
