@@ -19,8 +19,10 @@ interface User {
   given_name: string,
   family_name: string,
   email: string,
+  gpNummer?: string,
   ext: {
-    roles: Array<string>
+    roles: Array<string>,
+    gpNummer?: string
   }
 }
 
@@ -254,6 +256,82 @@ const users : Array<User> = [
     email: 'bewilligungsstelle@quadrio-dev-foerderlotse.de',
     ext: {
       roles: ['approver', 'dataadmin']
+    }
+  },
+  {
+    id: 'landratsamt_muenchen',
+    user_id: 'landratsamt_muenchen',
+    gpNummer: '5000207583',
+    roles: ['approver'],
+    given_name: 'Landratsamt',
+    family_name: 'München (5000207583)',
+    email: 'landratsamt_muenchen@quadrio-dev-foerderlotse.de',
+    ext: {
+      gpNummer: '5000207583',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'landratsamt_dachau',
+    user_id: 'landratsamt_dachau',
+    gpNummer: '5000203233',
+    roles: ['approver'],
+    given_name: 'Landratsamt',
+    family_name: 'Dachau (5000203233)',
+    email: 'landratsamt_dachau@quadrio-dev-foerderlotse.de',
+    ext: {
+      gpNummer: '5000203233',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'landratsamt_guenzburg',
+    user_id: 'landratsamt_guenzburg',
+    gpNummer: '5000203356',
+    roles: ['approver'],
+    given_name: 'Landratsamt',
+    family_name: 'Günzburg (5000203356)',
+    email: 'landratsamt_guenzburg@quadrio-dev-foerderlotse.de',
+    ext: {
+      gpNummer: '5000203356',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'landeshauptstadt_muenchen',
+    user_id: 'landeshauptstadt_muenchen',
+    gpNummer: '5000201921',
+    roles: ['approver'],
+    given_name: 'Landeshauptstadt',
+    family_name: 'München (5000201921)',
+    email: 'landeshauptstadt_muenchen@quadrio-dev-foerderlotse.de',
+    ext: {
+      gpNummer: '5000201921',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'landratsamt_rosenheim',
+    user_id: 'landratsamt_rosenheim',
+    gpNummer: '5000207786',
+    roles: ['approver'],
+    given_name: 'Landratsamt',
+    family_name: 'Rosenheim (5000207786)',
+    email: 'landratsamt_rosenheim@quadrio-dev-foerderlotse.de',
+    ext: {
+      gpNummer: '5000207786',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'ministerium',
+    user_id: 'ministerium',
+    roles: ['authority'],
+    given_name: 'Staatsministerium',
+    family_name: 'Bau',
+    email: 'ministerium@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['authority']
     }
   }
 ]

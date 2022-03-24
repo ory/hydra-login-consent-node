@@ -52,7 +52,8 @@ router.get('/', csrfProtection, (req, res, next) => {
               // This data will be available when introspecting the token. Try to avoid sensitive information here,
               // unless you limit who can introspect tokens.
               access_token: {
-                roles: user ? user.roles : []
+                roles: user ? user.roles : [],
+                gpNummer: user?.gpNummer
               },
               // This data will be available in the ID token.
               id_token: user
@@ -133,7 +134,8 @@ router.post('/', csrfProtection, (req, res, next) => {
         // This data will be available when introspecting the token. Try to avoid sensitive information here,
         // unless you limit who can introspect tokens.
         access_token: {
-          roles: user ? user.roles : []
+          roles: user ? user.roles : [],
+          gpNummer: user?.gpNummer
         },
 
         // This data will be available in the ID token.
