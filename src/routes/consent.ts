@@ -53,7 +53,7 @@ router.get('/', csrfProtection, (req, res, next) => {
               // unless you limit who can introspect tokens.
               access_token: {
                 roles: user ? user.roles : [],
-                gpNummer: user?.gpNummer
+                bpNumber: user?.bpNumber
               },
               // This data will be available in the ID token.
               id_token: user
@@ -135,7 +135,7 @@ router.post('/', csrfProtection, (req, res, next) => {
         // unless you limit who can introspect tokens.
         access_token: {
           roles: user ? user.roles : [],
-          gpNummer: user?.gpNummer
+          bpNumber: user?.bpNumber
         },
 
         // This data will be available in the ID token.
