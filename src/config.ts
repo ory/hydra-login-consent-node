@@ -430,39 +430,39 @@ const users : Array<User> = [
     }
   },
   {
-    id: 'wohnbaufoerderung@augsburg.de',
-    user_id: 'wohnbaufoerderung@augsburg.de',
+    id: 'eike.balzar@augsburg.de',
+    user_id: 'eike.balzar@augsburg.de',
     bpNumber: '5000028503',
     roles: ['approver'],
     given_name: 'Heribert',
     family_name: 'Weigant',
-    email: 'wohnbaufoerderung@augsburg.de',
+    email: 'eike.balzar@augsburg.de',
     ext: {
       bpNumber: '5000028503',
       roles: ['approver']
     }
   },
   {
-    id: 'wohnbaufoerderung@augsburg.de',
-    user_id: 'wohnbaufoerderung@augsburg.de',
+    id: 'antje.resch@augsburg.de',
+    user_id: 'antje.resch@augsburg.de',
     bpNumber: '5000028503',
     roles: ['approver'],
     given_name: 'Antje',
     family_name: 'Resch',
-    email: 'wohnbaufoerderung@augsburg.de',
+    email: 'antje.resch@augsburg.de',
     ext: {
       bpNumber: '5000028503',
       roles: ['approver']
     }
   },
   {
-    id: 'wohnbaufoerderung@augsburg.de',
-    user_id: 'wohnbaufoerderung@augsburg.de',
+    id: 'heribert.weigant@augsburg.de',
+    user_id: 'heribert.weigant@augsburg.de',
     bpNumber: '5000028503',
     roles: ['approver'],
     given_name: 'Eike',
     family_name: 'Balzar',
-    email: 'wohnbaufoerderung@augsburg.de',
+    email: 'heribert.weigant@augsburg.de',
     ext: {
       bpNumber: '5000028503',
       roles: ['approver']
@@ -780,6 +780,17 @@ const users : Array<User> = [
     given_name: 'Bernadette',
     family_name: 'Watson',
     email: 'antragsteller3@stadt.nuernberg.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller4@stadt.nuernberg.de',
+    user_id: 'antragsteller4@stadt.nuernberg.de',
+    roles: ['user'],
+    given_name: 'Bernadette',
+    family_name: 'Watson',
+    email: 'antragsteller4@stadt.nuernberg.de',
     ext: {
       roles: ['user']
     }
