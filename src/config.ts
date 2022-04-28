@@ -26,7 +26,7 @@ interface User {
   }
 }
 
-const users : Array<User> = [
+const users: Array<User> = [
   {
     id: 'antragsteller1',
     user_id: 'antragsteller1',
@@ -258,6 +258,19 @@ const users : Array<User> = [
     ext: {
       roles: ['approver', 'dataadmin'],
       bpNumber: '5000207564'
+    }
+  },
+  {
+    id: 'ute.boex@lra-bt.bayern.de',
+    user_id: 'ute.boex@lra-bt.bayern.de',
+    bpNumber: '5000203204',
+    roles: ['approver'],
+    given_name: 'Ute',
+    family_name: 'Böx',
+    email: 'ute.boex@lra-bt.bayern.de',
+    ext: {
+      bpNumber: '5000203204',
+      roles: ['approver']
     }
   },
   {
@@ -956,6 +969,17 @@ const users : Array<User> = [
     given_name: 'Bernadette',
     family_name: 'Watson',
     email: 'antragsteller1@kitzingen.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller4@lra-bt.bayern.de',
+    user_id: 'antragsteller4@lra-bt.bayern.de',
+    roles: ['user'],
+    given_name: 'Bernadette',
+    family_name: 'Watson',
+    email: 'antragsteller4@lra-bt.bayern.de',
     ext: {
       roles: ['user']
     }
