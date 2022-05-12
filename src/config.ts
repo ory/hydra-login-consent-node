@@ -248,6 +248,17 @@ const users: Array<User> = [
     }
   },
   {
+    id: 'ministerium',
+    user_id: 'ministerium',
+    roles: ['user'],
+    given_name: 'Bau',
+    family_name: 'Ministerium',
+    email: 'ministerium@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['authority']
+    }
+  },
+  {
     id: 'bewilligungsstelle',
     user_id: 'bewilligungsstelle',
     bpNumber: '5000207564',
