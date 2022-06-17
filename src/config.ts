@@ -250,7 +250,7 @@ const users: Array<User> = [
   {
     id: 'ministerium',
     user_id: 'ministerium',
-    roles: ['user'],
+    roles: ['authority'],
     given_name: 'Bau',
     family_name: 'Ministerium',
     email: 'ministerium@quadrio-dev-foerderlotse.de',
