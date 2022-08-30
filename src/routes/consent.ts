@@ -25,7 +25,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   // accepts the consent request right away if the user has given consent to this
   // app before
   hydraAdmin
-    .getConsentRequest(challenge)
+    .adminGetOAuth2ConsentRequest(challenge)
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
@@ -35,7 +35,7 @@ router.get('/', csrfProtection, (req, res, next) => {
 
         // Now it's time to grant the consent request. You could also deny the request if something went terribly wrong
         return hydraAdmin
-          .acceptConsentRequest(challenge, {
+          .adminAcceptOAuth2ConsentRequest(challenge, {
             // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
             // are requested accidentally.
             grant_scope: body.requested_scope,
@@ -84,7 +84,7 @@ router.post('/', csrfProtection, (req, res, next) => {
     // Looks like the consent request was denied by the user
     return (
       hydraAdmin
-        .rejectConsentRequest(challenge, {
+        .adminRejectOAuth2ConsentRequest(challenge, {
           error: 'access_denied',
           error_description: 'The resource owner denied the request'
         })
@@ -126,11 +126,11 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   // Let's fetch the consent request again to be able to set `grantAccessTokenAudience` properly.
   hydraAdmin
-    .getConsentRequest(challenge)
+    .adminGetOAuth2ConsentRequest(challenge)
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
       return hydraAdmin
-        .acceptConsentRequest(challenge, {
+        .adminAcceptOAuth2ConsentRequest(challenge, {
           // We can grant all scopes that have been requested - hydra already checked for us that no additional scopes
           // are requested accidentally.
           grant_scope: grantScope,
