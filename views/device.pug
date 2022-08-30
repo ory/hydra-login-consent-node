@@ -1,0 +1,12 @@
+extends layout
+
+block content
+    h1(id="login-title") Please input User Code
+    if error
+        p.
+            #{error}
+    form(action=action, method="POST")
+        input(type="hidden", name="_csrf", value=csrfToken)
+        input(type="code", id="code", name="code", value=hint, placeholder="XXXXXX")
+        br
+        input(type="submit", id="verify", name="submit", value="Send")
