@@ -6,7 +6,7 @@ if (process.env.MOCK_TLS_TERMINATION) {
   baseOptions.headers = { 'X-Forwarded-Proto': 'https' }
 }
 
-const configiration = new Configuration({  
+const configiration = new Configuration({
   basePath: process.env.HYDRA_ADMIN_URL,
   baseOptions
 })
