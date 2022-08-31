@@ -12,7 +12,7 @@ const configuration = new Configuration({
 })
 
 if (process.env.ORY_TOKEN) {
-  configuration.accessToken = process.env.ORY_TOKEN
+  configuration.accessToken = process.env.ORY_PAT
 }
 
 const hydraAdmin = new V0alpha2Api(configuration)
