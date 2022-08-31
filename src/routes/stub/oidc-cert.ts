@@ -3,13 +3,13 @@
 // do not use it in production as is.
 
 import {
-  ConsentRequest,
-  ConsentRequestSession,
-  LoginRequest
-} from '@oryd/hydra-client'
+  OAuth2ConsentRequest,
+  AcceptOAuth2ConsentRequestSession,
+  OAuth2LoginRequest
+} from '@ory/client'
 
 export const oidcConformityMaybeFakeAcr = (
-  request: LoginRequest,
+  request: OAuth2LoginRequest,
   fallback: string
 ) => {
   if (process.env.CONFORMITY_FAKE_CLAIMS !== '1') {
@@ -26,9 +26,9 @@ export const oidcConformityMaybeFakeAcr = (
 
 export const oidcConformityMaybeFakeSession = (
   grantScope: string[],
-  request: ConsentRequest,
-  session: ConsentRequestSession
-): ConsentRequestSession => {
+  request: OAuth2ConsentRequest,
+  session: AcceptOAuth2ConsentRequestSession
+): AcceptOAuth2ConsentRequestSession => {
   if (process.env.CONFORMITY_FAKE_CLAIMS !== '1') {
     return session
   }

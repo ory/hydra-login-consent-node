@@ -4,7 +4,7 @@ import urljoin from 'url-join'
 import csrf from 'csurf'
 import { hydraAdmin } from '../config'
 import { oidcConformityMaybeFakeSession } from './stub/oidc-cert'
-import { ConsentRequestSession } from '@oryd/hydra-client'
+import { AcceptOAuth2ConsentRequestSession } from '@ory/client'
 
 // Sets up csrf protection
 const csrfProtection = csrf({ cookie: true })
@@ -104,7 +104,7 @@ router.post('/', csrfProtection, (req, res, next) => {
   }
 
   // The session allows us to set session data for id and access tokens
-  let session: ConsentRequestSession = {
+  let session: AcceptOAuth2ConsentRequestSession = {
     // This data will be available when introspecting the token. Try to avoid sensitive information here,
     // unless you limit who can introspect tokens.
     access_token: {
