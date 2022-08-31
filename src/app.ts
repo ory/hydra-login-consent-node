@@ -2,7 +2,6 @@ import express, { NextFunction, Response, Request } from 'express'
 import path from 'path'
 import logger from 'morgan'
 import cookieParser from 'cookie-parser'
-import bodyParser from 'body-parser'
 
 import routes from './routes'
 import login from './routes/login'
@@ -16,11 +15,10 @@ const app = express()
 app.set('views', path.join(__dirname, '..', 'views'))
 app.set('view engine', 'pug')
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.get('/favicon.ico', (req, res) => res.status(204))
 app.use(logger('dev'))
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 

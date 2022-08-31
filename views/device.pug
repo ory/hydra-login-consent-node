@@ -7,6 +7,7 @@ block content
             #{error}
     form(action=action, method="POST")
         input(type="hidden", name="_csrf", value=csrfToken)
-        input(type="code", id="code", name="code", value=hint, placeholder="XXXXXX")
+        input(type="hidden", name="challenge", value=challenge)
+        input(type="code", id="code", name="code", value=userCode, placeholder="XXXXXX")
         br
         input(type="submit", id="verify", name="submit", value="Send")
