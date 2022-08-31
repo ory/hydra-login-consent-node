@@ -1,4 +1,4 @@
-import { AdminApi, Configuration } from '@oryd/hydra-client'
+import { Configuration, V0alpha2Api } from '@ory/client'
 
 const baseOptions: any = {}
 
@@ -6,11 +6,12 @@ if (process.env.MOCK_TLS_TERMINATION) {
   baseOptions.headers = { 'X-Forwarded-Proto': 'https' }
 }
 
-const hydraAdmin = new AdminApi(
-  new Configuration({
-    basePath: process.env.HYDRA_ADMIN_URL,
-    baseOptions
-  })
-)
+const configuration = new Configuration({
+  basePath: process.env.HYDRA_ADMIN_URL,
+  accessToken: process.env.ORY_PAT,
+  baseOptions
+})
+
+const hydraAdmin = new V0alpha2Api(configuration)
 
 export { hydraAdmin }
