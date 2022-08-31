@@ -6,15 +6,15 @@ if (process.env.MOCK_TLS_TERMINATION) {
   baseOptions.headers = { 'X-Forwarded-Proto': 'https' }
 }
 
-const configiration = new Configuration({
+const configuration = new Configuration({
   basePath: process.env.HYDRA_ADMIN_URL,
   baseOptions
 })
 
 if (process.env.ORY_TOKEN) {
-  configiration.accessToken = process.env.ORY_TOKEN
+  configuration.accessToken = process.env.ORY_TOKEN
 }
 
-const hydraAdmin = new V0alpha2Api(configiration)
+const hydraAdmin = new V0alpha2Api(configuration)
 
 export { hydraAdmin }
