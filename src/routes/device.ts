@@ -11,23 +11,51 @@ router.get('/', csrfProtection, (req, res, next) => {
   // Parses the URL query
   const query = url.parse(req.url, true).query
 
-  res.render('device', {
-    csrfToken: req.csrfToken()
-  })
+  // The challenge is used to fetch information about the login request from ORY Hydra.
+  const challenge = String(query.device_challenge)
+  if (!challenge) {
+    next(new Error('Expected a login challenge to be set but received none.'))
+    return
+  }
+
+  // Parses the URL query
+  const userCode = String(query.user_code)
+
+  hydraAdmin
+    .getDeviceRequest(challenge)
+    // This will be called if the HTTP request was successful
+    .then(({ data: deviceRequest }) => {
+      // All we need to do now is to redirect the user back to hydra!
+      console.log(deviceRequest)
+      res.render('device', {
+        csrfToken: req.csrfToken(),
+        challenge,
+        userCode
+      })
+    })
+    // This will handle any error that happens when making HTTP calls to hydra
+    .catch(next)
 })
 
 router.post('/', csrfProtection, (req, res, next) => {
   // The code is a input field, so let's take it from the request body
-  const code = req.body.code as string
+  const { code: userCode, challenge } = req.body
 
+  console.log(`In post: ${challenge} | ${userCode}`)
   hydraAdmin
-    .verifyDeviceRequest({
-      user_code: code
-    })
+    .getDeviceRequest(challenge)
     // This will be called if the HTTP request was successful
-    .then(({ data: body }) => {
+    .then(({ data: deviceRequest }) => {
+      console.log(deviceRequest)
       // All we need to do now is to redirect the user back to hydra!
-      res.redirect(String(body.redirect_to))
+      hydraAdmin
+        .verifyDeviceRequest(challenge, {
+          user_code: userCode
+        })
+        .then(({ data: body }) => {
+          // All we need to do now is to redirect the user back to hydra!
+          res.redirect(String(body.redirect_to))
+        })
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)
