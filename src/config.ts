@@ -11,7 +11,7 @@ const configuration = new Configuration({
   baseOptions
 })
 
-if (process.env.ORY_TOKEN) {
+if (process.env.ORY_PAT) {
   configuration.accessToken = process.env.ORY_PAT
 }
 
