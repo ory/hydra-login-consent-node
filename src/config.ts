@@ -8,12 +8,9 @@ if (process.env.MOCK_TLS_TERMINATION) {
 
 const configuration = new Configuration({
   basePath: process.env.HYDRA_ADMIN_URL,
+  accessToken: process.env.ORY_PAT,
   baseOptions
 })
-
-if (process.env.ORY_PAT) {
-  configuration.accessToken = process.env.ORY_PAT
-}
 
 const hydraAdmin = new V0alpha2Api(configuration)
 
