@@ -1,6 +1,6 @@
 # hydra-user-and-consent-provider-node
 
-This is a reference implementation for the User Login and Consent flow of ORY Hydra version 1.0.x in NodeJS. The
+This is a reference implementation for the User Login and Consent flow of Ory OAuth2 service (Hydra) in NodeJS. The
 application is bootstrapped using the `express` cli.
 
 ---
