@@ -21,7 +21,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   }
 
   hydraAdmin
-    .getLoginRequest(challenge)
+    .adminGetOAuth2LoginRequest(challenge)
     .then(({ data: body }) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
@@ -32,7 +32,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         // Now it's time to grant the login request. You could also deny the request if something went terribly wrong
         // (e.g. your arch-enemy logging in...)
         return hydraAdmin
-          .acceptLoginRequest(challenge, {
+          .adminAcceptOAuth2LoginRequest(challenge, {
             // All we need to do is to confirm that we indeed want to log in the user.
             subject: String(body.subject)
           })
@@ -63,7 +63,7 @@ router.post('/', csrfProtection, (req, res, next) => {
     // Looks like the consent request was denied by the user
     return (
       hydraAdmin
-        .rejectLoginRequest(challenge, {
+        .adminRejectOAuth2LoginRequest(challenge, {
           error: 'access_denied',
           error_description: 'The resource owner denied the request'
         })
@@ -93,10 +93,10 @@ router.post('/', csrfProtection, (req, res, next) => {
   // Seems like the user authenticated! Let's tell hydra...
 
   hydraAdmin
-    .getLoginRequest(challenge)
+    .adminGetOAuth2LoginRequest(challenge)
     .then(({ data: loginRequest }) =>
       hydraAdmin
-        .acceptLoginRequest(challenge, {
+        .adminAcceptOAuth2LoginRequest(challenge, {
           // Subject is an alias for user ID. A subject can be a random string, a UUID, an email address, ....
           subject: 'foo@bar.com',
 

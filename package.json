@@ -16,8 +16,8 @@
     "format": "prettier --write ${npm_package_config_prettierTarget}",
     "format:check": "prettier --check ${npm_package_config_prettierTarget}"
   },
-  "dependencies": {
-    "@oryd/hydra-client": "1.9.0-alpha.2",
+  "dependencies": {    
+    "@ory/client": "^0.2.0-alpha.24",
     "@types/cookie-parser": "^1.4.2",
     "@types/csurf": "^1.9.36",
     "@types/express": "^4.17.7",

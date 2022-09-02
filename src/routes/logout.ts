@@ -20,7 +20,7 @@ router.get('/', csrfProtection, (req, res, next) => {
   }
 
   hydraAdmin
-    .getLogoutRequest(challenge)
+    .adminGetOAuth2LogoutRequest(challenge)
     // This will be called if the HTTP request was successful
     .then(() => {
       // Here we have access to e.g. response.subject, response.sid, ...
@@ -43,7 +43,7 @@ router.post('/', csrfProtection, (req, res, next) => {
   if (req.body.submit === 'No') {
     return (
       hydraAdmin
-        .rejectLogoutRequest(challenge)
+        .adminRejectOAuth2LogoutRequest(challenge)
         .then(() => {
           // The user did not want to log out. Let's redirect him back somewhere or do something else.
           res.redirect('https://www.ory.sh/')
@@ -55,7 +55,7 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   // The user agreed to log out, let's accept the logout request.
   hydraAdmin
-    .acceptLogoutRequest(challenge)
+    .adminAcceptOAuth2LogoutRequest(challenge)
     .then(({ data: body }) => {
       // All we need to do now is to redirect the user back to hydra!
       res.redirect(String(body.redirect_to))
