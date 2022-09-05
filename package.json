@@ -5,16 +5,13 @@
     "hydra-login-consent-logout": "lib/app.js"
   },
   "prettier": "ory-prettier-styles",
-  "config": {
-    "prettierTarget": "{src,views}/{*,**/*}.{ts,js,json}"
-  },
   "scripts": {
     "build": "tsc",
     "serve": "node lib/app.js",
     "start": "ts-node-dev --watch public,views --respawn src/app.ts",
     "test": "npm-run-all build",
-    "format": "prettier --write ${npm_package_config_prettierTarget}",
-    "format:check": "prettier --check ${npm_package_config_prettierTarget}"
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {    
     "@ory/client": "^0.2.0-alpha.24",
