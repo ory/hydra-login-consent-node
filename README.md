@@ -1,7 +1,8 @@
 # hydra-user-and-consent-provider-node
 
-This is a reference implementation for the User Login and Consent flow of Ory OAuth2 service (Hydra) in NodeJS. The
-application is bootstrapped using the `express` cli.
+This is a reference implementation for the User Login and Consent flow of Ory
+OAuth2 service (Hydra) in NodeJS. The application is bootstrapped using the
+`express` cli.
 
 ---
 
@@ -17,26 +18,35 @@ application is bootstrapped using the `express` cli.
 
 ## Overview
 
-Apart from additions (`./routes/login.ts`, `./routes/consent.ts`) and their respective templates, only a [CSRF Middleware]
-has been added. Everything else is the standard express template.
+Apart from additions (`./routes/login.ts`, `./routes/consent.ts`) and their
+respective templates, only a [CSRF Middleware] has been added. Everything else
+is the standard express template.
 
-Also, a simple helper that makes HTTP requests has been added to `./services/hydra.js` which uses the `node-fetch`
-library.
+Also, a simple helper that makes HTTP requests has been added to
+`./services/hydra.js` which uses the `node-fetch` library.
 
-To set this example up with ORY Hydra, please refer to the [official documentation](https://www.ory.sh/docs).
+To set this example up with ORY Hydra, please refer to the
+[official documentation](https://www.ory.sh/docs).
 
 ## Running
 
-Please head over to the [ORY Hydra 5 Minute Tutorial](https://www.ory.sh/docs/hydra/5min-tutorial) to see how this works.
+Please head over to the
+[ORY Hydra 5 Minute Tutorial](https://www.ory.sh/docs/hydra/5min-tutorial) to
+see how this works.
 
 ## FAQ
 
 ### TLS Termination
 
-You can mock TLS Termination by setting environment variable `MOCK_TLS_TERMINATION` to any value, for example `MOCK_TLS_TERMINATION=y`.
-This will add `X-Forwarded-Proto: https` to each HTTP Request Header.
+You can mock TLS Termination by setting environment variable
+`MOCK_TLS_TERMINATION` to any value, for example `MOCK_TLS_TERMINATION=y`. This
+will add `X-Forwarded-Proto: https` to each HTTP Request Header.
 
 ### Integrating with Ory Cloud
 
-To integrate this example app with Ory Cloud Oauth2 Service set variable `ORY_PAT` with value of your [personal access token](https://www.ory.sh/docs/concepts/personal-access-token)
-and set `HYDRA_ADMIN_URL` to the value of you Ory Cloud API URL which you can find in your [Ory Cloud Project](https://www.ory.sh/docs/concepts/terminology#ory-cloud-project)
+To integrate this example app with Ory Cloud Oauth2 Service set variable
+`ORY_PAT` with value of your
+[personal access token](https://www.ory.sh/docs/concepts/personal-access-token)
+and set `HYDRA_ADMIN_URL` to the value of you Ory Cloud API URL which you can
+find in your
+[Ory Cloud Project](https://www.ory.sh/docs/concepts/terminology#ory-cloud-project)
