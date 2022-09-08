@@ -21,20 +21,11 @@ router.get('/', csrfProtection, (req, res, next) => {
   // Parses the URL query
   const userCode = String(query.user_code)
 
-  hydraAdmin
-    .getDeviceRequest(challenge)
-    // This will be called if the HTTP request was successful
-    .then(({ data: deviceRequest }) => {
-      // All we need to do now is to redirect the user back to hydra!
-      console.log(deviceRequest)
-      res.render('device', {
-        csrfToken: req.csrfToken(),
-        challenge,
-        userCode
-      })
-    })
-    // This will handle any error that happens when making HTTP calls to hydra
-    .catch(next)
+  res.render('device', {
+    csrfToken: req.csrfToken(),
+    challenge,
+    userCode
+  })
 })
 
 router.post('/', csrfProtection, (req, res, next) => {
@@ -42,22 +33,16 @@ router.post('/', csrfProtection, (req, res, next) => {
   const { code: userCode, challenge } = req.body
 
   console.log(`In post: ${challenge} | ${userCode}`)
+
+  // All we need to do now is to redirect the user back to hydra!
   hydraAdmin
-    .getDeviceRequest(challenge)
-    // This will be called if the HTTP request was successful
-    .then(({ data: deviceRequest }) => {
-      console.log(deviceRequest)
-      // All we need to do now is to redirect the user back to hydra!
-      hydraAdmin
-        .verifyDeviceRequest(challenge, {
-          user_code: userCode
-        })
-        .then(({ data: body }) => {
-          // All we need to do now is to redirect the user back to hydra!
-          res.redirect(String(body.redirect_to))
-        })
+    .verifyDeviceRequest(challenge, {
+      user_code: userCode
     })
-    // This will handle any error that happens when making HTTP calls to hydra
+    .then(({ data: body }) => {
+      // All we need to do now is to redirect the user back to hydra!
+      res.redirect(String(body.redirect_to))
+    })
     .catch(next)
 })
 
