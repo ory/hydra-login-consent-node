@@ -3,19 +3,12 @@
     "resolveJsonModule": true,
     "target": "es5",
     "module": "commonjs",
-    "lib": [
-      "es2019",
-      "dom"
-    ],
+    "lib": ["es2019", "dom"],
     "outDir": "./lib",
     "rootDir": "./src",
     "strict": true,
-    "typeRoots": [
-      "./typings"
-    ],
+    "typeRoots": ["./typings"],
     "esModuleInterop": true
   },
-  "exclude": [
-    "contrib"
-  ]
+  "exclude": ["contrib"]
 }
