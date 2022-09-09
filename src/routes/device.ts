@@ -36,7 +36,7 @@ router.post('/', csrfProtection, (req, res, next) => {
 
   // All we need to do now is to redirect the user back to hydra!
   hydraAdmin
-    .verifyDeviceRequest(challenge, {
+    .adminVerifyUserCodeRequest(challenge, {
       user_code: userCode
     })
     .then(({ data: body }) => {
