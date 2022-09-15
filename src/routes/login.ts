@@ -6,7 +6,11 @@ import { hydraAdmin } from "../config"
 import { oidcConformityMaybeFakeAcr } from "./stub/oidc-cert"
 
 // Sets up csrf protection
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({
+  cookie: {
+    sameSite: "lax",
+  },
+})
 const router = express.Router()
 
 router.get("/", csrfProtection, (req, res, next) => {

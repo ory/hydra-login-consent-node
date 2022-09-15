@@ -7,7 +7,11 @@ import { oidcConformityMaybeFakeSession } from "./stub/oidc-cert"
 import { AcceptOAuth2ConsentRequestSession } from "@ory/client"
 
 // Sets up csrf protection
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({
+  cookie: {
+    sameSite: "lax",
+  },
+})
 const router = express.Router()
 
 router.get("/", csrfProtection, (req, res, next) => {
