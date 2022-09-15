@@ -5,14 +5,14 @@
 import {
   OAuth2ConsentRequest,
   AcceptOAuth2ConsentRequestSession,
-  OAuth2LoginRequest,
-} from "@ory/client"
+  OAuth2LoginRequest
+} from '@ory/client'
 
 export const oidcConformityMaybeFakeAcr = (
   request: OAuth2LoginRequest,
-  fallback: string,
+  fallback: string
 ) => {
-  if (process.env.CONFORMITY_FAKE_CLAIMS !== "1") {
+  if (process.env.CONFORMITY_FAKE_CLAIMS !== '1') {
     return fallback
   }
 
@@ -27,52 +27,52 @@ export const oidcConformityMaybeFakeAcr = (
 export const oidcConformityMaybeFakeSession = (
   grantScope: string[],
   request: OAuth2ConsentRequest,
-  session: AcceptOAuth2ConsentRequestSession,
+  session: AcceptOAuth2ConsentRequestSession
 ): AcceptOAuth2ConsentRequestSession => {
-  if (process.env.CONFORMITY_FAKE_CLAIMS !== "1") {
+  if (process.env.CONFORMITY_FAKE_CLAIMS !== '1') {
     return session
   }
 
   const idToken: { [key: string]: any } = {}
 
   // If the email scope was granted, fake the email claims.
-  if (grantScope.indexOf("email") > -1) {
+  if (grantScope.indexOf('email') > -1) {
     // But only do so if the email was requested!
-    idToken.email = "foo@bar.com"
+    idToken.email = 'foo@bar.com'
     idToken.email_verified = true
   }
 
   // If the phone scope was granted, fake the phone claims.
-  if (grantScope.indexOf("phone") > -1) {
-    idToken.phone_number = "1337133713371337"
+  if (grantScope.indexOf('phone') > -1) {
+    idToken.phone_number = '1337133713371337'
     idToken.phone_number_verified = true
   }
 
   // If the profile scope was granted, fake the profile claims.
-  if (grantScope.indexOf("profile") > -1) {
-    idToken.name = "Foo Bar"
-    idToken.given_name = "Foo"
-    idToken.family_name = "Bar"
-    idToken.website = "https://www.ory.sh"
-    idToken.zoneinfo = "Europe/Belrin"
-    idToken.birthdate = "1.1.2014"
-    idToken.gender = "robot"
-    idToken.profile = "https://www.ory.sh"
-    idToken.preferred_username = "robot"
-    idToken.middle_name = "Baz"
-    idToken.locale = "en-US"
+  if (grantScope.indexOf('profile') > -1) {
+    idToken.name = 'Foo Bar'
+    idToken.given_name = 'Foo'
+    idToken.family_name = 'Bar'
+    idToken.website = 'https://www.ory.sh'
+    idToken.zoneinfo = 'Europe/Belrin'
+    idToken.birthdate = '1.1.2014'
+    idToken.gender = 'robot'
+    idToken.profile = 'https://www.ory.sh'
+    idToken.preferred_username = 'robot'
+    idToken.middle_name = 'Baz'
+    idToken.locale = 'en-US'
     idToken.picture =
-      "https://raw.githubusercontent.com/ory/web/master/static/images/favico.png"
+      'https://raw.githubusercontent.com/ory/web/master/static/images/favico.png'
     idToken.updated_at = 1604416603
-    idToken.nickname = "foobot"
+    idToken.nickname = 'foobot'
   }
 
   // If the address scope was granted, fake the address claims.
-  if (grantScope.indexOf("address") > -1) {
+  if (grantScope.indexOf('address') > -1) {
     idToken.address = {
-      country: "Localhost",
-      region: "Intranet",
-      street_address: "Local Street 1337",
+      country: 'Localhost',
+      region: 'Intranet',
+      street_address: 'Local Street 1337'
     }
   }
 
@@ -80,7 +80,7 @@ export const oidcConformityMaybeFakeSession = (
     access_token: session.access_token,
     id_token: {
       ...idToken,
-      ...session.id_token,
-    },
+      ...session.id_token
+    }
   }
 }

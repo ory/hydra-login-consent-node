@@ -45,8 +45,8 @@ will add `X-Forwarded-Proto: https` to each HTTP Request Header.
 ### Integrating with Ory Cloud
 
 To integrate this example app with Ory Cloud Oauth2 Service set variable
-`ORY_PAT` with value of your
-[personal access token](https://www.ory.sh/docs/concepts/personal-access-token)
+`ORY_API_KEY` with value of your
+[Ory API Key / Ory Personal Access Token](https://www.ory.sh/docs/concepts/personal-access-token)
 and set `HYDRA_ADMIN_URL` to the value of you Ory Cloud API URL which you can
 find in your
 [Ory Cloud Project](https://www.ory.sh/docs/concepts/terminology#ory-cloud-project)
