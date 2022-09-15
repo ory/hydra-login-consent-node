@@ -7,7 +7,7 @@ RUN adduser -S ory -D -u 10000 -s /bin/nologin
 
 COPY package.json package.json
 COPY package-lock.json package-lock.json
-RUN npm ci --silent; exit 0
+RUN npm ci --silent
 
 COPY . /usr/src/app
 
