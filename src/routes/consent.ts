@@ -1,23 +1,23 @@
-import express from 'express'
-import url from 'url'
-import urljoin from 'url-join'
-import csrf from 'csurf'
-import { hydraAdmin } from '../config'
-import { oidcConformityMaybeFakeSession } from './stub/oidc-cert'
-import { AcceptOAuth2ConsentRequestSession } from '@ory/client'
+import express from "express"
+import url from "url"
+import urljoin from "url-join"
+import csrf from "csurf"
+import { hydraAdmin } from "../config"
+import { oidcConformityMaybeFakeSession } from "./stub/oidc-cert"
+import { AcceptOAuth2ConsentRequestSession } from "@ory/client"
 
 // Sets up csrf protection
 const csrfProtection = csrf({ cookie: true })
 const router = express.Router()
 
-router.get('/', csrfProtection, (req, res, next) => {
+router.get("/", csrfProtection, (req, res, next) => {
   // Parses the URL query
   const query = url.parse(req.url, true).query
 
   // The challenge is used to fetch information about the consent request from ORY hydraAdmin.
   const challenge = String(query.consent_challenge)
   if (!challenge) {
-    next(new Error('Expected a consent challenge to be set but received none.'))
+    next(new Error("Expected a consent challenge to be set but received none."))
     return
   }
 
@@ -50,7 +50,7 @@ router.get('/', csrfProtection, (req, res, next) => {
               // accessToken: { foo: 'bar' },
               // This data will be available in the ID token.
               // idToken: { baz: 'bar' },
-            }
+            },
           })
           .then(({ data: body }) => {
             // All we need to do now is to redirect the user back to hydra!
@@ -59,7 +59,7 @@ router.get('/', csrfProtection, (req, res, next) => {
       }
 
       // If consent can't be skipped we MUST show the consent UI.
-      res.render('consent', {
+      res.render("consent", {
         csrfToken: req.csrfToken(),
         challenge: challenge,
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
@@ -67,7 +67,7 @@ router.get('/', csrfProtection, (req, res, next) => {
         requested_scope: body.requested_scope,
         user: body.subject,
         client: body.client,
-        action: urljoin(process.env.BASE_URL || '', '/consent')
+        action: urljoin(process.env.BASE_URL || "", "/consent"),
       })
     })
     // This will handle any error that happens when making HTTP calls to hydra
@@ -75,18 +75,18 @@ router.get('/', csrfProtection, (req, res, next) => {
   // The consent request has now either been accepted automatically or rendered.
 })
 
-router.post('/', csrfProtection, (req, res, next) => {
+router.post("/", csrfProtection, (req, res, next) => {
   // The challenge is now a hidden input field, so let's take it from the request body instead
   const challenge = req.body.challenge
 
   // Let's see if the user decided to accept or reject the consent request..
-  if (req.body.submit === 'Deny access') {
+  if (req.body.submit === "Deny access") {
     // Looks like the consent request was denied by the user
     return (
       hydraAdmin
         .adminRejectOAuth2ConsentRequest(challenge, {
-          error: 'access_denied',
-          error_description: 'The resource owner denied the request'
+          error: "access_denied",
+          error_description: "The resource owner denied the request",
         })
         .then(({ data: body }) => {
           // All we need to do now is to redirect the browser back to hydra!
@@ -114,7 +114,7 @@ router.post('/', csrfProtection, (req, res, next) => {
     // This data will be available in the ID token.
     id_token: {
       // baz: 'bar'
-    }
+    },
   }
 
   // Here is also the place to add data to the ID or access token. For example,
@@ -151,7 +151,7 @@ router.post('/', csrfProtection, (req, res, next) => {
           remember: Boolean(req.body.remember),
 
           // When this "remember" sesion expires, in seconds. Set this to 0 so it will never expire.
-          remember_for: 3600
+          remember_for: 3600,
         })
         .then(({ data: body }) => {
           // All we need to do now is to redirect the user back to hydra!
