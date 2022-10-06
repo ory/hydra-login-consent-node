@@ -8,7 +8,7 @@ https://github.com/ory/meta/blob/master/templates/repository/common/CONTRIBUTING
 
 -->
 
-# Contribute to Ory Hydra Login, Logout And Consent Node Example
+# Contribute to Ory Hydra Login, Logout And Consent Node Example<!-- omit in toc -->
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
