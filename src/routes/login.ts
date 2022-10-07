@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import express from "express"
 import url from "url"
 import urljoin from "url-join"

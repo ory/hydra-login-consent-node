@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import express from "express"
 
 const router = express.Router()

@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 // This file contains logic which is used when running this application as part of the
 // OpenID Connect Conformance test suite. You can use it for inspiration, but please
 // do not use it in production as is.

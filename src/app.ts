@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import express, { NextFunction, Response, Request } from "express"
 import path from "path"
 import logger from "morgan"

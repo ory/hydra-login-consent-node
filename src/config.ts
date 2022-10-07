@@ -1,3 +1,5 @@
+// Copyright © 2022 Ory Corp
+
 import { Configuration, V0alpha2Api } from "@ory/client"
 
 const baseOptions: any = {}
