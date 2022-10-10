@@ -798,6 +798,51 @@ const users: Array<User> = [
     }
   },
   {
+    id: 'renate.wagner@lra-aoe.de',
+    user_id: 'renate.wagner@lra-aoe.de',
+    bpNumber: '5000202986',
+    roles: ['approver'],
+    salutation: "Frau",
+    given_name: 'Renate',
+    family_name: 'Wagner',
+    phone: '08671502214',
+    email: 'renate.wagner@lra-aoe.de',
+    ext: {
+      bpNumber: '5000202986',
+      roles: ['approver']
+    }
+  },
+  {
+    id: 'martina.klement@lra-aoe.de',
+    user_id: 'martina.klement@lra-aoe.de',
+    bpNumber: '5000202986',
+    roles: ['approver'],
+    salutation: "Frau",
+    given_name: 'Martina',
+    family_name: 'Klement',
+    phone: '08671502216',
+    email: 'martina.klement@lra-aoe.de',
+    ext: {
+      bpNumber: '5000202986',
+      roles: ['approver']
+    }
+  },
+  {
+    id: '5000202986@test.de',
+    user_id: '5000202986@test.de',
+    bpNumber: '5000202986',
+    roles: ['approver'],
+    salutation: "Frau",
+    given_name: 'Bewilligungsstelle',
+    family_name: '5000202986',
+    phone: '12345678',
+    email: '5000202986@test.de',
+    ext: {
+      bpNumber: '5000202986',
+      roles: ['approver']
+    }
+  },
+  {
     id: 'bernhard.loderer@bayernlabo.de',
     user_id: 'bernhard.loderer@bayernlabo.de',
     roles: ['user'],
@@ -1144,6 +1189,32 @@ const users: Array<User> = [
     family_name: 'Watson',
     phone: '123456789',
     email: 'antragsteller1@kitzingen.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+  {
+    id: 'antragsteller1@lra-aoe.de',
+    user_id: 'antragsteller1@lra-aoe.de',
+    roles: ['user'],
+    salutation: "Frau",
+    given_name: 'Bernadette',
+    family_name: 'Watson',
+    phone: '123456789',
+    email: 'antragsteller1@lra-aoe.de',
+    ext: {
+      roles: ['user']
+    }
+  },
+   {
+    id: 'antragsteller2@lra-aoe.de',
+    user_id: 'antragsteller2@lra-aoe.de',
+    roles: ['user'],
+    salutation: "Herr",
+    given_name: 'Martin',
+    family_name: 'Wunderlich',
+    phone: '123456789',
+    email: 'antragsteller2@lra-aoe.de',
     ext: {
       roles: ['user']
     }
