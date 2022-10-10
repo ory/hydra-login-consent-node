@@ -4,11 +4,12 @@ This is a reference implementation for the User Login and Consent flow of ORY Hy
 application is bootstrapped using the `express` cli.
 
 ---
-
-> sudo podman stop scripts_consent_1
-> sudo podman rm scripts_consent_1
-> sudo podman image rm ghcr.io/quadrio/hydra-login-consent-node:latest
-> sudo podman-compose -f /opt/scripts/docker-compose.yml up -d
+```sh
+sudo podman stop scripts_consent_1
+sudo podman rm scripts_consent_1
+sudo podman image rm ghcr.io/quadrio/hydra-login-consent-node:latest
+sudo podman-compose -f /opt/scripts/docker-compose.yml up -d
+```
 
 `export HYDRA_ADMIN_URL=http://auth.quadrio-dev-foerderlotse.de:4445`
 
