@@ -8,9 +8,7 @@
     "build": "tsc",
     "serve": "node lib/app.js",
     "start": "ts-node-dev --watch public,views --respawn src/app.ts",
-    "test": "npm-run-all build",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "test": "npm-run-all build"
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
