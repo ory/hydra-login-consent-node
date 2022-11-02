@@ -3,6 +3,9 @@
 docker:
 	docker build --platform linux/amd64 -f Dockerfile -t oryd/hydra-login-consent-node:latest .
 
+format: node_modules
+	npm exec -- prettier --write .
+
 licenses: .bin/licenses node_modules  # checks open-source licenses
 	.bin/licenses
 
