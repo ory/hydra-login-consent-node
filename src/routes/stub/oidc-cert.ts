@@ -1,4 +1,5 @@
 // Copyright © 2022 Ory Corp
+// SPDX-License-Identifier: Apache-2.0
 
 // This file contains logic which is used when running this application as part of the
 // OpenID Connect Conformance test suite. You can use it for inspiration, but please
