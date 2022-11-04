@@ -2,7 +2,7 @@ docker:  # build local docker images
 	docker build --platform linux/amd64 -f Dockerfile -t oryd/hydra-login-consent-node:latest .
 
 format: .bin/ory node_modules  # formats the source code
-	.bin/ory dev headers copyright
+	.bin/ory dev headers copyright --type=open-source
 	npm exec -- prettier --write .
 
 help:  # prints all make targets
