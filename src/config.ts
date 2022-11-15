@@ -318,6 +318,21 @@ const users: Array<User> = [
     }
   },
   {
+    id: 'kommune',
+    user_id: 'kommune',
+    salutation: "Herr",
+    bpNumber: '5000203475',
+    roles: ['commune'],
+    given_name: 'Sach',
+    family_name: 'Bearbeiter',
+    phone: '123456789',
+    email: 'kommune@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['commune'],
+      bpNumber: '5000203475'
+    }
+  },
+  {
     id: 'ute.boex@lra-bt.bayern.de',
     user_id: 'ute.boex@lra-bt.bayern.de',
     salutation: "Frau",
