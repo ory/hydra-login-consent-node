@@ -333,6 +333,21 @@ const users: Array<User> = [
     }
   },
   {
+    id: 'mieter',
+    user_id: 'landlord',
+    salutation: "Herr",
+    bpNumber: '5000203475',
+    roles: ['commune'],
+    given_name: 'Sach',
+    family_name: 'Bearbeiter',
+    phone: '123456789',
+    email: 'landlord@quadrio-dev-foerderlotse.de',
+    ext: {
+      roles: ['landlord'],
+      bpNumber: '5000203475'
+    }
+  },
+  {
     id: 'ute.boex@lra-bt.bayern.de',
     user_id: 'ute.boex@lra-bt.bayern.de',
     salutation: "Frau",
@@ -1069,7 +1084,7 @@ const users: Array<User> = [
     id: 'antragsteller2@landkreis-hof.de',
     user_id: 'antragsteller2@landkreis-hof.de',
     roles: ['user'],
-    salutation: "Frau",   
+    salutation: "Frau",
     given_name: 'Bernadette',
     family_name: 'Watson',
     phone: '123456789',
@@ -1221,7 +1236,7 @@ const users: Array<User> = [
       roles: ['user']
     }
   },
-   {
+  {
     id: 'antragsteller2@lra-aoe.de',
     user_id: 'antragsteller2@lra-aoe.de',
     roles: ['user'],
