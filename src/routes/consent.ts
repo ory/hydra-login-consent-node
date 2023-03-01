@@ -1,4 +1,4 @@
-// Copyright © 2022 Ory Corp
+// Copyright © 2023 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
 import express from "express"
@@ -36,7 +36,9 @@ router.get("/", csrfProtection, (req, res, next) => {
     // This will be called if the HTTP request was successful
     .then(({ data: body }) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
-      if (body.skip) {
+      // Any cast needed because the SDK changes are still unreleased.
+      // TODO: Remove in a later version.
+      if (body.skip || (body.client as any)?.skip_consent) {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 
