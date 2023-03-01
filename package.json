@@ -4,11 +4,16 @@
   "bin": {
     "hydra-login-consent-logout": "lib/app.js"
   },
+  "files": [
+    "lib",
+    "views"
+  ],
   "scripts": {
     "build": "tsc",
     "serve": "node lib/app.js",
     "start": "ts-node-dev --watch public,views --respawn src/app.ts",
-    "test": "npm-run-all build"
+    "test": "npm-run-all build",
+    "prepublishOnly": "tsc"
   },
   "prettier": "ory-prettier-styles",
   "dependencies": {
