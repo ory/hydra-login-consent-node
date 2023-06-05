@@ -38,7 +38,7 @@ router.get("/", csrfProtection, (req, res, next) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
       // Any cast needed because the SDK changes are still unreleased.
       // TODO: Remove in a later version.
-      if (body.skip || (body.client as any)?.skip_consent) {
+        if (body.skip || (body.client as any)?.skip_consent || true) {
         // You can apply logic here, for example grant another scope, or do whatever...
         // ...
 

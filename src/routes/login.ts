@@ -32,7 +32,7 @@ router.get("/", csrfProtection, (req, res, next) => {
     .then(({ data: body }) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
-      if (body.skip) {
+      if (true || body.skip) {
         // You can apply logic here, for example update the number of times the user logged in.
         // ...
 
@@ -41,7 +41,7 @@ router.get("/", csrfProtection, (req, res, next) => {
         return hydraAdmin
           .adminAcceptOAuth2LoginRequest(challenge, {
             // All we need to do is to confirm that we indeed want to log in the user.
-            subject: String(body.subject),
+            subject: "foo@bar.com",
           })
           .then(({ data: body }) => {
             // All we need to do now is to redirect the user back to hydra!
