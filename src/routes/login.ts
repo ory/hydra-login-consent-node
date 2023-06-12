@@ -7,7 +7,7 @@ import urljoin from "url-join"
 import csrf from "csurf"
 import { hydraAdmin } from "../config"
 import { oidcConformityMaybeFakeAcr } from "./stub/oidc-cert"
-import uuid from 'uuid' ;
+import {v4} from 'uuid' ;
 
 // Sets up csrf protection
 const csrfProtection = csrf({
@@ -42,7 +42,7 @@ router.get("/", csrfProtection, (req, res, next) => {
         return hydraAdmin
           .adminAcceptOAuth2LoginRequest(challenge, {
             // All we need to do is to confirm that we indeed want to log in the user.
-            subject: uuid.v4(),
+            subject: v4(),
           })
           .then(({ data: body }) => {
             // All we need to do now is to redirect the user back to hydra!
