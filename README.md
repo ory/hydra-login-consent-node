@@ -34,6 +34,15 @@ Please head over to the
 [ORY Hydra 5 Minute Tutorial](https://www.ory.sh/docs/hydra/5min-tutorial) to
 see how this works.
 
+### Allowing login from multiple email addresses
+
+If desired, instead of logging in with email foo@bar.com and password foobar,
+you may set the `ALLOWED_LOGIN_DOMAIN` environment variable to any domain.
+This will cause the application to accept logins from any address from that domain
+with password foobar. For example, if you set it to `domain.com`, this
+application will accept logins from any email address ending in `@domain.com`
+with password foobar.
+
 ## FAQ
 
 ### TLS Termination

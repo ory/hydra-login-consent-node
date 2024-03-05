@@ -17,4 +17,8 @@ const configuration = new Configuration({
 
 const hydraAdmin = new V0alpha2Api(configuration)
 
-export { hydraAdmin }
+const options: { allowedLoginDomain?: string } = {
+  allowedLoginDomain: process.env.ALLOWED_LOGIN_DOMAIN,
+}
+
+export { hydraAdmin, options }
