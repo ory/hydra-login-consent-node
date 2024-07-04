@@ -30,7 +30,7 @@
     "express": "^4.19.2",
     "morgan": "^1.10.0",
     "node-fetch": "^2.6.7",
-    "pug": "^2.0.4",
+    "pug": "^3.0.3",
     "querystring": "^0.2.0",
     "serve-favicon": "^2.5.0",
     "typescript": "^3.7.5",
