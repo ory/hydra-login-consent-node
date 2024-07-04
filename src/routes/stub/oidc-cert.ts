@@ -1,4 +1,4 @@
-// Copyright © 2023 Ory Corp
+// Copyright © 2024 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
 // This file contains logic which is used when running this application as part of the
