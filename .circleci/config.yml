@@ -6,7 +6,7 @@ version: 2
 jobs:
   release:
     docker:
-      - image: circleci/node:11.10
+      - image: circleci/node:23.7.0
     working_directory: ~/hydra-login-consent-node
 
     steps:
