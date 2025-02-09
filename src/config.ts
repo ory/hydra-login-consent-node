@@ -1,7 +1,7 @@
 // Copyright © 2025 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
-import { Configuration, V0alpha2Api } from "@ory/client"
+import { Configuration, OAuth2Api } from "@ory/client"
 
 const baseOptions: any = {}
 
@@ -15,6 +15,6 @@ const configuration = new Configuration({
   baseOptions,
 })
 
-const hydraAdmin = new V0alpha2Api(configuration)
+const hydraAdmin = new OAuth2Api(configuration)
 
 export { hydraAdmin }
