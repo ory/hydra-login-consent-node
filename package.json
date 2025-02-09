@@ -33,7 +33,7 @@
     "pug": "^3.0.3",
     "querystring": "^0.2.0",
     "serve-favicon": "^2.5.0",
-    "typescript": "^3.7.5",
+    "typescript": "^5.7.3",
     "url-join": "^4.0.1"
   },
   "devDependencies": {
