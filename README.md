@@ -42,7 +42,7 @@ You can mock TLS Termination by setting environment variable
 `MOCK_TLS_TERMINATION` to any value, for example `MOCK_TLS_TERMINATION=y`. This
 will add `X-Forwarded-Proto: https` to each HTTP Request Header.
 
-### Integrating with Ory Cloud
+### Integrating with Ory Network
 
 To integrate this example app with Ory Cloud Oauth2 Service set variable
 `ORY_API_KEY` with value of your

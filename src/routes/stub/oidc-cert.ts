@@ -9,7 +9,7 @@ import {
   OAuth2ConsentRequest,
   AcceptOAuth2ConsentRequestSession,
   OAuth2LoginRequest,
-} from "@ory/client"
+} from "@ory/client-fetch"
 
 export const oidcConformityMaybeFakeAcr = (
   request: OAuth2LoginRequest,

@@ -1,7 +1,7 @@
 // Copyright © 2025 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
-import { Configuration, V0alpha2Api } from "@ory/client"
+import { Configuration, OAuth2Api } from "@ory/client-fetch"
 
 const baseOptions: any = {}
 
@@ -12,9 +12,9 @@ if (process.env.MOCK_TLS_TERMINATION) {
 const configuration = new Configuration({
   basePath: process.env.HYDRA_ADMIN_URL,
   accessToken: process.env.ORY_API_KEY || process.env.ORY_PAT,
-  baseOptions,
+  headers: baseOptions.headers,
 })
 
-const hydraAdmin = new V0alpha2Api(configuration)
+const hydraAdmin = new OAuth2Api(configuration)
 
 export { hydraAdmin }

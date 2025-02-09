@@ -1,0 +1,48 @@
+name: test and release
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - "*"
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23.7.0
+      - name: install dependencies
+        run: npm ci
+      - name: configure npm token
+        run:
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >
+          ~/.npmrc
+      - name: build project
+        run: npm run build
+
+  release:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 23.7.0
+      - name: install dependencies
+        run: npm ci
+      - name: configure npm token
+        run:
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >
+          ~/.npmrc
+      - name: set package version
+        run: npm version -f --no-git-tag-version "${GITHUB_REF#refs/tags/}"
+      - name: publish package
+        run: npm publish --access public
