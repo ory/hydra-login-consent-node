@@ -16,7 +16,7 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v3
         with:
-          node-version: 11.10
+          node-version: 23.7.0
       - name: install dependencies
         run: npm ci
       - name: configure npm token
