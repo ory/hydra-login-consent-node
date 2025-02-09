@@ -11,7 +11,7 @@ import routes from "./routes"
 import login from "./routes/login"
 import logout from "./routes/logout"
 import consent from "./routes/consent"
-import device from './routes/device'
+import device from "./routes/device"
 
 const app = express()
 
@@ -31,7 +31,7 @@ app.use("/", routes)
 app.use("/login", login)
 app.use("/logout", logout)
 app.use("/consent", consent)
-app.use('/device', device)
+app.use("/device/code", device)
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

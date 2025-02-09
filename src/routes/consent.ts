@@ -7,7 +7,7 @@ import urljoin from "url-join"
 import csrf from "csurf"
 import { hydraAdmin } from "../config"
 import { oidcConformityMaybeFakeSession } from "./stub/oidc-cert"
-import { AcceptOAuth2ConsentRequestSession } from "@ory/client-fetch"
+import { AcceptOAuth2ConsentRequestSession } from "@ory/hydra-client-fetch"
 
 // Sets up csrf protection
 const csrfProtection = csrf({
