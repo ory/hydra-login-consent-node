@@ -59,9 +59,9 @@ router.post("/", csrfProtection, (req, res, next) => {
   // The user agreed to log out, let's accept the logout request.
   hydraAdmin
     .acceptOAuth2LogoutRequest({ logoutChallenge: challenge })
-    .then(({ data: body }) => {
+    .then(({ redirect_to }) => {
       // All we need to do now is to redirect the user back to hydra!
-      res.redirect(String(body.redirect_to))
+      res.redirect(String(redirect_to))
     })
     // This will handle any error that happens when making HTTP calls to hydra
     .catch(next)

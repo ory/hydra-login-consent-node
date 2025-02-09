@@ -31,10 +31,10 @@ router.get("/", csrfProtection, (req, res, next) => {
     .getOAuth2LoginRequest({
       loginChallenge: challenge,
     })
-    .then(({ data: body }) => {
+    .then((loginRequest) => {
       // If hydra was already able to authenticate the user, skip will be true and we do not need to re-authenticate
       // the user.
-      if (body.skip) {
+      if (loginRequest.skip) {
         // You can apply logic here, for example update the number of times the user logged in.
         // ...
 
@@ -45,12 +45,12 @@ router.get("/", csrfProtection, (req, res, next) => {
             loginChallenge: challenge,
             acceptOAuth2LoginRequest: {
               // All we need to do is to confirm that we indeed want to log in the user.
-              subject: String(body.subject),
+              subject: String(loginRequest.subject),
             },
           })
-          .then(({ data: body }) => {
+          .then(({ redirect_to }) => {
             // All we need to do now is to redirect the user back to hydra!
-            res.redirect(String(body.redirect_to))
+            res.redirect(String(redirect_to))
           })
       }
 
@@ -59,7 +59,7 @@ router.get("/", csrfProtection, (req, res, next) => {
         csrfToken: req.csrfToken(),
         challenge: challenge,
         action: urljoin(process.env.BASE_URL || "", "/login"),
-        hint: body.oidc_context?.login_hint || "",
+        hint: loginRequest.oidc_context?.login_hint || "",
       })
     })
     // This will handle any error that happens when making HTTP calls to hydra
@@ -82,9 +82,9 @@ router.post("/", csrfProtection, (req, res, next) => {
             error_description: "The resource owner denied the request",
           },
         })
-        .then(({ data: body }) => {
+        .then(({ redirect_to }) => {
           // All we need to do now is to redirect the browser back to hydra!
-          res.redirect(String(body.redirect_to))
+          res.redirect(String(redirect_to))
         })
         // This will handle any error that happens when making HTTP calls to hydra
         .catch(next)
@@ -109,7 +109,7 @@ router.post("/", csrfProtection, (req, res, next) => {
 
   hydraAdmin
     .getOAuth2LoginRequest({ loginChallenge: challenge })
-    .then(({ data: loginRequest }) =>
+    .then((loginRequest) =>
       hydraAdmin
         .acceptOAuth2LoginRequest({
           loginChallenge: challenge,
@@ -137,9 +137,9 @@ router.post("/", csrfProtection, (req, res, next) => {
             acr: oidcConformityMaybeFakeAcr(loginRequest, "0"),
           },
         })
-        .then(({ data: body }) => {
+        .then(({ redirect_to }) => {
           // All we need to do now is to redirect the user back to hydra!
-          res.redirect(String(body.redirect_to))
+          res.redirect(String(redirect_to))
         }),
     )
     // This will handle any error that happens when making HTTP calls to hydra
