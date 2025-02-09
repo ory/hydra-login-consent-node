@@ -1,4 +1,4 @@
-FROM node:14.15-alpine3.12
+FROM node:23-alpine3.21
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -15,6 +15,6 @@ RUN npm run build
 
 USER 10000
 
-ENTRYPOINT npm run serve
+ENTRYPOINT ["npm", "run", "serve"]
 
 EXPOSE 3000
