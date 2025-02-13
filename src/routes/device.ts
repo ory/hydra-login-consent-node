@@ -17,7 +17,7 @@ router.get("/verify", csrfProtection, (req, res, next) => {
   // The challenge is used to fetch information about the login request from ORY Hydra.
   const challenge = String(query.device_challenge)
   if (!challenge) {
-    next(new Error("Expected a login challenge to be set but received none."))
+    next(new Error("Expected a device challenge to be set but received none."))
     return
   }
 
