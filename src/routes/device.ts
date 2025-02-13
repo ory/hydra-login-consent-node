@@ -10,7 +10,7 @@ import { hydraAdmin } from "../config"
 const csrfProtection = csrf({ cookie: true })
 const router = express.Router()
 
-router.get("/", csrfProtection, (req, res, next) => {
+router.get("/verify", csrfProtection, (req, res, next) => {
   // Parses the URL query
   const query = url.parse(req.url, true).query
 
@@ -21,22 +21,16 @@ router.get("/", csrfProtection, (req, res, next) => {
     return
   }
 
-  // Parses the URL query
-  const userCode = String(query.user_code)
-
-  res.render("device", {
+  res.render("device/verify", {
     csrfToken: req.csrfToken(),
     challenge,
-    userCode,
+    userCode: String(query.user_code),
   })
 })
 
-router.post("/", csrfProtection, (req, res, next) => {
+router.post("/verify", csrfProtection, (req, res, next) => {
   // The code is a input field, so let's take it from the request body
   const { code: userCode, challenge } = req.body
-
-  console.log(`In post: ${challenge} | ${userCode}`)
-
   // All we need to do now is to redirect the user back to hydra!
   hydraAdmin
     .acceptUserCodeRequest({
@@ -50,6 +44,12 @@ router.post("/", csrfProtection, (req, res, next) => {
       res.redirect(String(redirect_to))
     })
     .catch(next)
+})
+
+router.get("/success", csrfProtection, (req, res, next) => {
+  res.render("device/success", {
+    csrfToken: req.csrfToken(),
+  })
 })
 
 export default router
