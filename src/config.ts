@@ -1,7 +1,7 @@
 // Copyright © 2025 Ory Corp
 // SPDX-License-Identifier: Apache-2.0
 
-import { Configuration, OAuth2Api } from "@ory/client-fetch"
+import { Configuration, OAuth2Api } from "@ory/hydra-client-fetch"
 
 const baseOptions: any = {}
 

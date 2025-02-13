@@ -1,6 +1,5 @@
 docker:  # build local docker images
-	docker buildx create --use --name hydra-login-consent-node-build
-	docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t oryd/hydra-login-consent-node:latest .
+	docker build -f Dockerfile -t oryd/hydra-login-consent-node:latest .
 
 format: .bin/ory node_modules  # formats the source code
 	.bin/ory dev headers copyright --type=open-source
