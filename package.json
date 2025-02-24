@@ -1,6 +1,6 @@
 {
   "name": "hydra-login-consent-logout",
-  "version": "0.0.0",
+  "version": "2.4.0-pre.3",
   "bin": {
     "hydra-login-consent-logout": "lib/app.js"
   },

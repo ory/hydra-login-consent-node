@@ -19,10 +19,6 @@ jobs:
           node-version: 23.7.0
       - name: install dependencies
         run: npm ci
-      - name: configure npm token
-        run:
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >
-          ~/.npmrc
       - name: build project
         run: npm run build
 
@@ -40,7 +36,7 @@ jobs:
         run: npm ci
       - name: configure npm token
         run:
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" >
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN_AENEASR }}" >
           ~/.npmrc
       - name: set package version
         run: npm version -f --no-git-tag-version "${GITHUB_REF#refs/tags/}"
