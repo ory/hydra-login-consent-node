@@ -36,8 +36,8 @@ jobs:
         run: npm ci
       - name: configure npm token
         run:
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN_AENEASR }}" >
-          ~/.npmrc
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN_AENEASR
+          }}" > ~/.npmrc
       - name: set package version
         run: npm version -f --no-git-tag-version "${GITHUB_REF#refs/tags/}"
       - name: publish package
