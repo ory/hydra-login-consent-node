@@ -62,8 +62,9 @@ router.get("/", csrfProtection, (req, res, next) => {
                 // This data will be available when introspecting the token. Try to avoid sensitive information here,
                 // unless you limit who can introspect tokens.
                 // accessToken: { foo: 'bar' },
-                // This data will be available in the ID token.
-                // idToken: { baz: 'bar' },
+                id_token: {
+                  email: consentRequest.subject,
+                },
               },
             },
           })
