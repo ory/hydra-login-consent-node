@@ -1,7 +1,7 @@
 # hydra-user-and-consent-provider-node
 
-This is a reference implementation for the User Login and Consent flow of Ory
-OAuth2 service (Hydra) in NodeJS. The application is bootstrapped using the
+This is a reference implementation for the User Login and Consent flow of [Ory
+OAuth2 service (Hydra)](https://www.ory.com/hydra) in NodeJS. The application is bootstrapped using the
 `express` cli.
 
 ---
@@ -26,12 +26,12 @@ Also, a simple helper that makes HTTP requests has been added to
 `./services/hydra.js` which uses the `node-fetch` library.
 
 To set this example up with ORY Hydra, please refer to the
-[official documentation](https://www.ory.sh/docs).
+[official documentation](https://www.ory.com/docs/welcome).
 
 ## Running
 
 Please head over to the
-[ORY Hydra 5 Minute Tutorial](https://www.ory.sh/docs/hydra/5min-tutorial) to
+[ORY Hydra 5 Minute Tutorial](https://www.ory.com/docs/oel/hydra/quickstart) to
 see how this works.
 
 ## FAQ
@@ -46,7 +46,7 @@ will add `X-Forwarded-Proto: https` to each HTTP Request Header.
 
 To integrate this example app with Ory Cloud Oauth2 Service set variable
 `ORY_API_KEY` with value of your
-[Ory API Key / Ory Personal Access Token](https://www.ory.sh/docs/concepts/personal-access-token)
+[Ory API Key / Ory Personal Access Token](https://www.ory.com/docs/concepts/personal-access-token)
 and set `HYDRA_ADMIN_URL` to the value of you Ory Cloud API URL which you can
 find in your
-[Ory Cloud Project](https://www.ory.sh/docs/concepts/terminology#ory-cloud-project)
+[Ory Cloud Project](https://console.ory.com)
