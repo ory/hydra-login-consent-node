@@ -50,3 +50,17 @@ To integrate this example app with Ory Cloud Oauth2 Service set variable
 and set `HYDRA_ADMIN_URL` to the value of you Ory Cloud API URL which you can
 find in your
 [Ory Cloud Project](https://www.ory.sh/docs/concepts/terminology#ory-cloud-project)
+
+### Resource indicators
+
+When RFC 8707 resource indicators are enabled, this app displays the requested
+resource URIs and grants them together with the requested legacy audiences. Both
+normal approval and skipped consent include `requested_resources` in
+`grant_access_token_audience`. Each resource must exactly match an entry in the
+OAuth 2.0 client's audience allow list. Granting none of the requested resources
+rejects the flow with `invalid_target`.
+
+The app reads the raw consent response through the SDK so resource indicators
+remain available with the pinned SDK version. See the
+[token audience guide](https://www.ory.com/docs/hydra/guides/audiences#target-an-access-token-to-a-resource)
+for configuration and consent-app migration instructions.

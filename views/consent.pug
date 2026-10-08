@@ -17,6 +17,12 @@ block content
             label(for=scope) #{scope}
             br
 
+        if requested_resources.length
+            p Requested resources:
+            ul
+                each resource in requested_resources
+                    li.requested_resource= resource
+
         p.
             Do you want to be asked next time when this application wants to access your data? The application will
             not be able to ask for more permissions without your consent.
