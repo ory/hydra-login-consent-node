@@ -7,7 +7,32 @@ import urljoin from "url-join"
 import csrf from "csurf"
 import { hydraAdmin } from "../config"
 import { oidcConformityMaybeFakeSession } from "./stub/oidc-cert"
-import { AcceptOAuth2ConsentRequestSession } from "@ory/hydra-client-fetch"
+import {
+  AcceptOAuth2ConsentRequestSession,
+  OAuth2ConsentRequest,
+} from "@ory/hydra-client-fetch"
+
+type ConsentRequestWithResources = OAuth2ConsentRequest & {
+  requested_resources?: string[]
+}
+
+async function getConsentRequest(
+  challenge: string,
+): Promise<ConsentRequestWithResources> {
+  const response = await hydraAdmin.getOAuth2ConsentRequestRaw({
+    consentChallenge: challenge,
+  })
+  const raw: ConsentRequestWithResources = await response.raw.clone().json()
+  const consentRequest = await response.value()
+  // The raw response preserves resource indicators across SDK model versions.
+  return { ...consentRequest, requested_resources: raw.requested_resources }
+}
+
+const grantedAudience = (request: ConsentRequestWithResources) =>
+  [
+    ...(request.requested_access_token_audience || []),
+    ...(request.requested_resources || []),
+  ].filter((audience, index, all) => all.indexOf(audience) === index)
 
 // Sets up csrf protection
 const csrfProtection = csrf({
@@ -31,10 +56,7 @@ router.get("/", csrfProtection, (req, res, next) => {
   // This section processes consent requests and either shows the consent UI or
   // accepts the consent request right away if the user has given consent to this
   // app before
-  hydraAdmin
-    .getOAuth2ConsentRequest({
-      consentChallenge: challenge,
-    })
+  getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
     .then((consentRequest) => {
       // If a user has granted this application the requested scope, hydra will tell us to not show the UI.
@@ -53,9 +75,7 @@ router.get("/", csrfProtection, (req, res, next) => {
               // are requested accidentally.
               grant_scope: consentRequest.requested_scope,
 
-              // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-              grant_access_token_audience:
-                consentRequest.requested_access_token_audience,
+              grant_access_token_audience: grantedAudience(consentRequest),
 
               // The session allows us to set session data for id and access tokens
               session: {
@@ -80,6 +100,7 @@ router.get("/", csrfProtection, (req, res, next) => {
         // We have a bunch of data available from the response, check out the API docs to find what these values mean
         // and what additional data you have available.
         requested_scope: consentRequest.requested_scope,
+        requested_resources: consentRequest.requested_resources || [],
         user: consentRequest.subject,
         client: consentRequest.client,
         action: urljoin(process.env.BASE_URL || "", "/consent"),
@@ -143,8 +164,7 @@ router.post("/", csrfProtection, (req, res, next) => {
   // }
 
   // Let's fetch the consent request again to be able to set `grantAccessTokenAudience` properly.
-  hydraAdmin
-    .getOAuth2ConsentRequest({ consentChallenge: challenge })
+  getConsentRequest(challenge)
     // This will be called if the HTTP request was successful
     .then(async (consentRequest) => {
       const { redirect_to } = await hydraAdmin.acceptOAuth2ConsentRequest({
@@ -166,9 +186,7 @@ router.post("/", csrfProtection, (req, res, next) => {
             session,
           ),
 
-          // ORY Hydra checks if requested audiences are allowed by the client, so we can simply echo this.
-          grant_access_token_audience:
-            consentRequest.requested_access_token_audience,
+          grant_access_token_audience: grantedAudience(consentRequest),
 
           // This tells hydra to remember this consent request and allow the same client to request the same
           // scopes from the same user, without showing the UI, in the future.
